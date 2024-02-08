@@ -8,6 +8,7 @@ import TextField from '@/components/text-field';
 import Switch from '@/components/switch';
 import { Button } from '@/components/ui/button';
 import jsYaml from 'js-yaml';
+import ReactMarkdown from '@/components/react-markdown';
 
 type WorkflowPlace = {
     name: string;
@@ -27,6 +28,18 @@ type WorkflowConfig = {
     };
     type: string;
     places: WorkflowPlace[];
+    initialMarking: string;
+    transitions: WorkflowTransition[];
+};
+
+type WorkflowConfigYaml = {
+    name: string;
+    auditTrail: boolean;
+    markingStore: {
+        property: string;
+    };
+    type: string;
+    places: string[];
     initialMarking: string;
     transitions: WorkflowTransition[];
 };
@@ -58,7 +71,7 @@ export default function Home() {
         name: 'transitions',
     });
     const watchPlaces = useWatch({ name: 'places', control });
-    const [yaml, setYaml] = React.useState<WorkflowConfig>();
+    const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
 
     const places = React.useMemo(() => {
         return watchPlaces.filter((field) => !!field.name).map((field) => ({ label: field.name, value: field.name }));
@@ -73,8 +86,7 @@ export default function Home() {
     }, [appendTransition]);
 
     const onSubmit = (data: WorkflowConfig) => {
-        console.log(data);
-        setYaml(data);
+        setYaml({ ...data, places: data.places.map((place) => place.name) });
     };
 
     return (
@@ -177,12 +189,16 @@ export default function Home() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="w-[350px]">
+                <Card className="w-[450px]">
                     <CardHeader>
                         <CardTitle>View your workflow configuration</CardTitle>
                         <CardDescription>The best way to build and visualize workflow for symfony</CardDescription>
                     </CardHeader>
-                    <CardContent>{jsYaml.dump(yaml)}</CardContent>
+                    <CardContent>
+                        {yaml && (
+                            <ReactMarkdown>{['```yaml'].concat(jsYaml.dump(yaml), '```').join('\n')}</ReactMarkdown>
+                        )}
+                    </CardContent>
                 </Card>
             </div>
         </main>
