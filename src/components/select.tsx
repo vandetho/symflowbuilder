@@ -20,15 +20,15 @@ interface SelectProps extends React.ComponentPropsWithoutRef<typeof SelectPrimit
     className?: string;
 }
 
-const Select = React.memo<SelectProps>(({ id, control, name, className, placeholder, items }) => {
+const Select = React.memo<SelectProps>(({ id, control, name, className, placeholder, items, ...props }) => {
     const localId = useId();
     return (
         <Controller
             control={control}
             name={name}
             render={({ field }) => (
-                <BaseSelect>
-                    <SelectTrigger id={id} className={cn('flex-1', className)}>
+                <BaseSelect onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger {...props} id={id} className={cn('flex-1', className)}>
                         <SelectValue placeholder={placeholder} />
                     </SelectTrigger>
                     <SelectContent>

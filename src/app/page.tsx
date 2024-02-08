@@ -115,7 +115,7 @@ export default function Home() {
                                     <div className={'flex gap-2'} key={field.id}>
                                         <TextField
                                             control={control}
-                                            name={`places.${index}.value`}
+                                            name={`places.${index}.name`}
                                             type="text"
                                             placeholder="Place"
                                             key={field.id}
@@ -153,12 +153,14 @@ export default function Home() {
                                             name={`transitions.${index}.from`}
                                             className="w-[300px]"
                                             placeholder="From"
+                                            label="From"
                                             items={places}
                                         />
                                         <Select
                                             control={control}
                                             name={`transitions.${index}.to`}
                                             className="w-[300px]"
+                                            label="To"
                                             placeholder="To"
                                             items={places}
                                         />
