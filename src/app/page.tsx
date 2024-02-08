@@ -7,8 +7,9 @@ import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import TextField from '@/components/text-field';
 import Switch from '@/components/switch';
 import { Button } from '@/components/ui/button';
-import jsYaml from 'js-yaml';
 import ReactMarkdown from '@/components/react-markdown';
+import jsYaml from 'js-yaml';
+import convert from 'xml-js';
 
 type WorkflowPlace = {
     name: string;
@@ -198,7 +199,23 @@ export default function Home() {
                     </CardHeader>
                     <CardContent>
                         {yaml && (
-                            <ReactMarkdown>{['```yaml'].concat(jsYaml.dump(yaml), '```').join('\n')}</ReactMarkdown>
+                            <ReactMarkdown>
+                                {['```yaml'].concat(jsYaml.dump(yaml, { indent: 4 }), '```').join('\n')}
+                            </ReactMarkdown>
+                        )}
+                        {yaml && (
+                            <ReactMarkdown>
+                                {['```xml']
+                                    .concat(
+                                        convert.json2xml(JSON.stringify(yaml), {
+                                            compact: true,
+                                            ignoreComment: true,
+                                            spaces: 4,
+                                        }),
+                                        '```',
+                                    )
+                                    .join('\n')}
+                            </ReactMarkdown>
                         )}
                     </CardContent>
                 </Card>
