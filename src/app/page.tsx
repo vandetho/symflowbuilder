@@ -7,6 +7,7 @@ import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import TextField from '@/components/text-field';
 import Switch from '@/components/switch';
 import { Button } from '@/components/ui/button';
+import jsYaml from 'js-yaml';
 
 type WorkflowPlace = {
     name: string;
@@ -57,6 +58,7 @@ export default function Home() {
         name: 'transitions',
     });
     const watchPlaces = useWatch({ name: 'places', control });
+    const [yaml, setYaml] = React.useState<WorkflowConfig>();
 
     const places = React.useMemo(() => {
         return watchPlaces.filter((field) => !!field.name).map((field) => ({ label: field.name, value: field.name }));
@@ -72,6 +74,7 @@ export default function Home() {
 
     const onSubmit = (data: WorkflowConfig) => {
         console.log(data);
+        setYaml(data);
     };
 
     return (
@@ -179,7 +182,7 @@ export default function Home() {
                         <CardTitle>View your workflow configuration</CardTitle>
                         <CardDescription>The best way to build and visualize workflow for symfony</CardDescription>
                     </CardHeader>
-                    <CardContent></CardContent>
+                    <CardContent>{jsYaml.dump(yaml)}</CardContent>
                 </Card>
             </div>
         </main>
