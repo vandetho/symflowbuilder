@@ -1,12 +1,12 @@
 'use client';
 
+import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import Select from '@/components/select';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import TextField from '@/components/text-field';
 import Switch from '@/components/switch';
-import React from 'react';
 import { Button } from '@/components/ui/button';
 
 type WorkflowConfig = {
@@ -87,12 +87,18 @@ export default function Home() {
                                 <p className="text-lg">Places</p>
                                 <Button onClick={onAddPlace}>Add Place</Button>
                                 {fields.map((field, index) => (
-                                    <TextField
-                                        control={control}
-                                        name={`places.${index}.value`}
-                                        type="text"
-                                        placeholder="Place"
-                                    />
+                                    <div className={'flex gap-2'} key={field.id}>
+                                        <TextField
+                                            control={control}
+                                            name={`places.${index}.value`}
+                                            type="text"
+                                            placeholder="Place"
+                                            key={field.id}
+                                        />
+                                        <Button variant="destructive" onClick={() => remove(index)}>
+                                            Remove
+                                        </Button>
+                                    </div>
                                 ))}
                             </div>
                             <Select
