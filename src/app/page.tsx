@@ -34,7 +34,9 @@ type WorkflowConfig = {
 
 type WorkflowConfigYaml = {
     name: string;
-    auditTrail: boolean;
+    auditTrail: {
+        enabled: boolean;
+    };
     markingStore: {
         property: string;
     };
@@ -86,7 +88,7 @@ export default function Home() {
     }, [appendTransition]);
 
     const onSubmit = (data: WorkflowConfig) => {
-        setYaml({ ...data, places: data.places.map((place) => place.name) });
+        setYaml({ ...data, auditTrail: { enabled: data.auditTrail }, places: data.places.map((place) => place.name) });
     };
 
     return (
