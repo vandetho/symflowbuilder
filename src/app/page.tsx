@@ -1,10 +1,56 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
+import Select from '@/components/select';
+import { useFieldArray, useForm, useWatch } from 'react-hook-form';
+import TextField from '@/components/text-field';
+import Switch from '@/components/switch';
+import React from 'react';
+import { Button } from '@/components/ui/button';
+
+type WorkflowConfig = {
+    name: string;
+    auditTrail: boolean;
+    markingStore: {
+        property: string;
+    };
+    type: string;
+    places: Array<{ value: string }>;
+    initialMarking: string;
+    transitions: string[];
+};
 
 export default function Home() {
+    const { control, handleSubmit, getValues } = useForm<WorkflowConfig>({
+        defaultValues: {
+            name: '',
+            auditTrail: false,
+            markingStore: {
+                property: 'marking',
+            },
+            type: '',
+            places: [],
+            initialMarking: '',
+            transitions: [],
+        },
+    });
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: 'places',
+    });
+    const watchPlaces = useWatch({ name: 'places', control });
+
+    const places = React.useMemo(() => {
+        return watchPlaces
+            .filter((field) => !!field.value)
+            .map((field) => ({ label: field.value, value: field.value }));
+    }, [watchPlaces]);
+
+    const onAddPlace = React.useCallback(() => {
+        append({ value: '' });
+    }, []);
+
     return (
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
             <div className="flex items-center gap-4">
@@ -15,38 +61,66 @@ export default function Home() {
                     </CardHeader>
                     <CardContent>
                         <div className="flex flex-col gap-4">
-                            <Input type="text" placeholder="Workflow name" />
-                            <div className="flex items-center space-x-2">
-                                <Switch id="audit-trail" />
-                                <Label htmlFor="audit-trail">Audit Trail</Label>
-                            </div>
+                            <TextField
+                                control={control}
+                                id="workflowName"
+                                name="name"
+                                label="Workflow name"
+                                placeholder="Workflow name"
+                            />
+                            <Select
+                                control={control}
+                                name="type"
+                                className="w-[300px]"
+                                placeholder="Select a workflow type"
+                                items={[
+                                    { label: 'State Machine', value: 'state_machine' },
+                                    { label: 'Workflow', value: 'workflow' },
+                                ]}
+                            />
+                            <Switch control={control} name="auditTrail" id="audit-trail" label="Audit Trail" />
                             <div className="flex flex-col gap-2">
                                 <p className="text-lg">Marking Store</p>
-                                <Select>
-                                    <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Select a marking stor type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectItem value="single_state">Single State</SelectItem>
-                                            <SelectItem value="multiple_state">Multiple State</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                                <p>Property</p>
-                                <Input type="text" placeholder="Property" value="currentPlace" />
+                                <TextField control={control} name="markingStore.property" label="Property" />
                             </div>
-                            <Select>
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Select a workflow type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectItem value="state_machine">State Machine</SelectItem>
-                                        <SelectItem value="workflow">Workflow</SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
+                            <div className="flex flex-col gap-3">
+                                <p className="text-lg">Places</p>
+                                <Button onClick={onAddPlace}>Add Place</Button>
+                                {fields.map((field, index) => (
+                                    <TextField
+                                        control={control}
+                                        name={`places.${index}.value`}
+                                        type="text"
+                                        placeholder="Place"
+                                    />
+                                ))}
+                            </div>
+                            <Select
+                                control={control}
+                                name="initialMarking"
+                                className="w-[300px]"
+                                placeholder="Select a initial marking"
+                                label="Initial Marking"
+                                items={places}
+                            />
+                            <div className="flex flex-col gap-3">
+                                <p className="text-lg">Transitions</p>
+                                <Input type="text" placeholder="transition" />
+                                <Select
+                                    control={control}
+                                    name={`transition.from`}
+                                    className="w-[300px]"
+                                    placeholder="From"
+                                    items={places}
+                                />
+                                <Select
+                                    control={control}
+                                    name={`transition.to`}
+                                    className="w-[300px]"
+                                    placeholder="To"
+                                    items={places}
+                                />
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
