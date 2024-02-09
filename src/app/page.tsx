@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Select from '@/components/select';
-import { Form, useFieldArray, useForm, useWatch } from 'react-hook-form';
+import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import TextField from '@/components/text-field';
 import Switch from '@/components/switch';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import ReactMarkdown from '@/components/react-markdown';
 import jsYaml from 'js-yaml';
 import { array, boolean, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Form } from '@/components/ui/form';
 
 type Metadata = { [key: string]: string };
 
@@ -61,10 +62,10 @@ type WorkflowConfigYaml = {
     };
 };
 
+const nameRegex = /^[a-zA-Z0-9_]+$/i;
+
 const schema = object({
-    name: string()
-        .matches(/^'?\p{L}+(?:[' ]\p{L}+)*'?$/u)
-        .required(),
+    name: string().matches(nameRegex).required(),
     auditTrail: boolean().required(),
     markingStore: object({
         type: string().required(),
@@ -73,28 +74,16 @@ const schema = object({
     type: string().oneOf(['state_machine', 'workflow']).required(),
     places: array(
         object({
-            name: string()
-                .matches(/^'?\p{L}+(?:[' ]\p{L}+)*'?$/u)
-                .required(),
+            name: string().matches(nameRegex).required(),
             metadata: array(),
         }),
     ).required(),
     initialMarking: string().required(),
     transitions: array(
         object({
-            name: string()
-                .matches(/^'?\p{L}+(?:[' ]\p{L}+)*'?$/u)
-                .required(),
-            from: array(
-                string()
-                    .matches(/^'?\p{L}+(?:[' ]\p{L}+)*'?$/u)
-                    .required(),
-            ).required(),
-            to: array(
-                string()
-                    .matches(/^'?\p{L}+(?:[' ]\p{L}+)*'?$/u)
-                    .required(),
-            ).required(),
+            name: string().matches(nameRegex).required(),
+            from: array(string().matches(nameRegex).required()).required(),
+            to: array(string().matches(nameRegex).required()).required(),
             guard: string(),
             metadata: array(),
         }),
