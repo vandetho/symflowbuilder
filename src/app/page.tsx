@@ -57,7 +57,7 @@ type WorkflowConfigYaml = {
                 type: string;
                 places: { [key: string]: { metadata?: Metadata[] } | string };
                 initialMarking: string;
-                transitions: WorkflowTransition[];
+                transitions?: { [key: string]: { from: string[]; to: string[] } };
             };
         };
     };
@@ -134,10 +134,21 @@ export default function Home() {
         appendTransition({ name: '', to: [], from: [] });
     }, [appendTransition]);
 
-    const onSubmit = React.useCallback(({ name, auditTrail, places, ...data }: WorkflowConfig) => {
+    const onSubmit = React.useCallback(({ name, auditTrail, places, transitions, ...data }: WorkflowConfig) => {
         const realPlaces: { [key: string]: { metadata?: Metadata[] } | string } = {};
         places.forEach((place) => {
             realPlaces[place.name] = place.metadata ? { metadata: place.metadata } : '';
+        });
+        const realTransitions: { [key: string]: { from: string[]; to: string[]; guard?: string } } | undefined =
+            transitions.length > 0 ? {} : undefined;
+        transitions.forEach((transition) => {
+            if (realTransitions) {
+                realTransitions[transition.name] = {
+                    from: transition.from,
+                    to: transition.to,
+                    guard: transition.guard,
+                };
+            }
         });
         setYaml({
             framework: {
@@ -146,6 +157,7 @@ export default function Home() {
                         audit_trail: { enabled: auditTrail },
                         ...data,
                         places: realPlaces,
+                        transitions: realTransitions,
                     },
                 },
             },
@@ -154,7 +166,7 @@ export default function Home() {
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-row gap-4">
                 <Card className="w-[350px]">
                     <CardHeader>
                         <CardTitle>Create new workflow configuration</CardTitle>
@@ -162,12 +174,7 @@ export default function Home() {
                     </CardHeader>
                     <CardContent>
                         <Form {...form}>
-                            <form
-                                onSubmit={form.handleSubmit(onSubmit, (errors) => {
-                                    console.log({ errors });
-                                })}
-                                className="flex flex-col gap-4"
-                            >
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
                                 <div className="flex flex-col gap-4">
                                     <TextField
                                         control={form.control}
@@ -279,6 +286,7 @@ export default function Home() {
                                 {['```yaml'].concat(jsYaml.dump(yaml, { indent: 4 }), '```').join('\n')}
                             </ReactMarkdown>
                         )}
+                        <Button>Export</Button>
                     </CardContent>
                 </Card>
             </div>

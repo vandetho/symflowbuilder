@@ -2,23 +2,27 @@ import React from 'react';
 import Markdown from 'react-markdown';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { coldarkDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { coldarkDark, duotoneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import rehypeRaw from 'rehype-raw';
 import remarkDirective from 'remark-directive';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
+import { useTheme } from 'next-themes';
 
 interface ReactMarkdownProps {
     children: string | undefined | null;
 }
 
 const ReactMarkdown = React.memo<ReactMarkdownProps>(({ children }) => {
+    const { theme, systemTheme } = useTheme();
     const [isCopied, setCopied] = React.useState(false);
 
     const handleCopy = React.useCallback(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
     }, []);
+
+    console.log({ theme });
 
     return (
         <Markdown
@@ -30,7 +34,17 @@ const ReactMarkdown = React.memo<ReactMarkdownProps>(({ children }) => {
                     const match = /language-(\w+)/.exec(className || '');
                     return match ? (
                         <React.Fragment>
-                            <div className="flex flex-row items-center justify-between bg-gray-900 pl-2">
+                            <div
+                                className={`flex flex-row items-center justify-between ${
+                                    theme === 'light'
+                                        ? 'bg-neutral-50'
+                                        : theme === 'system'
+                                          ? systemTheme === 'light'
+                                              ? 'bg-neutral-50'
+                                              : 'bg-gray-900'
+                                          : 'bg-gray-900'
+                                } bg pl-2`}
+                            >
                                 <p className="capitalize">{match[1]}</p>
                                 <CopyToClipboard text={children} onCopy={handleCopy}>
                                     <Button variant="ghost">
@@ -47,7 +61,15 @@ const ReactMarkdown = React.memo<ReactMarkdownProps>(({ children }) => {
                                 {...rest}
                                 PreTag="div"
                                 language={match[1]}
-                                style={coldarkDark}
+                                style={
+                                    theme === 'light'
+                                        ? duotoneLight
+                                        : theme === 'system'
+                                          ? systemTheme === 'light'
+                                              ? duotoneLight
+                                              : coldarkDark
+                                          : coldarkDark
+                                }
                                 showLineNumbers
                                 wrapLongLines
                                 showInlineLineNumbers
