@@ -269,9 +269,9 @@ export default function Home() {
                                                 </Button>
                                             </div>
                                         ))}
-                                        <Button type="submit">Save</Button>
                                     </div>
                                 </div>
+                                <Button type="submit">Save</Button>
                             </form>
                         </Form>
                     </CardContent>
