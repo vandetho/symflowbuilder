@@ -12,6 +12,7 @@ import jsYaml from 'js-yaml';
 import { array, boolean, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form } from '@/components/ui/form';
+import { MultiSelect } from '@/components/multi-select';
 
 type Metadata = { [key: string]: string };
 
@@ -54,7 +55,7 @@ type WorkflowConfigYaml = {
                     property: string;
                 };
                 type: string;
-                places: string[];
+                places: { [key: string]: { metadata?: Metadata[] } | string };
                 initialMarking: string;
                 transitions: WorkflowTransition[];
             };
@@ -133,14 +134,18 @@ export default function Home() {
         appendTransition({ name: '', to: [], from: [] });
     }, [appendTransition]);
 
-    const onSubmit = React.useCallback(({ name, auditTrail, ...data }: WorkflowConfig) => {
+    const onSubmit = React.useCallback(({ name, auditTrail, places, ...data }: WorkflowConfig) => {
+        const realPlaces: { [key: string]: { metadata?: Metadata[] } | string } = {};
+        places.forEach((place) => {
+            realPlaces[place.name] = place.metadata ? { metadata: place.metadata } : '';
+        });
         setYaml({
             framework: {
                 workflow: {
                     [name]: {
                         audit_trail: { enabled: auditTrail },
                         ...data,
-                        places: data.places.map((place) => place.name),
+                        places: realPlaces,
                     },
                 },
             },
@@ -237,20 +242,18 @@ export default function Home() {
                                                     placeholder="Transition name"
                                                     key={field.id}
                                                 />
-                                                <Select
+                                                <MultiSelect
                                                     control={form.control}
                                                     name={`transitions.${index}.from`}
                                                     className="w-[300px]"
-                                                    placeholder="From"
                                                     label="From"
                                                     items={places}
                                                 />
-                                                <Select
+                                                <MultiSelect
                                                     control={form.control}
                                                     name={`transitions.${index}.to`}
                                                     className="w-[300px]"
                                                     label="To"
-                                                    placeholder="To"
                                                     items={places}
                                                 />
                                                 <Button variant="destructive" onClick={() => removeTransition(index)}>
