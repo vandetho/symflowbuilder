@@ -9,22 +9,30 @@ import Switch from '@/components/switch';
 import { Button } from '@/components/ui/button';
 import ReactMarkdown from '@/components/react-markdown';
 import jsYaml from 'js-yaml';
-import convert from 'xml-js';
+import { array, boolean, object, string } from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+type Metadata = { [key: string]: string };
 
 type WorkflowPlace = {
     name: string;
+    metadata?: Metadata[];
 };
 
 type WorkflowTransition = {
     name: string;
-    from: string;
-    to: string;
+    from: string[];
+    to: string[];
+    guard?: string;
+    metadata?: Metadata[];
 };
 
 type WorkflowConfig = {
     name: string;
     auditTrail: boolean;
+    events_to_dispatch?: string[];
     markingStore: {
+        type: string;
         property: string;
     };
     type: string;
@@ -34,28 +42,76 @@ type WorkflowConfig = {
 };
 
 type WorkflowConfigYaml = {
-    name: string;
-    auditTrail: {
-        enabled: boolean;
+    framework: {
+        workflow: {
+            [key: string]: {
+                audit_trail: {
+                    enabled: boolean;
+                };
+                markingStore: {
+                    type: string;
+                    property: string;
+                };
+                type: string;
+                places: string[];
+                initialMarking: string;
+                transitions: WorkflowTransition[];
+            };
+        };
     };
-    markingStore: {
-        property: string;
-    };
-    type: string;
-    places: string[];
-    initialMarking: string;
-    transitions: WorkflowTransition[];
 };
 
+const schema = object({
+    name: string()
+        .matches(/^'?\p{L}+(?:[' ]\p{L}+)*'?$/u)
+        .required(),
+    auditTrail: boolean().required(),
+    markingStore: object({
+        type: string().required(),
+        property: string().required(),
+    }).required(),
+    type: string().oneOf(['state_machine', 'workflow']).required(),
+    places: array(
+        object({
+            name: string()
+                .matches(/^'?\p{L}+(?:[' ]\p{L}+)*'?$/u)
+                .required(),
+            metadata: array(),
+        }),
+    ).required(),
+    initialMarking: string().required(),
+    transitions: array(
+        object({
+            name: string()
+                .matches(/^'?\p{L}+(?:[' ]\p{L}+)*'?$/u)
+                .required(),
+            from: array(
+                string()
+                    .matches(/^'?\p{L}+(?:[' ]\p{L}+)*'?$/u)
+                    .required(),
+            ).required(),
+            to: array(
+                string()
+                    .matches(/^'?\p{L}+(?:[' ]\p{L}+)*'?$/u)
+                    .required(),
+            ).required(),
+            guard: string(),
+            metadata: array(),
+        }),
+    ).required(),
+});
+
 export default function Home() {
-    const { control, handleSubmit } = useForm<WorkflowConfig>({
+    const { control, handleSubmit } = useForm({
+        resolver: yupResolver(schema),
         defaultValues: {
             name: '',
             auditTrail: false,
             markingStore: {
+                type: 'method',
                 property: 'marking',
             },
-            type: '',
+            type: 'state_machine',
             places: [],
             initialMarking: '',
             transitions: [],
@@ -85,11 +141,21 @@ export default function Home() {
     }, [append]);
 
     const onAddTransition = React.useCallback(() => {
-        appendTransition({ name: '', to: '', from: '' });
+        appendTransition({ name: '', to: [], from: [] });
     }, [appendTransition]);
 
-    const onSubmit = (data: WorkflowConfig) => {
-        setYaml({ ...data, auditTrail: { enabled: data.auditTrail }, places: data.places.map((place) => place.name) });
+    const onSubmit = ({ name, auditTrail, ...data }: WorkflowConfig) => {
+        setYaml({
+            framework: {
+                workflow: {
+                    [name]: {
+                        audit_trail: { enabled: auditTrail },
+                        ...data,
+                        places: data.places.map((place) => place.name),
+                    },
+                },
+            },
+        });
     };
 
     return (
@@ -201,20 +267,6 @@ export default function Home() {
                         {yaml && (
                             <ReactMarkdown>
                                 {['```yaml'].concat(jsYaml.dump(yaml, { indent: 4 }), '```').join('\n')}
-                            </ReactMarkdown>
-                        )}
-                        {yaml && (
-                            <ReactMarkdown>
-                                {['```xml']
-                                    .concat(
-                                        convert.json2xml(JSON.stringify(yaml), {
-                                            compact: true,
-                                            ignoreComment: true,
-                                            spaces: 4,
-                                        }),
-                                        '```',
-                                    )
-                                    .join('\n')}
                             </ReactMarkdown>
                         )}
                     </CardContent>
