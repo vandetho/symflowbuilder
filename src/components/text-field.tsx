@@ -1,7 +1,9 @@
+'use client';
+
 import React from 'react';
 import { Input, InputProps } from '@/components/ui/input';
-import { Controller } from 'react-hook-form';
 import { Label } from '@/components/ui/label';
+import { FormField, FormItem, FormMessage } from '@/components/ui/form';
 
 interface TextFieldProps extends InputProps {
     control: any;
@@ -10,15 +12,16 @@ interface TextFieldProps extends InputProps {
 }
 
 const TextField = React.memo<TextFieldProps>(({ id, control, label, name, ...props }) => (
-    <Controller
+    <FormField
         control={control}
-        render={({ field }) => (
-            <div className="flex flex-col gap-2">
+        name={name}
+        render={({ field, fieldState: { error } }) => (
+            <FormItem>
                 {label && <Label htmlFor={id}>{label}</Label>}
                 <Input {...props} {...field} id={id} />
-            </div>
+                <FormMessage />
+            </FormItem>
         )}
-        name={name}
     />
 ));
 

@@ -3,8 +3,10 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
-import './globals.css';
 import { ThemeProvider } from '@/app/theme-provider';
+import NavBar from '@/app/nav-bar';
+import './globals.css';
+import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -22,7 +24,9 @@ export default function RootLayout({
         <html lang="en">
             <body className={cn('min-h-screen bg-background font-sans antialiased', inter.variable)}>
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                    <NavBar />
                     {children}
+                    <Toaster />
                 </ThemeProvider>
             </body>
         </html>
