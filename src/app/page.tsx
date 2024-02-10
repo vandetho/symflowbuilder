@@ -55,7 +55,7 @@ type WorkflowConfigYaml = {
                     property: string;
                 };
                 type: string;
-                places: { [key: string]: { metadata?: Metadata[] } | string };
+                places: { [key: string]: { metadata?: Metadata[] } | string | null };
                 initialMarking: string;
                 transitions?: { [key: string]: { from: string[]; to: string[] } };
             };
@@ -135,9 +135,9 @@ export default function Home() {
     }, [appendTransition]);
 
     const onSubmit = React.useCallback(({ name, auditTrail, places, transitions, ...data }: WorkflowConfig) => {
-        const realPlaces: { [key: string]: { metadata?: Metadata[] } | string } = {};
+        const realPlaces: { [key: string]: { metadata?: Metadata[] } | string | null } = {};
         places.forEach((place) => {
-            realPlaces[place.name] = place.metadata ? { metadata: place.metadata } : '';
+            realPlaces[place.name] = place.metadata ? { metadata: place.metadata } : null;
         });
         const realTransitions: { [key: string]: { from: string[]; to: string[]; guard?: string } } | undefined =
             transitions.length > 0 ? {} : undefined;
@@ -283,7 +283,9 @@ export default function Home() {
                     <CardContent>
                         {yaml && (
                             <ReactMarkdown>
-                                {['```yaml'].concat(jsYaml.dump(yaml, { indent: 4 }), '```').join('\n')}
+                                {['```yaml']
+                                    .concat(jsYaml.dump(yaml, { indent: 4, forceQuotes: true }), '```')
+                                    .join('\n')}
                             </ReactMarkdown>
                         )}
                         <Button>Export</Button>
