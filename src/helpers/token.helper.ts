@@ -10,13 +10,7 @@ export type TokenHelperOptions = {
 
 export class TokenHelper {
     static generateToken(tokenHelperOptions: TokenHelperOptions = {}) {
-        const {
-            size = 16,
-            majuscule = true,
-            minuscule = true,
-            numeric = true,
-            symbol = false,
-        } = tokenHelperOptions;
+        const { size = 16, majuscule = true, minuscule = true, numeric = true, symbol = false } = tokenHelperOptions;
         let characters = '';
         if (majuscule) {
             characters += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
