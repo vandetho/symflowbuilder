@@ -13,55 +13,9 @@ import { array, boolean, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form } from '@/components/ui/form';
 import { MultiSelect } from '@/components/multi-select';
-
-type Metadata = { [key: string]: string };
-
-type WorkflowPlace = {
-    name: string;
-    metadata?: Metadata[];
-};
-
-type WorkflowTransition = {
-    name: string;
-    from: string[];
-    to: string[];
-    guard?: string;
-    metadata?: Metadata[];
-};
-
-type WorkflowConfig = {
-    name: string;
-    auditTrail: boolean;
-    events_to_dispatch?: string[];
-    markingStore: {
-        type: string;
-        property: string;
-    };
-    type: string;
-    places: WorkflowPlace[];
-    initialMarking: string;
-    transitions: WorkflowTransition[];
-};
-
-type WorkflowConfigYaml = {
-    framework: {
-        workflow: {
-            [key: string]: {
-                audit_trail: {
-                    enabled: boolean;
-                };
-                markingStore: {
-                    type: string;
-                    property: string;
-                };
-                type: string;
-                places: { [key: string]: { metadata?: Metadata[] } | string | null };
-                initialMarking: string;
-                transitions?: { [key: string]: { from: string[]; to: string[] } };
-            };
-        };
-    };
-};
+import { Metadata } from '@/types/Metadata';
+import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
+import { WorkflowConfig } from '@/types/WorkflowConfig';
 
 const nameRegex = /^[a-zA-Z0-9_]+$/i;
 
@@ -284,7 +238,13 @@ export default function Home() {
                         {yaml && (
                             <ReactMarkdown>
                                 {['```yaml']
-                                    .concat(jsYaml.dump(yaml, { indent: 4, forceQuotes: true }), '```')
+                                    .concat(
+                                        jsYaml.dump(yaml, {
+                                            indent: 4,
+                                            forceQuotes: true,
+                                        }),
+                                        '```',
+                                    )
                                     .join('\n')}
                             </ReactMarkdown>
                         )}
