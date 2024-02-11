@@ -1,13 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import jsYaml from 'js-yaml';
-import * as fs from 'fs';
-import { resolve } from 'path';
-import { StringHelper } from '@/helpers/string.helper';
-import { TokenHelper } from '@/helpers/token.helper';
 
-const yamlFolderPath = resolve(__dirname, '../../../../../../yaml');
+// const yamlFolderPath = resolve(__dirname, '../../../../../../yaml');
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
     const body = await req.json();
     const yaml = jsYaml.dump(body, {
         indent: 4,
