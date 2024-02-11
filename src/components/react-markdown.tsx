@@ -22,8 +22,6 @@ const ReactMarkdown = React.memo<ReactMarkdownProps>(({ children }) => {
         setTimeout(() => setCopied(false), 1500);
     }, []);
 
-    console.log({ theme });
-
     return (
         <Markdown
             rehypePlugins={[rehypeRaw]}

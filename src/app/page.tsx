@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Select from '@/components/select';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import TextField from '@/components/text-field';
@@ -16,6 +15,8 @@ import { MultiSelect } from '@/components/multi-select';
 import { Metadata } from '@/types/Metadata';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import { ExportButton } from '@/components/export-button';
 
 const nameRegex = /^[a-zA-Z0-9_]+$/i;
 
@@ -119,14 +120,14 @@ export default function Home() {
     }, []);
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
-            <div className="flex flex-row gap-4">
-                <Card className="w-[350px]">
-                    <CardHeader>
-                        <CardTitle>Create new workflow configuration</CardTitle>
-                        <CardDescription>The best way to build and visualize workflow for symfony</CardDescription>
-                    </CardHeader>
-                    <CardContent>
+        <main className="flex min-h-screen flex-col items-center justify-between p-6">
+            <ResizablePanelGroup direction="horizontal">
+                <ResizablePanel defaultSize={50} minSize={25}>
+                    <div className="flex flex-col h-full p-6 border-2  rounded-l-md">
+                        <div className="flex flex-col gap-2">
+                            <p className="text-2xl">Create new workflow configuration</p>
+                            <p className="text-lg">The best way to build and visualize workflow for symfony</p>
+                        </div>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
                                 <div className="flex flex-col gap-4">
@@ -227,15 +228,16 @@ export default function Home() {
                                 <Button type="submit">Save</Button>
                             </form>
                         </Form>
-                    </CardContent>
-                </Card>
-                <Card className="w-[450px]">
-                    <CardHeader>
-                        <CardTitle>View your workflow configuration</CardTitle>
-                        <CardDescription>The best way to build and visualize workflow for symfony</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        {yaml && (
+                    </div>
+                </ResizablePanel>
+                <ResizableHandle withHandle />
+                <ResizablePanel defaultSize={50} minSize={25}>
+                    <div className="flex flex-col h-full p-6 border-2 rounded-r-md">
+                        <div className="flex flex-col gap-2">
+                            <p className="text-2xl">View your workflow configuration</p>
+                            <p className="text-lg">The best way to build and visualize workflow for symfony</p>
+                        </div>
+                        <div>
                             <ReactMarkdown>
                                 {['```yaml']
                                     .concat(
@@ -247,11 +249,11 @@ export default function Home() {
                                     )
                                     .join('\n')}
                             </ReactMarkdown>
-                        )}
-                        <Button>Export</Button>
-                    </CardContent>
-                </Card>
-            </div>
+                            <ExportButton yaml={yaml} />
+                        </div>
+                    </div>
+                </ResizablePanel>
+            </ResizablePanelGroup>
         </main>
     );
 }
