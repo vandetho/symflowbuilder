@@ -1,32 +1,32 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import TextField from '@/components/text-field';
 import { useFieldArray } from 'react-hook-form';
+import TextField from '@/components/text-field';
+import { Button } from '@/components/ui/button';
 
-interface PlacesProps {
+type SupportEntitiesProps = {
     control: any;
-}
+};
 
-const Places = React.memo<PlacesProps>(({ control }) => {
+const SupportEntities = React.memo<SupportEntitiesProps>(({ control }) => {
     const { fields, append, remove } = useFieldArray({
         control,
-        name: 'places',
+        name: 'supports',
     });
 
     const onAppend = React.useCallback(() => {
-        append({ name: '' });
+        append({ entityName: '' });
     }, [append]);
 
     return (
         <div className="flex flex-col gap-3">
-            <p className="text-lg">Places</p>
+            <p className="text-lg">Support Entities</p>
             {fields.map((field, index) => (
-                <div className={'flex gap-2'} key={field.id}>
+                <div key={field.id} className="flex gap-3">
                     <TextField
                         control={control}
-                        name={`places.${index}.name`}
+                        name={`supports.${index}.entityName`}
                         type="text"
-                        placeholder="Place"
+                        placeholder="Support Entity Name"
                         key={field.id}
                     />
                     <Button variant="destructive" onClick={() => remove(index)}>
@@ -35,10 +35,10 @@ const Places = React.memo<PlacesProps>(({ control }) => {
                 </div>
             ))}
             <Button variant="secondary" onClick={onAppend}>
-                Add Place
+                Add Support Entity
             </Button>
         </div>
     );
 });
 
-export default Places;
+export default SupportEntities;

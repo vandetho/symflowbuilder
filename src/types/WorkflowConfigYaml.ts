@@ -2,18 +2,19 @@ import { Metadata } from '@/types/Metadata';
 
 export type WorkflowConfigYaml = {
     framework: {
-        workflow: {
+        workflows: {
             [key: string]: {
                 audit_trail: {
                     enabled: boolean;
                 };
-                markingStore: {
+                marking_store: {
                     type: string;
                     property: string;
                 };
+                supports: string[];
                 type: string;
                 places: { [key: string]: { metadata?: Metadata[] } | string | null };
-                initialMarking: string;
+                initial_marking: string;
                 transitions?: { [key: string]: { from: string[]; to: string[] } };
             };
         };

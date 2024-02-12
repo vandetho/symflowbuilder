@@ -18,12 +18,13 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/componen
 import { ExportButton } from '@/components/export-button';
 import Transitions from '@/app/transitions';
 import Places from '@/app/places';
+import SupportEntities from '@/app/support-entities';
 
 const nameRegex = /^[a-zA-Z0-9_]+$/i;
-const entityNameRegex = /^[a-zA-Z0-9/]+$/i;
+const entityNameRegex = /^[a-zA-Z0-9\\]+$/i;
 
 const schema = object({
-    name: string().matches(nameRegex).required(),
+    name: string().matches(nameRegex, { message: 'Workflow name must match the following: [a-zA-Z0-9_]' }).required(),
     auditTrail: boolean().required(),
     markingStore: object({
         type: string().required(),
@@ -32,21 +33,27 @@ const schema = object({
     type: string().oneOf(['state_machine', 'workflow']).required(),
     supports: array(
         object({
-            entityName: string().matches(entityNameRegex).required(),
+            entityName: string()
+                .matches(entityNameRegex, { message: 'Support entity name must match the following: [a-zA-Z0-9\\]' })
+                .required(),
         }),
     ).required(),
     places: array(
         object({
-            name: string().matches(nameRegex).required(),
+            name: string()
+                .matches(nameRegex, { message: 'Place name must match the following: [a-zA-Z0-9_]' })
+                .required(),
             metadata: array(),
         }),
     ).required(),
     initialMarking: string().required(),
     transitions: array(
         object({
-            name: string().matches(nameRegex).required(),
-            from: array(string().matches(nameRegex).required()).required(),
-            to: array(string().matches(nameRegex).required()).required(),
+            name: string()
+                .matches(nameRegex, { message: 'Transition name must match the following: [a-zA-Z0-9_]' })
+                .required(),
+            from: array(string().required()).required(),
+            to: array(string().required()).required(),
             guard: string(),
             metadata: array(),
         }),
@@ -77,35 +84,50 @@ export default function Home() {
         return watchPlaces.filter((field) => !!field.name).map((field) => ({ label: field.name, value: field.name }));
     }, [watchPlaces]);
 
-    const onSubmit = React.useCallback(({ name, auditTrail, places, transitions, ...data }: WorkflowConfig) => {
-        const realPlaces: { [key: string]: { metadata?: Metadata[] } | string | null } = {};
-        places.forEach((place) => {
-            realPlaces[place.name] = place.metadata ? { metadata: place.metadata } : null;
-        });
-        const realTransitions: { [key: string]: { from: string[]; to: string[]; guard?: string } } | undefined =
-            transitions.length > 0 ? {} : undefined;
-        transitions.forEach((transition) => {
-            if (realTransitions) {
-                realTransitions[transition.name] = {
-                    from: transition.from,
-                    to: transition.to,
-                    guard: transition.guard,
-                };
-            }
-        });
-        setYaml({
-            framework: {
-                workflow: {
-                    [name]: {
-                        audit_trail: { enabled: auditTrail },
-                        ...data,
-                        places: realPlaces,
-                        transitions: realTransitions,
+    const onSubmit = React.useCallback(
+        ({
+            name,
+            auditTrail,
+            places,
+            supports,
+            transitions,
+            initialMarking,
+            markingStore,
+            ...data
+        }: WorkflowConfig) => {
+            const realPlaces: { [key: string]: { metadata?: Metadata[] } | string | null } = {};
+            places.forEach((place) => {
+                realPlaces[place.name] = place.metadata ? { metadata: place.metadata } : null;
+            });
+            const realTransitions: { [key: string]: { from: string[]; to: string[]; guard?: string } } | undefined =
+                transitions.length > 0 ? {} : undefined;
+            transitions.forEach((transition) => {
+                if (realTransitions) {
+                    realTransitions[transition.name] = {
+                        from: transition.from,
+                        to: transition.to,
+                        guard: transition.guard,
+                    };
+                }
+            });
+            setYaml({
+                framework: {
+                    workflows: {
+                        [name]: {
+                            audit_trail: { enabled: auditTrail },
+                            supports: supports.map((support) => support.entityName),
+                            marking_store: markingStore,
+                            ...data,
+                            initial_marking: initialMarking,
+                            places: realPlaces,
+                            transitions: realTransitions,
+                        },
                     },
                 },
-            },
-        });
-    }, []);
+            });
+        },
+        [],
+    );
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-between p-6">
@@ -150,6 +172,7 @@ export default function Home() {
                                             label="Property"
                                         />
                                     </div>
+                                    <SupportEntities control={form.control} />
                                     <Places control={form.control} />
                                     <Select
                                         control={form.control}

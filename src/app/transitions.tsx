@@ -23,9 +23,6 @@ const Transitions = React.memo<TransitionsProps>(({ control, places }) => {
     return (
         <div className="flex flex-col gap-3">
             <p className="text-lg">Transitions</p>
-            <Button variant="secondary" onClick={onAppend}>
-                Add Transition
-            </Button>
             {fields.map((field, index) => (
                 <div className={'flex flex-col gap-2'} key={field.id}>
                     <TextField
@@ -54,6 +51,9 @@ const Transitions = React.memo<TransitionsProps>(({ control, places }) => {
                     </Button>
                 </div>
             ))}
+            <Button variant="secondary" onClick={onAppend}>
+                Add Transition
+            </Button>
         </div>
     );
 });

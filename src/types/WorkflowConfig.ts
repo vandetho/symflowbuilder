@@ -5,6 +5,7 @@ export type WorkflowConfig = {
     name: string;
     auditTrail: boolean;
     events_to_dispatch?: string[];
+    supports: { entityName: string }[];
     markingStore: {
         type: string;
         property: string;
