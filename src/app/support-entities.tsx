@@ -21,7 +21,7 @@ const SupportEntities = React.memo<SupportEntitiesProps>(({ control }) => {
         <div className="flex flex-col gap-3">
             <p className="text-lg">Support Entities</p>
             {fields.map((field, index) => (
-                <div key={field.id} className="flex gap-3">
+                <div key={field.id} className="flex gap-3 border rounded-md">
                     <div className="flex-grow">
                         <TextField
                             control={control}

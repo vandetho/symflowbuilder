@@ -22,7 +22,7 @@ const Places = React.memo<PlacesProps>(({ control }) => {
         <div className="flex flex-col gap-3">
             <p className="text-lg">Places</p>
             {fields.map((field, index) => (
-                <div className={'flex flex-col gap-2'} key={field.id}>
+                <div key={field.id} className="flex flex-col gap-2 border-2 border-primary rounded-md p-4">
                     <TextField
                         control={control}
                         name={`places.${index}.name`}

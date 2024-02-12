@@ -13,7 +13,7 @@ export const ExportButton = React.memo<ExportButtonProps>(({ yaml }) => {
                 const url = window.URL.createObjectURL(new Blob([res.data]));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', 'workflow.yaml');
+                link.setAttribute('download', `${Object.keys(yaml.framework.workflows)[0]}.yaml`);
                 document.body.appendChild(link);
                 link.click();
             });
