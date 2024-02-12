@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
         lineWidth: 140,
         forceQuotes: true,
     });
-    const workflowName = Object.keys(body.framework.workflow)[0];
+    const workflowName = Object.keys(body.framework.workflows)[0];
     // if (!fs.existsSync(yamlFolderPath)) {
     //     fs.mkdirSync(yamlFolderPath);
     // }
