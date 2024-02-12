@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Select from '@/components/select';
-import { useFieldArray, useForm, useWatch } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import TextField from '@/components/text-field';
 import Switch from '@/components/switch';
 import { Button } from '@/components/ui/button';
@@ -11,14 +11,16 @@ import jsYaml from 'js-yaml';
 import { array, boolean, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form } from '@/components/ui/form';
-import { MultiSelect } from '@/components/multi-select';
 import { Metadata } from '@/types/Metadata';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { ExportButton } from '@/components/export-button';
+import Transitions from '@/app/transitions';
+import Places from '@/app/places';
 
 const nameRegex = /^[a-zA-Z0-9_]+$/i;
+const entityNameRegex = /^[a-zA-Z0-9/]+$/i;
 
 const schema = object({
     name: string().matches(nameRegex).required(),
@@ -28,6 +30,11 @@ const schema = object({
         property: string().required(),
     }).required(),
     type: string().oneOf(['state_machine', 'workflow']).required(),
+    supports: array(
+        object({
+            entityName: string().matches(entityNameRegex).required(),
+        }),
+    ).required(),
     places: array(
         object({
             name: string().matches(nameRegex).required(),
@@ -52,6 +59,7 @@ export default function Home() {
         defaultValues: {
             name: '',
             auditTrail: false,
+            supports: [],
             markingStore: {
                 type: 'method',
                 property: 'marking',
@@ -62,32 +70,12 @@ export default function Home() {
             transitions: [],
         },
     });
-    const { fields, append, remove } = useFieldArray({
-        control: form.control,
-        name: 'places',
-    });
-    const {
-        fields: transitionFields,
-        append: appendTransition,
-        remove: removeTransition,
-    } = useFieldArray({
-        control: form.control,
-        name: 'transitions',
-    });
     const watchPlaces = useWatch({ name: 'places', control: form.control });
     const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
 
     const places = React.useMemo(() => {
         return watchPlaces.filter((field) => !!field.name).map((field) => ({ label: field.name, value: field.name }));
     }, [watchPlaces]);
-
-    const onAddPlace = React.useCallback(() => {
-        append({ name: '' });
-    }, [append]);
-
-    const onAddTransition = React.useCallback(() => {
-        appendTransition({ name: '', to: [], from: [] });
-    }, [appendTransition]);
 
     const onSubmit = React.useCallback(({ name, auditTrail, places, transitions, ...data }: WorkflowConfig) => {
         const realPlaces: { [key: string]: { metadata?: Metadata[] } | string | null } = {};
@@ -162,26 +150,7 @@ export default function Home() {
                                             label="Property"
                                         />
                                     </div>
-                                    <div className="flex flex-col gap-3">
-                                        <p className="text-lg">Places</p>
-                                        <Button variant="secondary" onClick={onAddPlace}>
-                                            Add Place
-                                        </Button>
-                                        {fields.map((field, index) => (
-                                            <div className={'flex gap-2'} key={field.id}>
-                                                <TextField
-                                                    control={form.control}
-                                                    name={`places.${index}.name`}
-                                                    type="text"
-                                                    placeholder="Place"
-                                                    key={field.id}
-                                                />
-                                                <Button variant="destructive" onClick={() => remove(index)}>
-                                                    Remove
-                                                </Button>
-                                            </div>
-                                        ))}
-                                    </div>
+                                    <Places control={form.control} />
                                     <Select
                                         control={form.control}
                                         name="initialMarking"
@@ -190,40 +159,7 @@ export default function Home() {
                                         label="Initial Marking"
                                         items={places}
                                     />
-                                    <div className="flex flex-col gap-3">
-                                        <p className="text-lg">Transitions</p>
-                                        <Button variant="secondary" onClick={onAddTransition}>
-                                            Add Transition
-                                        </Button>
-                                        {transitionFields.map((field, index) => (
-                                            <div className={'flex flex-col gap-2'} key={field.id}>
-                                                <TextField
-                                                    control={form.control}
-                                                    name={`transitions.${index}.name`}
-                                                    type="text"
-                                                    placeholder="Transition name"
-                                                    key={field.id}
-                                                />
-                                                <MultiSelect
-                                                    control={form.control}
-                                                    name={`transitions.${index}.from`}
-                                                    className="w-[300px]"
-                                                    label="From"
-                                                    items={places}
-                                                />
-                                                <MultiSelect
-                                                    control={form.control}
-                                                    name={`transitions.${index}.to`}
-                                                    className="w-[300px]"
-                                                    label="To"
-                                                    items={places}
-                                                />
-                                                <Button variant="destructive" onClick={() => removeTransition(index)}>
-                                                    Remove
-                                                </Button>
-                                            </div>
-                                        ))}
-                                    </div>
+                                    <Transitions control={form.control} places={places} />
                                 </div>
                                 <Button type="submit">Save</Button>
                             </form>
