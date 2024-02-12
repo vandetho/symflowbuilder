@@ -1,1 +1,1 @@
-export type Metadata = { [key: string]: string };
+export type Metadata = { name: string; value: string };

@@ -1,4 +1,5 @@
-import { Metadata } from '@/types/Metadata';
+import { WorkflowPlaceYaml } from '@/types/WorkflowPlaceYaml';
+import { WorkflowTransitionYaml } from '@/types/WorkflowTransitionYaml';
 
 export type WorkflowConfigYaml = {
     framework: {
@@ -13,9 +14,9 @@ export type WorkflowConfigYaml = {
                 };
                 supports: string[];
                 type: string;
-                places: { [key: string]: { metadata?: Metadata[] } | string | null };
+                places: WorkflowPlaceYaml;
                 initial_marking: string;
-                transitions?: { [key: string]: { from: string[]; to: string[] } };
+                transitions?: WorkflowTransitionYaml;
             };
         };
     };

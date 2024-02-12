@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import TextField from '@/components/text-field';
 import { MultiSelect } from '@/components/multi-select';
 import { SelectItem } from '@/types/SelectItem';
+import Metadata from '@/app/metadata';
 
 interface TransitionsProps {
     control: any;
@@ -46,6 +47,7 @@ const Transitions = React.memo<TransitionsProps>(({ control, places }) => {
                         label="To"
                         items={places}
                     />
+                    <Metadata control={control} name={`transitions.${index}.metadata`} />
                     <Button variant="destructive" onClick={() => remove(index)}>
                         Remove
                     </Button>

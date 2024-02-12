@@ -11,7 +11,6 @@ import jsYaml from 'js-yaml';
 import { array, boolean, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form } from '@/components/ui/form';
-import { Metadata } from '@/types/Metadata';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
@@ -19,6 +18,9 @@ import { ExportButton } from '@/components/export-button';
 import Transitions from '@/app/transitions';
 import Places from '@/app/places';
 import SupportEntities from '@/app/support-entities';
+import { MetadataYaml } from '@/types/MetadataYaml';
+import { WorkflowPlaceYaml } from '@/types/WorkflowPlaceYaml';
+import { WorkflowTransitionYaml } from '@/types/WorkflowTransitionYaml';
 
 const nameRegex = /^[a-zA-Z0-9_]+$/i;
 const entityNameRegex = /^[a-zA-Z0-9\\]+$/i;
@@ -43,7 +45,14 @@ const schema = object({
             name: string()
                 .matches(nameRegex, { message: 'Place name must match the following: [a-zA-Z0-9_]' })
                 .required(),
-            metadata: array(),
+            metadata: array(
+                object({
+                    name: string()
+                        .matches(nameRegex, { message: 'Place name must match the following: [a-zA-Z0-9_]' })
+                        .required(),
+                    value: string().required(),
+                }),
+            ),
         }),
     ).required(),
     initialMarking: string().required(),
@@ -55,7 +64,14 @@ const schema = object({
             from: array(string().required()).required(),
             to: array(string().required()).required(),
             guard: string(),
-            metadata: array(),
+            metadata: array(
+                object({
+                    name: string()
+                        .matches(nameRegex, { message: 'Place name must match the following: [a-zA-Z0-9_]' })
+                        .required(),
+                    value: string().required(),
+                }),
+            ),
         }),
     ).required(),
 });
@@ -95,19 +111,31 @@ export default function Home() {
             markingStore,
             ...data
         }: WorkflowConfig) => {
-            const realPlaces: { [key: string]: { metadata?: Metadata[] } | string | null } = {};
+            const realPlaces: WorkflowPlaceYaml = {};
             places.forEach((place) => {
-                realPlaces[place.name] = place.metadata ? { metadata: place.metadata } : null;
+                const metadata: MetadataYaml = {};
+                if (place.metadata && place.metadata.length > 0) {
+                    place.metadata.forEach((meta) => {
+                        metadata[meta.name] = meta.value;
+                    });
+                }
+                realPlaces[place.name] = Object.keys(metadata).length > 0 ? { metadata } : null;
             });
-            const realTransitions: { [key: string]: { from: string[]; to: string[]; guard?: string } } | undefined =
-                transitions.length > 0 ? {} : undefined;
+            const realTransitions: WorkflowTransitionYaml | undefined = transitions.length > 0 ? {} : undefined;
             transitions.forEach((transition) => {
+                const metadata: MetadataYaml = {};
                 if (realTransitions) {
                     realTransitions[transition.name] = {
                         from: transition.from,
                         to: transition.to,
                         guard: transition.guard,
                     };
+                    if (transition.metadata && transition.metadata.length > 0) {
+                        transition.metadata.forEach((meta) => {
+                            metadata[meta.name] = meta.value;
+                        });
+                    }
+                    realTransitions[transition.name].metadata = Object.keys(metadata).length > 0 ? metadata : undefined;
                 }
             });
             setYaml({
