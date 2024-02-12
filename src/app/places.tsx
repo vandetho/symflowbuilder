@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import TextField from '@/components/text-field';
 import { useFieldArray } from 'react-hook-form';
+import Metadata from '@/app/metadata';
 
 interface PlacesProps {
     control: any;
@@ -21,7 +22,7 @@ const Places = React.memo<PlacesProps>(({ control }) => {
         <div className="flex flex-col gap-3">
             <p className="text-lg">Places</p>
             {fields.map((field, index) => (
-                <div className={'flex gap-2'} key={field.id}>
+                <div className={'flex flex-col gap-2'} key={field.id}>
                     <TextField
                         control={control}
                         name={`places.${index}.name`}
@@ -29,6 +30,7 @@ const Places = React.memo<PlacesProps>(({ control }) => {
                         placeholder="Place"
                         key={field.id}
                     />
+                    <Metadata control={control} name={`places.${index}.metadata`} />
                     <Button variant="destructive" onClick={() => remove(index)}>
                         Remove
                     </Button>

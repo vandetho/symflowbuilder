@@ -22,13 +22,15 @@ const SupportEntities = React.memo<SupportEntitiesProps>(({ control }) => {
             <p className="text-lg">Support Entities</p>
             {fields.map((field, index) => (
                 <div key={field.id} className="flex gap-3">
-                    <TextField
-                        control={control}
-                        name={`supports.${index}.entityName`}
-                        type="text"
-                        placeholder="Support Entity Name"
-                        key={field.id}
-                    />
+                    <div className="flex-grow">
+                        <TextField
+                            control={control}
+                            name={`supports.${index}.entityName`}
+                            type="text"
+                            placeholder="Support Entity Name"
+                            key={field.id}
+                        />
+                    </div>
                     <Button variant="destructive" onClick={() => remove(index)}>
                         Remove
                     </Button>
