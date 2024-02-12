@@ -1,5 +1,6 @@
 import { WorkflowPlaceYaml } from '@/types/WorkflowPlaceYaml';
 import { WorkflowTransitionYaml } from '@/types/WorkflowTransitionYaml';
+import { MetadataYaml } from '@/types/MetadataYaml';
 
 export type WorkflowConfigYaml = {
     framework: {
@@ -8,6 +9,8 @@ export type WorkflowConfigYaml = {
                 audit_trail: {
                     enabled: boolean;
                 };
+                metadata: MetadataYaml;
+                events_to_dispatch?: string[];
                 marking_store: {
                     type: string;
                     property: string;

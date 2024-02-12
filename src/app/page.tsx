@@ -21,12 +21,21 @@ import SupportEntities from '@/app/support-entities';
 import { MetadataYaml } from '@/types/MetadataYaml';
 import { WorkflowPlaceYaml } from '@/types/WorkflowPlaceYaml';
 import { WorkflowTransitionYaml } from '@/types/WorkflowTransitionYaml';
+import Metadata from '@/app/metadata';
 
 const nameRegex = /^[a-zA-Z0-9_]+$/i;
 const entityNameRegex = /^[a-zA-Z0-9\\]+$/i;
 
 const schema = object({
     name: string().matches(nameRegex, { message: 'Workflow name must match the following: [a-zA-Z0-9_]' }).required(),
+    metadata: array(
+        object({
+            name: string()
+                .matches(nameRegex, { message: 'Metadata name must match the following: [a-zA-Z0-9_]' })
+                .required(),
+            value: string().required(),
+        }),
+    ),
     auditTrail: boolean().required(),
     markingStore: object({
         type: string().required(),
@@ -48,7 +57,7 @@ const schema = object({
             metadata: array(
                 object({
                     name: string()
-                        .matches(nameRegex, { message: 'Place name must match the following: [a-zA-Z0-9_]' })
+                        .matches(nameRegex, { message: 'Metadata name must match the following: [a-zA-Z0-9_]' })
                         .required(),
                     value: string().required(),
                 }),
@@ -67,7 +76,7 @@ const schema = object({
             metadata: array(
                 object({
                     name: string()
-                        .matches(nameRegex, { message: 'Place name must match the following: [a-zA-Z0-9_]' })
+                        .matches(nameRegex, { message: 'Metadata name must match the following: [a-zA-Z0-9_]' })
                         .required(),
                     value: string().required(),
                 }),
@@ -82,6 +91,7 @@ export default function Home() {
         defaultValues: {
             name: '',
             auditTrail: false,
+            metadata: [],
             supports: [],
             markingStore: {
                 type: 'method',
@@ -103,6 +113,7 @@ export default function Home() {
     const onSubmit = React.useCallback(
         ({
             name,
+            metadata,
             auditTrail,
             places,
             supports,
@@ -138,10 +149,17 @@ export default function Home() {
                     realTransitions[transition.name].metadata = Object.keys(metadata).length > 0 ? metadata : undefined;
                 }
             });
+            const realMetadata: MetadataYaml = {};
+            if (metadata && metadata.length > 0) {
+                metadata.forEach((meta) => {
+                    realMetadata[meta.name] = meta.value;
+                });
+            }
             setYaml({
                 framework: {
                     workflows: {
                         [name]: {
+                            metadata: realMetadata,
                             audit_trail: { enabled: auditTrail },
                             supports: supports.map((support) => support.entityName),
                             marking_store: markingStore,
@@ -176,6 +194,7 @@ export default function Home() {
                                         label="Workflow name"
                                         placeholder="Workflow name"
                                     />
+                                    <Metadata control={form.control} name="metadata" />
                                     <Select
                                         control={form.control}
                                         name="type"

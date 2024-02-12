@@ -30,7 +30,16 @@ const Transitions = React.memo<TransitionsProps>(({ control, places }) => {
                         control={control}
                         name={`transitions.${index}.name`}
                         type="text"
+                        label="Transition name"
                         placeholder="Transition name"
+                        key={field.id}
+                    />
+                    <TextField
+                        control={control}
+                        name={`transitions.${index}.guard`}
+                        type="text"
+                        label="Guard"
+                        placeholder="Guard"
                         key={field.id}
                     />
                     <MultiSelect
