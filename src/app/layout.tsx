@@ -29,7 +29,7 @@ export default function RootLayout({
                     {children}
                     <Toaster />
                 </ThemeProvider>
-                <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
+                <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
             </body>
         </html>
     );
