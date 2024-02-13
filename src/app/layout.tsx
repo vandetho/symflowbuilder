@@ -7,6 +7,7 @@ import { ThemeProvider } from '@/app/theme-provider';
 import NavBar from '@/app/nav-bar';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
+import GoogleAnalytics from '@/app/GoogleAnalytics';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -28,6 +29,7 @@ export default function RootLayout({
                     {children}
                     <Toaster />
                 </ThemeProvider>
+                <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
             </body>
         </html>
     );
