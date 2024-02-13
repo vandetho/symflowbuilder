@@ -42,7 +42,11 @@ const Graphviz = React.memo<GraphvizProps>(({ workflowConfig }) => {
         });
         dot += '}';
 
-        return <GraphvizReact dot={dot} options={{ fit: false, zoom: true, width: 900, height: 1000 }} />;
+        return (
+            <div className="w-[875px] border he">
+                <GraphvizReact dot={dot} options={{ fit: false, zoom: true, width: 875, height: 1000 }} />
+            </div>
+        );
     }
     return undefined;
 });
