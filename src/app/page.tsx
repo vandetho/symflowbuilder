@@ -6,15 +6,12 @@ import { useForm, useWatch } from 'react-hook-form';
 import TextField from '@/components/text-field';
 import Switch from '@/components/switch';
 import { Button } from '@/components/ui/button';
-import ReactMarkdown from '@/components/react-markdown';
-import jsYaml from 'js-yaml';
 import { array, boolean, object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form } from '@/components/ui/form';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
-import { ExportButton } from '@/components/export-button';
 import Transitions from '@/app/transitions';
 import Places from '@/app/places';
 import SupportEntities from '@/app/support-entities';
@@ -22,6 +19,9 @@ import { MetadataYaml } from '@/types/MetadataYaml';
 import { WorkflowPlaceYaml } from '@/types/WorkflowPlaceYaml';
 import { WorkflowTransitionYaml } from '@/types/WorkflowTransitionYaml';
 import Metadata from '@/app/metadata';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import YamlMarkdown from '@/components/YamlMarkdown';
+import Graphviz from '@/components/Graphviz';
 
 const nameRegex = /^[a-zA-Z0-9_]+$/i;
 const entityNameRegex = /^[a-zA-Z0-9\\]+$/i;
@@ -104,76 +104,67 @@ export default function Home() {
         },
     });
     const watchPlaces = useWatch({ name: 'places', control: form.control });
+    const [config, setConfig] = React.useState<WorkflowConfig>();
     const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
 
     const places = React.useMemo(() => {
         return watchPlaces.filter((field) => !!field.name).map((field) => ({ label: field.name, value: field.name }));
     }, [watchPlaces]);
 
-    const onSubmit = React.useCallback(
-        ({
-            name,
-            metadata,
-            auditTrail,
-            places,
-            supports,
-            transitions,
-            initialMarking,
-            markingStore,
-            ...data
-        }: WorkflowConfig) => {
-            const realPlaces: WorkflowPlaceYaml = {};
-            places.forEach((place) => {
-                const metadata: MetadataYaml = {};
-                if (place.metadata && place.metadata.length > 0) {
-                    place.metadata.forEach((meta) => {
+    const onSubmit = React.useCallback((config: WorkflowConfig) => {
+        const { name, metadata, auditTrail, places, supports, transitions, initialMarking, markingStore, ...data } =
+            config;
+        const realPlaces: WorkflowPlaceYaml = {};
+        places.forEach((place) => {
+            const metadata: MetadataYaml = {};
+            if (place.metadata && place.metadata.length > 0) {
+                place.metadata.forEach((meta) => {
+                    metadata[meta.name] = meta.value;
+                });
+            }
+            realPlaces[place.name] = Object.keys(metadata).length > 0 ? { metadata } : null;
+        });
+        const realTransitions: WorkflowTransitionYaml | undefined = transitions.length > 0 ? {} : undefined;
+        transitions.forEach((transition) => {
+            const metadata: MetadataYaml = {};
+            if (realTransitions) {
+                realTransitions[transition.name] = {
+                    from: transition.from,
+                    to: transition.to,
+                    guard: transition.guard,
+                };
+                if (transition.metadata && transition.metadata.length > 0) {
+                    transition.metadata.forEach((meta) => {
                         metadata[meta.name] = meta.value;
                     });
                 }
-                realPlaces[place.name] = Object.keys(metadata).length > 0 ? { metadata } : null;
-            });
-            const realTransitions: WorkflowTransitionYaml | undefined = transitions.length > 0 ? {} : undefined;
-            transitions.forEach((transition) => {
-                const metadata: MetadataYaml = {};
-                if (realTransitions) {
-                    realTransitions[transition.name] = {
-                        from: transition.from,
-                        to: transition.to,
-                        guard: transition.guard,
-                    };
-                    if (transition.metadata && transition.metadata.length > 0) {
-                        transition.metadata.forEach((meta) => {
-                            metadata[meta.name] = meta.value;
-                        });
-                    }
-                    realTransitions[transition.name].metadata = Object.keys(metadata).length > 0 ? metadata : undefined;
-                }
-            });
-            const realMetadata: MetadataYaml = {};
-            if (metadata && metadata.length > 0) {
-                metadata.forEach((meta) => {
-                    realMetadata[meta.name] = meta.value;
-                });
+                realTransitions[transition.name].metadata = Object.keys(metadata).length > 0 ? metadata : undefined;
             }
-            setYaml({
-                framework: {
-                    workflows: {
-                        [name]: {
-                            metadata: realMetadata,
-                            audit_trail: { enabled: auditTrail },
-                            supports: supports.map((support) => support.entityName),
-                            marking_store: markingStore,
-                            ...data,
-                            initial_marking: initialMarking,
-                            places: realPlaces,
-                            transitions: realTransitions,
-                        },
+        });
+        const realMetadata: MetadataYaml = {};
+        if (metadata && metadata.length > 0) {
+            metadata.forEach((meta) => {
+                realMetadata[meta.name] = meta.value;
+            });
+        }
+        setYaml({
+            framework: {
+                workflows: {
+                    [name]: {
+                        metadata: realMetadata,
+                        audit_trail: { enabled: auditTrail },
+                        supports: supports.map((support) => support.entityName),
+                        marking_store: markingStore,
+                        ...data,
+                        initial_marking: initialMarking,
+                        places: realPlaces,
+                        transitions: realTransitions,
                     },
                 },
-            });
-        },
-        [],
-    );
+            },
+        });
+        setConfig(config);
+    }, []);
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-between p-6">
@@ -243,20 +234,18 @@ export default function Home() {
                             <p className="text-2xl">View your workflow configuration</p>
                             <p className="text-lg">The best way to build and visualize workflow for symfony</p>
                         </div>
-                        <div>
-                            <ReactMarkdown>
-                                {['```yaml']
-                                    .concat(
-                                        jsYaml.dump(yaml, {
-                                            indent: 4,
-                                            forceQuotes: true,
-                                        }),
-                                        '```',
-                                    )
-                                    .join('\n')}
-                            </ReactMarkdown>
-                            <ExportButton yaml={yaml} />
-                        </div>
+                        <Tabs defaultValue="diagram">
+                            <TabsList>
+                                <TabsTrigger value="diagram">Diagram</TabsTrigger>
+                                <TabsTrigger value="yaml">Yaml</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="diagram">
+                                <Graphviz workflowConfig={config} />
+                            </TabsContent>
+                            <TabsContent value="yaml">
+                                <YamlMarkdown yamlConfig={yaml} />
+                            </TabsContent>
+                        </Tabs>
                     </div>
                 </ResizablePanel>
             </ResizablePanelGroup>
