@@ -35,7 +35,7 @@ const TransitionField = React.memo<TransitionFieldProps>(({ control, field, inde
                     </Button>
                 </CollapsibleTrigger>
             </div>
-            <CollapsibleContent>
+            <CollapsibleContent className="gap-2">
                 <TextField
                     control={control}
                     name={`transitions.${index}.guard`}
@@ -63,3 +63,5 @@ const TransitionField = React.memo<TransitionFieldProps>(({ control, field, inde
         </Collapsible>
     );
 });
+
+export default TransitionField;

@@ -1,13 +1,11 @@
 import React from 'react';
 import { useFieldArray } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import TextField from '@/components/text-field';
-import { MultiSelect } from '@/components/multi-select';
 import { SelectItem } from '@/types/SelectItem';
-import Metadata from '@/app/metadata';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Icon } from '@iconify/react';
 import { useBoolean } from 'react-use';
+import TransitionField from '@/components/transition-field';
 
 interface TransitionsProps {
     control: any;
@@ -37,9 +35,10 @@ const Transitions = React.memo<TransitionsProps>(({ control, places }) => {
                         </Button>
                     </CollapsibleTrigger>
                 </div>
-                <CollapsibleContent>
+                <CollapsibleContent className="gap-2">
                     {fields.map((field, index) => (
                         <div key={field.id} className="flex flex-col gap-2 border-2 border-primary rounded-md p-4">
+                            <TransitionField control={control} field={field} index={index} places={places} />
                             <Button variant="destructive" onClick={() => remove(index)}>
                                 Remove
                             </Button>
