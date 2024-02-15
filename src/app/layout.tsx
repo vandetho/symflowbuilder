@@ -12,7 +12,7 @@ import GoogleAnalytics from '@/app/GoogleAnalytics';
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-    title: 'SymFlowBuilder - The platform where symfony workflows is made easy!',
+    title: 'SymFlowBuilder - The platform where symfony workflows are made easy!',
     description:
         'a platform aimed at simplifying the Symfony Workflow configuration process, offering a graphical interface for easy visualization and management of workflows. This tool allows developers to design, configure, and export workflows with minimal hassle, significantly reducing development time and errors associated with manual configuration. It caters to the needs of both novice and experienced Symfony developers, streamlining the workflow configuration process and enhancing productivity across Symfony projects.',
 };
