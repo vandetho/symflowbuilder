@@ -4,6 +4,8 @@ import React from 'react';
 import { Icon } from '@iconify/react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import Blogs from '@/app/blogs';
+import Image from 'next/image';
+import Logo from '@/assets/logo.png';
 
 interface NavBarProps {}
 
@@ -13,6 +15,7 @@ const NavBar = React.memo<NavBarProps>(() => {
             <div className="container flex h-14 max-w-screen-2xl items-center">
                 <div className="mr-4 hidden md:flex">
                     <a className="mr-6 flex items-center space-x-2" href="/">
+                        <Image src={Logo} alt="Symflowbuilder" width={32} height={32} priority />
                         <span className="hidden text-primary font-bold sm:inline-block">SymFlowBuilder</span>
                     </a>
                     <nav className="flex items-center gap-6 text-sm">

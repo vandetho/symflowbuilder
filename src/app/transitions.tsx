@@ -40,37 +40,6 @@ const Transitions = React.memo<TransitionsProps>(({ control, places }) => {
                 <CollapsibleContent>
                     {fields.map((field, index) => (
                         <div key={field.id} className="flex flex-col gap-2 border-2 border-primary rounded-md p-4">
-                            <TextField
-                                control={control}
-                                name={`transitions.${index}.name`}
-                                type="text"
-                                label="Transition name"
-                                placeholder="Transition name"
-                                key={field.id}
-                            />
-                            <TextField
-                                control={control}
-                                name={`transitions.${index}.guard`}
-                                type="text"
-                                label="Guard"
-                                placeholder="Guard"
-                                key={field.id}
-                            />
-                            <MultiSelect
-                                control={control}
-                                name={`transitions.${index}.from`}
-                                className="w-[300px]"
-                                label="From"
-                                items={places}
-                            />
-                            <MultiSelect
-                                control={control}
-                                name={`transitions.${index}.to`}
-                                className="w-[300px]"
-                                label="To"
-                                items={places}
-                            />
-                            <Metadata control={control} name={`transitions.${index}.metadata`} />
                             <Button variant="destructive" onClick={() => remove(index)}>
                                 Remove
                             </Button>
