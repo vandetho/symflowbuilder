@@ -3,10 +3,10 @@ import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 
-interface ExportButtonProps {
+interface DownloadYamlProps {
     yaml: WorkflowConfigYaml | undefined;
 }
-export const ExportButton = React.memo<ExportButtonProps>(({ yaml }) => {
+export const DownloadYaml = React.memo<DownloadYamlProps>(({ yaml }) => {
     const handleExport = React.useCallback(() => {
         if (yaml) {
             axios.post('/api/workflows/exports', yaml).then((res) => {
@@ -21,8 +21,8 @@ export const ExportButton = React.memo<ExportButtonProps>(({ yaml }) => {
     }, [yaml]);
 
     return (
-        <Button className="z-10" onClick={handleExport}>
-            Export
+        <Button variant="secondary" className="z-10" onClick={handleExport}>
+            Download YAML
         </Button>
     );
 });

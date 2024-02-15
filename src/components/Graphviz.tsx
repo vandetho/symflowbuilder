@@ -3,7 +3,7 @@
 import React from 'react';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import dynamic from 'next/dynamic';
-import { ExportButton } from '@/components/export-button';
+import { DownloadYaml } from '@/components/download-yaml';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 
 const GraphvizReact = dynamic(() => import('graphviz-react'), { ssr: false });
@@ -49,7 +49,7 @@ const Graphviz = React.memo<GraphvizProps>(({ workflowConfig, workflowConfigYaml
             <div className="relative">
                 <div className="w-[875px] border fixed">
                     <GraphvizReact dot={dot} options={{ fit: false, zoom: true, width: 875, height: 560 }} />
-                    <ExportButton yaml={workflowConfigYaml} />
+                    <DownloadYaml yaml={workflowConfigYaml} />
                 </div>
             </div>
         );

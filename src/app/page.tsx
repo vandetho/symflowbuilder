@@ -23,6 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import YamlMarkdown from '@/components/YamlMarkdown';
 import Graphviz from '@/components/Graphviz';
 import ScrollTop from '@/components/scroll-top';
+import { DownloadYaml } from '@/components/download-yaml';
 
 const nameRegex = /^[a-zA-Z0-9_]+$/i;
 const entityNameRegex = /^[a-zA-Z0-9\\]+$/i;
@@ -236,10 +237,13 @@ export default function Home() {
                             <p className="text-lg">The best way to build and visualize workflow for symfony</p>
                         </div>
                         <Tabs defaultValue="diagram">
-                            <TabsList>
-                                <TabsTrigger value="diagram">Diagram</TabsTrigger>
-                                <TabsTrigger value="yaml">Yaml</TabsTrigger>
-                            </TabsList>
+                            <div className="flex flex-row justify-between items-center">
+                                <TabsList>
+                                    <TabsTrigger value="diagram">Diagram</TabsTrigger>
+                                    <TabsTrigger value="yaml">Yaml</TabsTrigger>
+                                </TabsList>
+                                <DownloadYaml yaml={yaml} />
+                            </div>
                             <TabsContent value="diagram">
                                 <Graphviz workflowConfig={config} workflowConfigYaml={yaml} />
                             </TabsContent>

@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactMarkdown from '@/components/react-markdown';
 import jsYaml from 'js-yaml';
-import { ExportButton } from '@/components/export-button';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 
 interface YamlMarkdownProps {
@@ -22,7 +21,6 @@ const YamlMarkdown = React.memo<YamlMarkdownProps>(({ yamlConfig }) => {
                     )
                     .join('\n')}
             </ReactMarkdown>
-            <ExportButton yaml={yamlConfig} />
         </div>
     );
 });
