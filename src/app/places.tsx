@@ -24,7 +24,7 @@ const Places = React.memo<PlacesProps>(({ control }) => {
     return (
         <Collapsible open={open} onOpenChange={() => onToggle()}>
             <div className="flex flex-col gap-3">
-                <div className="flex flex-row justify-between gap-3">
+                <div className="flex flex-row justify-between items-center gap-3">
                     <p className="text-lg">Places</p>
                     <CollapsibleTrigger asChild>
                         <Button variant="ghost" size="sm">

@@ -5,6 +5,7 @@ import TextField from '@/components/text-field';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
 import Metadata from '@/app/metadata';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 type PlaceFieldProps = {
     control: any;
@@ -15,7 +16,7 @@ const PlaceField = React.memo<PlaceFieldProps>(({ control, index }) => {
     const [open, onToggle] = useBoolean(true);
     return (
         <Collapsible open={open} onOpenChange={() => onToggle()}>
-            <div className="flex flex-row justify-between gap-3">
+            <div className="flex flex-row justify-between items-center gap-3">
                 <TextField
                     control={control}
                     name={`places.${index}.name`}

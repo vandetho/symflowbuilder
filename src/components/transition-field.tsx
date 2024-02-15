@@ -7,6 +7,7 @@ import { useBoolean } from 'react-use';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 type TransitionFieldProps = {
     control: any;
@@ -18,7 +19,7 @@ const TransitionField = React.memo<TransitionFieldProps>(({ control, index, plac
     const [open, onToggle] = useBoolean(true);
     return (
         <Collapsible open={open} onOpenChange={() => onToggle()}>
-            <div className="flex flex-row justify-between gap-3">
+            <div className="flex flex-row justify-between items-center gap-3">
                 <TextField
                     control={control}
                     name={`transitions.${index}.name`}

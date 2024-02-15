@@ -9,6 +9,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import GoogleAnalytics from '@/app/GoogleAnalytics';
 import { primaryMain } from '@/theme/palette';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -72,7 +73,7 @@ export default function RootLayout({
             <body className={cn('min-h-screen bg-background font-sans antialiased', inter.variable)}>
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                     <NavBar />
-                    {children}
+                    <TooltipProvider>{children}</TooltipProvider>
                     <Toaster />
                 </ThemeProvider>
                 <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
