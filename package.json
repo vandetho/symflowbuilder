@@ -44,6 +44,7 @@
         "react-resizable-panels": "^2.0.9",
         "react-syntax-highlighter": "^15.5.0",
         "react-use": "^17.5.0",
+        "reactflow": "^11.10.3",
         "rehype-raw": "^7.0.0",
         "remark-directive": "^3.0.0",
         "sharp": "^0.33.2",
