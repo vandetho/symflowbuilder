@@ -28,7 +28,7 @@ const TransitionField = React.memo<TransitionFieldProps>(({ control, index, plac
                 />
                 <CollapsibleTrigger asChild>
                     <Button variant="ghost" size="sm">
-                        <Icon icon={open ? 'fa:sort-desc' : 'fa:sort-asc'} width={24} />
+                        <Icon icon={open ? 'fa:sort-desc' : 'fa:sort-asc'} width={12} />
                         <span className="sr-only">Toggle</span>
                     </Button>
                 </CollapsibleTrigger>
