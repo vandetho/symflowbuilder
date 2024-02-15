@@ -20,5 +20,9 @@ export const ExportButton = React.memo<ExportButtonProps>(({ yaml }) => {
         }
     }, [yaml]);
 
-    return <Button onClick={handleExport}>Export</Button>;
+    return (
+        <Button className="z-10" onClick={handleExport}>
+            Export
+        </Button>
+    );
 });

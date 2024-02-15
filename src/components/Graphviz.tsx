@@ -3,14 +3,17 @@
 import React from 'react';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import dynamic from 'next/dynamic';
+import { ExportButton } from '@/components/export-button';
+import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 
 const GraphvizReact = dynamic(() => import('graphviz-react'), { ssr: false });
 
 interface GraphvizProps {
     workflowConfig: WorkflowConfig | undefined;
+    workflowConfigYaml: WorkflowConfigYaml | undefined;
 }
 
-const Graphviz = React.memo<GraphvizProps>(({ workflowConfig }) => {
+const Graphviz = React.memo<GraphvizProps>(({ workflowConfig, workflowConfigYaml }) => {
     if (workflowConfig) {
         let dot =
             'digraph workflow { \n' +
@@ -43,8 +46,11 @@ const Graphviz = React.memo<GraphvizProps>(({ workflowConfig }) => {
         dot += '}';
 
         return (
-            <div className="w-[875px] border he">
-                <GraphvizReact dot={dot} options={{ fit: false, zoom: true, width: 875, height: 1000 }} />
+            <div className="relative">
+                <div className="w-[875px] border fixed">
+                    <GraphvizReact dot={dot} options={{ fit: false, zoom: true, width: 875, height: 560 }} />
+                    <ExportButton yaml={workflowConfigYaml} />
+                </div>
             </div>
         );
     }

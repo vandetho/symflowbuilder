@@ -9,7 +9,7 @@ export type WorkflowConfigYaml = {
                 audit_trail: {
                     enabled: boolean;
                 };
-                metadata: MetadataYaml;
+                metadata?: MetadataYaml;
                 events_to_dispatch?: string[];
                 marking_store: {
                     type: string;

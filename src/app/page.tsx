@@ -151,7 +151,7 @@ export default function Home() {
             framework: {
                 workflows: {
                     [name]: {
-                        metadata: realMetadata,
+                        metadata: Object.keys(realMetadata).length > 0 ? realMetadata : undefined,
                         audit_trail: { enabled: auditTrail },
                         supports: supports.map((support) => support.entityName),
                         marking_store: markingStore,
@@ -240,7 +240,7 @@ export default function Home() {
                                 <TabsTrigger value="yaml">Yaml</TabsTrigger>
                             </TabsList>
                             <TabsContent value="diagram">
-                                <Graphviz workflowConfig={config} />
+                                <Graphviz workflowConfig={config} workflowConfigYaml={yaml} />
                             </TabsContent>
                             <TabsContent value="yaml">
                                 <YamlMarkdown yamlConfig={yaml} />
