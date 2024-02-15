@@ -16,7 +16,7 @@ interface GraphvizProps {
 const Graphviz = React.memo<GraphvizProps>(({ workflowConfig, workflowConfigYaml }) => {
     if (workflowConfig) {
         let dot =
-            'digraph workflow { \n' +
+            `digraph ${workflowConfig.name} { \n` +
             '  ratio="compress" rankdir="LR"\n' +
             '  node [fontsize="9" fontname="Inter" color="#333333" fillcolor="lightblue" fixedsize="false" width="1"];\n' +
             '  edge [fontsize="9" fontname="Inter" color="#333333" arrowhead="normal" arrowsize="0.5"];\n';
