@@ -46,11 +46,11 @@ export const metadata: Metadata = {
     ],
     robots: 'index, follow',
     manifest: '/manifest.json',
-    metadataBase: new URL(`${process.env.NEXT_PUBLIC_HOST_URL}`),
+    metadataBase: new URL(`${process.env.NEXT_PUBLIC_VERCEL_URL}`),
     openGraph: {
-        url: `${process.env.NEXT_PUBLIC_HOST_URL}`,
+        url: `${process.env.NEXT_PUBLIC_VERCEL_URL}`,
         type: 'website',
-        images: [`${process.env.NEXT_PUBLIC_HOST_URL}/logo.png`],
+        images: [`${process.env.NEXT_PUBLIC_VERCEL_URL}/logo.png`],
     },
 };
 
