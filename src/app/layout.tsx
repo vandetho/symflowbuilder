@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/app/theme-provider';
 import NavBar from '@/app/nav-bar';
 import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/components/ui/sonner';
 import GoogleAnalytics from '@/app/GoogleAnalytics';
 import { primaryMain } from '@/theme/palette';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -74,7 +74,7 @@ export default function RootLayout({
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                     <NavBar />
                     <TooltipProvider>{children}</TooltipProvider>
-                    <Toaster />
+                    <Toaster position="top-right" />
                 </ThemeProvider>
                 <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
             </body>

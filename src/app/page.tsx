@@ -24,6 +24,10 @@ import YamlMarkdown from '@/components/YamlMarkdown';
 import Graphviz from '@/components/Graphviz';
 import ScrollTop from '@/components/scroll-top';
 import { DownloadYaml } from '@/components/download-yaml';
+import FileDropzone from '@/components/file-dropzone';
+import jsYaml from 'js-yaml';
+import { toast } from 'sonner';
+import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
 
 const nameRegex = /^[a-zA-Z0-9_]+$/i;
 const entityNameRegex = /^[a-zA-Z0-9\\]+$/i;
@@ -168,93 +172,112 @@ export default function Home() {
         setConfig(config);
     }, []);
 
+    const onDrop = React.useCallback((file: File) => {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const text = e.target?.result as string;
+            try {
+                const doc: WorkflowConfigYaml = jsYaml.load(text) as WorkflowConfigYaml;
+                console.log({ doc });
+                const config = WorkflowConfigHelper.toObject(doc);
+                console.log({ config });
+            } catch (e) {
+                console.error('The file is not a valid yaml file. Please try again.');
+                toast.error('The file is not a valid yaml file. Please try again.');
+            }
+        };
+        reader.readAsText(file);
+    }, []);
+
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-6">
-            <ResizablePanelGroup direction="horizontal">
-                <ResizablePanel defaultSize={50} minSize={25}>
-                    <div className="flex flex-col h-full p-6 border-2  rounded-l-md">
-                        <div className="flex flex-col gap-2">
-                            <p className="text-2xl">Create new workflow configuration</p>
-                            <p className="text-lg">The best way to build and visualize workflow for symfony</p>
-                        </div>
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-                                <div className="flex flex-col gap-4">
-                                    <TextField
-                                        control={form.control}
-                                        id="workflowName"
-                                        name="name"
-                                        label="Workflow name"
-                                        placeholder="Workflow name"
-                                    />
-                                    <Metadata control={form.control} name="metadata" />
-                                    <Select
-                                        control={form.control}
-                                        name="type"
-                                        className="w-[300px]"
-                                        placeholder="Select a workflow type"
-                                        items={[
-                                            { label: 'State Machine', value: 'state_machine' },
-                                            { label: 'Workflow', value: 'workflow' },
-                                        ]}
-                                    />
-                                    <Switch
-                                        control={form.control}
-                                        name="auditTrail"
-                                        id="audit-trail"
-                                        label="Audit Trail"
-                                    />
-                                    <div className="flex flex-col gap-2">
-                                        <p className="text-lg">Marking Store</p>
+        <FileDropzone onDrop={onDrop}>
+            <main className="flex min-h-screen flex-col items-center justify-between p-6">
+                <ResizablePanelGroup direction="horizontal">
+                    <ResizablePanel defaultSize={50} minSize={25}>
+                        <div className="flex flex-col h-full p-6 border-2  rounded-l-md">
+                            <div className="flex flex-col gap-2">
+                                <p className="text-2xl">Create new workflow configuration</p>
+                                <p className="text-lg">The best way to build and visualize workflow for symfony</p>
+                            </div>
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                                    <div className="flex flex-col gap-4">
                                         <TextField
                                             control={form.control}
-                                            name="markingStore.property"
-                                            label="Property"
+                                            id="workflowName"
+                                            name="name"
+                                            label="Workflow name"
+                                            placeholder="Workflow name"
                                         />
+                                        <Metadata control={form.control} name="metadata" />
+                                        <Select
+                                            control={form.control}
+                                            name="type"
+                                            className="w-[300px]"
+                                            placeholder="Select a workflow type"
+                                            items={[
+                                                { label: 'State Machine', value: 'state_machine' },
+                                                { label: 'Workflow', value: 'workflow' },
+                                            ]}
+                                        />
+                                        <Switch
+                                            control={form.control}
+                                            name="auditTrail"
+                                            id="audit-trail"
+                                            label="Audit Trail"
+                                        />
+                                        <div className="flex flex-col gap-2">
+                                            <p className="text-lg">Marking Store</p>
+                                            <TextField
+                                                control={form.control}
+                                                name="markingStore.property"
+                                                label="Property"
+                                            />
+                                        </div>
+                                        <SupportEntities control={form.control} />
+                                        <Places control={form.control} />
+                                        <Select
+                                            control={form.control}
+                                            name="initialMarking"
+                                            className="w-[300px]"
+                                            placeholder="Select a initial marking"
+                                            label="Initial Marking"
+                                            items={places}
+                                        />
+                                        <Transitions control={form.control} places={places} />
                                     </div>
-                                    <SupportEntities control={form.control} />
-                                    <Places control={form.control} />
-                                    <Select
-                                        control={form.control}
-                                        name="initialMarking"
-                                        className="w-[300px]"
-                                        placeholder="Select a initial marking"
-                                        label="Initial Marking"
-                                        items={places}
-                                    />
-                                    <Transitions control={form.control} places={places} />
-                                </div>
-                                <Button type="submit">Save</Button>
-                            </form>
-                        </Form>
-                    </div>
-                </ResizablePanel>
-                <ResizableHandle withHandle />
-                <ResizablePanel defaultSize={50} minSize={25}>
-                    <div className="flex flex-col h-full p-6 border-2 rounded-r-md">
-                        <div className="flex flex-col gap-2">
-                            <p className="text-2xl">View your workflow configuration</p>
-                            <p className="text-lg">The best way to build and visualize workflow for symfony</p>
+                                    <Button type="submit">Save</Button>
+                                </form>
+                            </Form>
                         </div>
-                        <Tabs defaultValue="diagram">
-                            <div className="flex flex-row justify-between items-center">
-                                <TabsList>
-                                    <TabsTrigger value="diagram">Diagram</TabsTrigger>
-                                    <TabsTrigger value="yaml">Yaml</TabsTrigger>
-                                </TabsList>
-                                <DownloadYaml yaml={yaml} />
+                    </ResizablePanel>
+                    <ResizableHandle withHandle />
+                    <ResizablePanel defaultSize={50} minSize={25}>
+                        <div className="flex flex-col h-full p-6 border-2 rounded-r-md">
+                            <div className="flex flex-col gap-2">
+                                <p className="text-2xl">View your workflow configuration</p>
+                                <p className="text-lg">The best way to build and visualize workflow for symfony</p>
                             </div>
-                            <TabsContent value="diagram">
-                                <Graphviz workflowConfig={config} workflowConfigYaml={yaml} />
-                            </TabsContent>
-                            <TabsContent value="yaml">
-                                <YamlMarkdown yamlConfig={yaml} />
-                            </TabsContent>
-                        </Tabs>
-                    </div>
-                </ResizablePanel>
-            </ResizablePanelGroup>
-            <ScrollTop />
-        </main>
+                            <Tabs defaultValue="diagram">
+                                <div className="flex flex-row justify-between items-center">
+                                    <TabsList>
+                                        <TabsTrigger value="diagram">Diagram</TabsTrigger>
+                                        <TabsTrigger value="yaml">Yaml</TabsTrigger>
+                                    </TabsList>
+                                    <DownloadYaml yaml={yaml} />
+                                </div>
+                                <TabsContent value="diagram">
+                                    <Graphviz workflowConfig={config} workflowConfigYaml={yaml} />
+                                </TabsContent>
+                                <TabsContent value="yaml">
+                                    <YamlMarkdown yamlConfig={yaml} />
+                                </TabsContent>
+                            </Tabs>
+                        </div>
+                    </ResizablePanel>
+                </ResizablePanelGroup>
+                <ScrollTop />
+            </main>
+        </FileDropzone>
     );
 }
