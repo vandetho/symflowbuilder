@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
@@ -8,6 +8,7 @@ import NavBar from '@/app/nav-bar';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import GoogleAnalytics from '@/app/GoogleAnalytics';
+import { primaryMain } from '@/theme/palette';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -51,6 +52,14 @@ export const metadata: Metadata = {
         type: 'website',
         images: [`${process.env.NEXT_PUBLIC_HOST_URL}/logo.png`],
     },
+};
+
+export const viewport: Viewport = {
+    themeColor: primaryMain,
+    initialScale: 1,
+    width: 'device-width',
+    maximumScale: 5,
+    minimumScale: 1,
 };
 
 export default function RootLayout({
