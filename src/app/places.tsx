@@ -1,11 +1,10 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import TextField from '@/components/text-field';
 import { useFieldArray } from 'react-hook-form';
-import Metadata from '@/app/metadata';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Icon } from '@iconify/react';
 import { useBoolean } from 'react-use';
+import PlaceField from '@/components/place-field';
 
 interface PlacesProps {
     control: any;
@@ -29,7 +28,7 @@ const Places = React.memo<PlacesProps>(({ control }) => {
                     <p className="text-lg">Places</p>
                     <CollapsibleTrigger asChild>
                         <Button variant="ghost" size="sm">
-                            <Icon icon="flowbite:chevron-sort-outline" width={24} />
+                            <Icon icon={open ? 'fa:sort-desc' : 'fa:sort-asc'} width={24} />
                             <span className="sr-only">Toggle</span>
                         </Button>
                     </CollapsibleTrigger>
@@ -37,14 +36,7 @@ const Places = React.memo<PlacesProps>(({ control }) => {
                 <CollapsibleContent>
                     {fields.map((field, index) => (
                         <div key={field.id} className="flex flex-col gap-2 border-2 border-primary rounded-md p-4">
-                            <TextField
-                                control={control}
-                                name={`places.${index}.name`}
-                                type="text"
-                                placeholder="Place"
-                                key={field.id}
-                            />
-                            <Metadata control={control} name={`places.${index}.metadata`} />
+                            <PlaceField control={control} index={index} />
                             <Button variant="destructive" onClick={() => remove(index)}>
                                 Remove
                             </Button>

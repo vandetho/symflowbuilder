@@ -30,7 +30,7 @@ const Transitions = React.memo<TransitionsProps>(({ control, places }) => {
                     <p className="text-lg">Transitions</p>
                     <CollapsibleTrigger asChild>
                         <Button variant="ghost" size="sm">
-                            <Icon icon="flowbite:chevron-sort-outline" width={24} />
+                            <Icon icon={open ? 'fa:sort-desc' : 'fa:sort-asc'} width={24} />
                             <span className="sr-only">Toggle</span>
                         </Button>
                     </CollapsibleTrigger>
@@ -38,7 +38,7 @@ const Transitions = React.memo<TransitionsProps>(({ control, places }) => {
                 <CollapsibleContent className="gap-2">
                     {fields.map((field, index) => (
                         <div key={field.id} className="flex flex-col gap-2 border-2 border-primary rounded-md p-4">
-                            <TransitionField control={control} field={field} index={index} places={places} />
+                            <TransitionField control={control} index={index} places={places} />
                             <Button variant="destructive" onClick={() => remove(index)}>
                                 Remove
                             </Button>

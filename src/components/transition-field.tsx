@@ -10,12 +10,11 @@ import { Icon } from '@iconify/react';
 
 type TransitionFieldProps = {
     control: any;
-    field: any;
     index: number;
     places: SelectItem[];
 };
 
-const TransitionField = React.memo<TransitionFieldProps>(({ control, field, index, places }) => {
+const TransitionField = React.memo<TransitionFieldProps>(({ control, index, places }) => {
     const [open, onToggle] = useBoolean(true);
     return (
         <Collapsible open={open} onOpenChange={() => onToggle()}>
@@ -26,11 +25,10 @@ const TransitionField = React.memo<TransitionFieldProps>(({ control, field, inde
                     type="text"
                     label="Transition name"
                     placeholder="Transition name"
-                    key={field.id}
                 />
                 <CollapsibleTrigger asChild>
                     <Button variant="ghost" size="sm">
-                        <Icon icon="flowbite:chevron-sort-outline" width={24} />
+                        <Icon icon={open ? 'fa:sort-desc' : 'fa:sort-asc'} width={24} />
                         <span className="sr-only">Toggle</span>
                     </Button>
                 </CollapsibleTrigger>
@@ -42,7 +40,6 @@ const TransitionField = React.memo<TransitionFieldProps>(({ control, field, inde
                     type="text"
                     label="Guard"
                     placeholder="Guard"
-                    key={field.id}
                 />
                 <MultiSelect
                     control={control}
