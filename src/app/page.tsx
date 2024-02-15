@@ -22,6 +22,7 @@ import Metadata from '@/app/metadata';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import YamlMarkdown from '@/components/YamlMarkdown';
 import Graphviz from '@/components/Graphviz';
+import ScrollTop from '@/components/scroll-top';
 
 const nameRegex = /^[a-zA-Z0-9_]+$/i;
 const entityNameRegex = /^[a-zA-Z0-9\\]+$/i;
@@ -249,6 +250,7 @@ export default function Home() {
                     </div>
                 </ResizablePanel>
             </ResizablePanelGroup>
+            <ScrollTop />
         </main>
     );
 }
