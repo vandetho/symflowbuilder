@@ -15,8 +15,11 @@ import { toast } from 'sonner';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
 import FormFields from '@/components/form-fields';
 import Graph from '@/components/graph';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export default function Home() {
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
     const [config, setConfig] = React.useState<WorkflowConfig>();
     const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
 
@@ -26,9 +29,9 @@ export default function Home() {
             const text = e.target?.result as string;
             try {
                 const doc: WorkflowConfigYaml = jsYaml.load(text) as WorkflowConfigYaml;
-                console.log({ doc });
                 const config = WorkflowConfigHelper.toObject(doc);
-                console.log({ config });
+                setConfig(config);
+                setYaml(doc);
             } catch (e) {
                 console.error('The file is not a valid yaml file. Please try again.');
                 toast.error('The file is not a valid yaml file. Please try again.');
@@ -37,55 +40,82 @@ export default function Home() {
         reader.readAsText(file);
     }, []);
 
+    const handleFileClick = React.useCallback(() => {
+        fileInputRef.current?.click();
+    }, [fileInputRef]);
+
+    const handleImport = React.useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            const file = e.target.files?.[0];
+            if (file) {
+                onDrop(file);
+            }
+        },
+        [onDrop],
+    );
+
     return (
         <FileDropzone onDrop={onDrop}>
-            <main className="flex min-h-screen flex-col items-center justify-between p-6">
-                <TabsList>
-                    <TabsTrigger value="form">Form</TabsTrigger>
-                    <TabsTrigger value="graph">Graph</TabsTrigger>
-                </TabsList>
+            <Tabs defaultValue="form">
+                <div className="flex items-center justify-center p-4">
+                    <TabsList>
+                        <TabsTrigger value="form">Form Builder</TabsTrigger>
+                        <TabsTrigger value="graph">Graph Builder</TabsTrigger>
+                    </TabsList>
+                </div>
                 <TabsContent value="form">
-                    <ResizablePanelGroup direction="horizontal">
-                        <ResizablePanel defaultSize={50} minSize={25}>
-                            <div className="flex flex-col h-full p-6 border-2  rounded-l-md">
-                                <div className="flex flex-col gap-2">
-                                    <p className="text-2xl">Create new workflow configuration</p>
-                                    <p className="text-lg">The best way to build and visualize workflow for symfony</p>
-                                </div>
-                            </div>
-                            <FormFields setYaml={setYaml} setConfig={setConfig} />
-                        </ResizablePanel>
-                        <ResizableHandle withHandle />
-                        <ResizablePanel defaultSize={50} minSize={25}>
-                            <div className="flex flex-col h-full p-6 border-2 rounded-r-md">
-                                <div className="flex flex-col gap-2">
-                                    <p className="text-2xl">View your workflow configuration</p>
-                                    <p className="text-lg">The best way to build and visualize workflow for symfony</p>
-                                </div>
-                                <Tabs defaultValue="diagram">
-                                    <div className="flex flex-row justify-between items-center">
-                                        <TabsList>
-                                            <TabsTrigger value="diagram">Diagram</TabsTrigger>
-                                            <TabsTrigger value="yaml">Yaml</TabsTrigger>
-                                        </TabsList>
-                                        <DownloadYaml yaml={yaml} />
+                    <main className="flex min-h-screen flex-col items-center justify-between">
+                        <ResizablePanelGroup direction="horizontal">
+                            <ResizablePanel defaultSize={50} minSize={25}>
+                                <div className="flex flex-col h-full p-6 border-2 rounded-l-md">
+                                    <div className="flex flex-col gap-2">
+                                        <p className="text-2xl">Create new workflow configuration</p>
+                                        <p className="text-lg">
+                                            The best way to build and visualize workflow for symfony
+                                        </p>
+                                        <p className="text-sm">
+                                            Drop your workflow configuration file here or click the button below to
+                                            upload
+                                        </p>
                                     </div>
-                                    <TabsContent value="diagram">
-                                        <Graphviz workflowConfig={config} workflowConfigYaml={yaml} />
-                                    </TabsContent>
-                                    <TabsContent value="yaml">
-                                        <YamlMarkdown yamlConfig={yaml} />
-                                    </TabsContent>
-                                </Tabs>
-                            </div>
-                        </ResizablePanel>
-                    </ResizablePanelGroup>
-                    <ScrollTop />
+                                    <hr className="my-4" />
+                                    <FormFields setYaml={setYaml} config={config} setConfig={setConfig} />
+                                </div>
+                            </ResizablePanel>
+                            <ResizableHandle withHandle />
+                            <ResizablePanel defaultSize={50} minSize={25}>
+                                <div className="flex flex-col h-full p-6 border-2 rounded-r-md">
+                                    <div className="flex flex-col gap-2">
+                                        <p className="text-2xl">View your workflow configuration</p>
+                                        <p className="text-lg">
+                                            The best way to build and visualize workflow for symfony
+                                        </p>
+                                    </div>
+                                    <Tabs defaultValue="diagram">
+                                        <div className="flex flex-row justify-between items-center">
+                                            <TabsList>
+                                                <TabsTrigger value="diagram">Diagram</TabsTrigger>
+                                                <TabsTrigger value="yaml">Yaml</TabsTrigger>
+                                            </TabsList>
+                                            <DownloadYaml yaml={yaml} />
+                                        </div>
+                                        <TabsContent value="diagram">
+                                            <Graphviz workflowConfig={config} workflowConfigYaml={yaml} />
+                                        </TabsContent>
+                                        <TabsContent value="yaml">
+                                            <YamlMarkdown yamlConfig={yaml} />
+                                        </TabsContent>
+                                    </Tabs>
+                                </div>
+                            </ResizablePanel>
+                        </ResizablePanelGroup>
+                        <ScrollTop />
+                    </main>
                 </TabsContent>
                 <TabsContent value="graph">
                     <Graph />
                 </TabsContent>
-            </main>
+            </Tabs>
         </FileDropzone>
     );
 }

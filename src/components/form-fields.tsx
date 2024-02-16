@@ -35,7 +35,7 @@ const schema = object({
         type: string().required(),
         property: string().required(),
     }).required(),
-    type: string().oneOf(['state_machine', 'workflow']).required(),
+    type: string().required(),
     supports: array(
         object({
             entityName: string()
@@ -80,11 +80,12 @@ const schema = object({
 });
 
 type FormFieldsProps = {
+    config: WorkflowConfig | undefined;
     setYaml: (yaml: WorkflowConfigYaml) => void;
     setConfig: (config: WorkflowConfig) => void;
 };
 
-const FormFields = React.memo<FormFieldsProps>(({ setYaml, setConfig }) => {
+const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) => {
     const form = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
@@ -106,6 +107,12 @@ const FormFields = React.memo<FormFieldsProps>(({ setYaml, setConfig }) => {
     const places = React.useMemo(() => {
         return watchPlaces.filter((field) => !!field.name).map((field) => ({ label: field.name, value: field.name }));
     }, [watchPlaces]);
+
+    React.useEffect(() => {
+        if (config) {
+            form.reset(config);
+        }
+    }, [config, form]);
 
     const onSubmit = React.useCallback(
         (config: WorkflowConfig) => {
