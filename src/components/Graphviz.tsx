@@ -3,44 +3,51 @@
 import React from 'react';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import dynamic from 'next/dynamic';
-import { DownloadYaml } from '@/components/download-yaml';
-import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
+import { generateToken } from '@/helpers/token.helper';
 
 const GraphvizReact = dynamic(() => import('graphviz-react'), { ssr: false });
 
 interface GraphvizProps {
     workflowConfig: WorkflowConfig | undefined;
-    workflowConfigYaml: WorkflowConfigYaml | undefined;
 }
 
-const Graphviz = React.memo<GraphvizProps>(({ workflowConfig, workflowConfigYaml }) => {
+const Graphviz = React.memo<GraphvizProps>(({ workflowConfig }) => {
     if (workflowConfig) {
         let dot =
             `digraph ${workflowConfig.name} { \n` +
             '  ratio="compress" rankdir="LR"\n' +
             '  node [fontsize="9" fontname="Inter" color="#333333" fillcolor="lightblue" fixedsize="false" width="1"];\n' +
             '  edge [fontsize="9" fontname="Inter" color="#333333" arrowhead="normal" arrowsize="0.5"];\n';
+        const places: { [key: string]: string } = {};
+        const transitions: { [key: string]: string } = {};
+
         workflowConfig.places.forEach((place) => {
+            const token = generateToken({ size: 16 });
+            const placeName = `${place.name}_${token}`;
             const bgColor = place.metadata?.find((meta) => meta.name === 'bg_color');
             let fillColor: string | undefined = undefined;
             if (bgColor) {
                 fillColor = bgColor.value;
             }
             if (place.name === workflowConfig.initialMarking) {
-                dot += `  ${place.name} [shape="circle" label="${place.name}" style="filled"];\n`;
+                dot += `  ${placeName} [shape="circle" label="${place.name}" style="filled"];\n`;
             } else {
-                dot += `  ${place.name} [shape="circle" label="${place.name}" ${fillColor ? ` style="filled" fillcolor="${fillColor}"` : ''}];\n`;
+                dot += `  ${placeName} [shape="circle" label="${place.name}" ${fillColor ? ` style="filled" fillcolor="${fillColor}"` : ''}];\n`;
             }
+            places[place.name] = placeName;
         });
         workflowConfig.transitions.forEach((transition) => {
-            dot += `  ${transition.name} [shape="box" label="${transition.name}"];\n`;
+            const token = generateToken({ size: 16 });
+            const transitionName = `${transition.name}_${token}`;
+            dot += `  ${transitionName} [shape="box" label="${transition.name}"];\n`;
+            transitions[transition.name] = transitionName;
         });
         workflowConfig.transitions.forEach((transition) => {
             transition.from.forEach((from) => {
-                dot += `  ${from} -> ${transition.name};\n`;
+                dot += `  ${places[from]} -> ${transitions[transition.name]};\n`;
             });
             transition.to.forEach((to) => {
-                dot += `  ${transition.name} -> ${to};\n`;
+                dot += `  ${transitions[transition.name]} -> ${places[to]};\n`;
             });
         });
         dot += '}';
@@ -49,7 +56,6 @@ const Graphviz = React.memo<GraphvizProps>(({ workflowConfig, workflowConfigYaml
             <div className="relative">
                 <div className="w-[875px] border fixed">
                     <GraphvizReact dot={dot} options={{ fit: false, zoom: true, width: 875, height: 560 }} />
-                    <DownloadYaml yaml={workflowConfigYaml} />
                 </div>
             </div>
         );

@@ -15,11 +15,8 @@ import { toast } from 'sonner';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
 import FormFields from '@/components/form-fields';
 import Graph from '@/components/graph';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
 export default function Home() {
-    const fileInputRef = React.useRef<HTMLInputElement>(null);
     const [config, setConfig] = React.useState<WorkflowConfig>();
     const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
 
@@ -39,20 +36,6 @@ export default function Home() {
         };
         reader.readAsText(file);
     }, []);
-
-    const handleFileClick = React.useCallback(() => {
-        fileInputRef.current?.click();
-    }, [fileInputRef]);
-
-    const handleImport = React.useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
-            const file = e.target.files?.[0];
-            if (file) {
-                onDrop(file);
-            }
-        },
-        [onDrop],
-    );
 
     return (
         <FileDropzone onDrop={onDrop}>
@@ -100,7 +83,7 @@ export default function Home() {
                                             <DownloadYaml yaml={yaml} />
                                         </div>
                                         <TabsContent value="diagram">
-                                            <Graphviz workflowConfig={config} workflowConfigYaml={yaml} />
+                                            <Graphviz workflowConfig={config} />
                                         </TabsContent>
                                         <TabsContent value="yaml">
                                             <YamlMarkdown yamlConfig={yaml} />
