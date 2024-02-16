@@ -1,1 +1,1 @@
-export const primaryMain = '#FFD700';
+export const primaryMain = '#D3500E';
