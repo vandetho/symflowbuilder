@@ -8,7 +8,7 @@ interface PlaceNodeProps extends NodeProps {
 
 const PlaceNode = React.memo<PlaceNodeProps>(({ data }) => {
     return (
-        <div className="px-4 py-2 shadow-md rounded-lg border-2 border-stone-400">
+        <div className="px-4 py-2 shadow-md rounded-lg border-2 border-primary">
             <div className="flex">
                 <div className="text-lg font-bold">{data.name}</div>
             </div>
