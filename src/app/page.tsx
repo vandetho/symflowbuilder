@@ -6,7 +6,7 @@ import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import YamlMarkdown from '@/components/YamlMarkdown';
-import Graphviz from '@/components/Graphviz';
+import Graphviz from '@/components/graphviz';
 import ScrollTop from '@/components/scroll-top';
 import { DownloadYaml } from '@/components/download-yaml';
 import FileDropzone from '@/components/file-dropzone';
@@ -14,7 +14,7 @@ import jsYaml from 'js-yaml';
 import { toast } from 'sonner';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
 import FormFields from '@/components/form-fields';
-import Graph from '@/components/graph';
+import GraphBuilder from '@/components/graph-builder';
 
 export default function Home() {
     const [config, setConfig] = React.useState<WorkflowConfig>();
@@ -47,7 +47,7 @@ export default function Home() {
                     </TabsList>
                 </div>
                 <TabsContent value="form">
-                    <main className="flex min-h-screen flex-col items-center justify-between">
+                    <div className="flex min-h-screen flex-col items-center justify-between">
                         <ResizablePanelGroup direction="horizontal">
                             <ResizablePanel defaultSize={50} minSize={25}>
                                 <div className="flex flex-col h-full p-6 border-2 rounded-l-md">
@@ -93,10 +93,10 @@ export default function Home() {
                             </ResizablePanel>
                         </ResizablePanelGroup>
                         <ScrollTop />
-                    </main>
+                    </div>
                 </TabsContent>
                 <TabsContent value="graph">
-                    <Graph />
+                    <GraphBuilder config={config} />
                 </TabsContent>
             </Tabs>
         </FileDropzone>
