@@ -10,7 +10,6 @@ import {
     ReactFlow,
     useEdgesState,
     useNodesState,
-    useReactFlow,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import PlaceNode from '@/components/place-node';
@@ -19,6 +18,7 @@ import { WorkflowPlace } from '@/types/WorkflowPlace';
 import { WorkflowTransition } from '@/types/WorkflowTransition';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { generateToken } from '@/helpers/token.helper';
+import GraphToolbar from '@/components/graph-toolbar';
 
 const nodeTypes = { place: PlaceNode, transition: TransitionNode };
 
@@ -35,7 +35,7 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
             let x = 0;
             let y = 0;
             const places: { [key: string]: string } = {};
-            const placeNodes = config.places.map((place, index) => {
+            const placeNodes = config.places.map((place) => {
                 const token = generateToken({ size: 16 });
                 const placeName = `${place.name}_${token}`;
                 x = x + 400;
@@ -51,7 +51,7 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
             y = 0;
             const transitions: { [key: string]: string } = {};
             const transitionNodes: Node<WorkflowTransition>[] = [];
-            config.transitions.forEach((transition, index) => {
+            config.transitions.forEach((transition) => {
                 const token = generateToken({ size: 16 });
                 const transitionName = `${transition.name}_${token}`;
                 x = x + 400;
@@ -87,14 +87,42 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
 
     const onConnect = React.useCallback(
         (params: Edge | Connection) => {
-            console.log({ params });
             setEdges((eds) => addEdge(params, eds));
         },
         [setEdges],
     );
 
+    const addPlaceNode = React.useCallback(() => {
+        setNodes((prevState) => {
+            return [
+                ...prevState,
+                {
+                    id: `node_${Math.random()}`,
+                    position: { x: 100, y: 100 },
+                    data: { name: 'place' },
+                    type: 'place',
+                },
+            ];
+        });
+    }, [setNodes]);
+
+    const addTransitionNode = React.useCallback(() => {
+        setNodes((prevState) => {
+            return [
+                ...prevState,
+                {
+                    id: `node_${Math.random()}`,
+                    position: { x: 100, y: 100 },
+                    data: { name: 'transition' },
+                    type: 'transition',
+                },
+            ];
+        });
+    }, [setNodes]);
+
     return (
-        <div className="flex flex-col items-center justify-center" style={{ height: '85vh', width: '99vw' }}>
+        <div className="flex flex-col items-center justify-center gap-3" style={{ height: '85vh', width: '99vw' }}>
+            <GraphToolbar addPlaceNode={addPlaceNode} addTransitionNode={addTransitionNode} />
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
