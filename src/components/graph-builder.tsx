@@ -1,6 +1,17 @@
 import React from 'react';
-import type { Edge, Node } from 'reactflow';
-import { addEdge, Background, Connection, Controls, MiniMap, ReactFlow, useEdgesState, useNodesState } from 'reactflow';
+import {
+    addEdge,
+    Background,
+    Connection,
+    Controls,
+    Edge,
+    MiniMap,
+    Node,
+    ReactFlow,
+    useEdgesState,
+    useNodesState,
+    useReactFlow,
+} from 'reactflow';
 import 'reactflow/dist/style.css';
 import PlaceNode from '@/components/place-node';
 import TransitionNode from '@/components/transition-node';
@@ -27,7 +38,7 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
             const placeNodes = config.places.map((place, index) => {
                 const token = generateToken({ size: 16 });
                 const placeName = `${place.name}_${token}`;
-                x = x + index * 200;
+                x = x + 400;
                 places[place.name] = placeName;
                 return {
                     id: `node_${placeName}`,
@@ -36,14 +47,14 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                     type: 'place',
                 };
             });
-            x = 100;
+            x = 200;
             y = 0;
             const transitions: { [key: string]: string } = {};
             const transitionNodes: Node<WorkflowTransition>[] = [];
             config.transitions.forEach((transition, index) => {
                 const token = generateToken({ size: 16 });
                 const transitionName = `${transition.name}_${token}`;
-                x = x + index * 200;
+                x = x + 400;
                 transitions[transition.name] = transitionName;
                 transitionNodes.push({
                     id: `node_${transitionName}`,
@@ -75,7 +86,10 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
     }, [config, setEdges, setNodes]);
 
     const onConnect = React.useCallback(
-        (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)),
+        (params: Edge | Connection) => {
+            console.log({ params });
+            setEdges((eds) => addEdge(params, eds));
+        },
         [setEdges],
     );
 

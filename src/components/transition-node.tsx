@@ -12,7 +12,6 @@ const TransitionNode = React.memo<TransitionNodeProps>(({ data }) => {
             <div className="flex">
                 <div className="text-lg font-bold">{data.name}</div>
             </div>
-
             <Handle type="target" position={Position.Left} className="w-1 h-4 border-none rounded-sm !bg-teal-500" />
             <Handle type="source" position={Position.Right} className="w-1 h-4 border-none rounded-sm !bg-teal-500" />
         </div>
