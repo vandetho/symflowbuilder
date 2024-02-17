@@ -21,7 +21,7 @@ import { isWorkflowTransition, WorkflowTransition } from '@/types/WorkflowTransi
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { generateToken } from '@/helpers/token.helper';
 import GraphToolbar from '@/components/graph-toolbar';
-import EmptyButton from '@/components/empty-button';
+import ExportImageButton from '@/components/export-image-button';
 
 type GraphBuilderProps = {
     config: WorkflowConfig | undefined;
@@ -91,10 +91,15 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                     });
                 });
             });
-            setNodes((prevNode) => [...prevNode, ...placeNodes, ...transitionNodes]);
-            setEdges((prevEdges) => [...prevEdges, ...transitionEdges]);
+            setNodes([...placeNodes, ...transitionNodes]);
+            setEdges([...transitionEdges]);
         }
     }, [config, setEdges, setNodes]);
+
+    const isValidConnection = React.useCallback(
+        (connection: Connection) => !(connection.target?.includes('place') && connection.source?.includes('place')),
+        [],
+    );
 
     const onConnect = React.useCallback(
         (params: Edge | Connection) => {
@@ -338,10 +343,12 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                 onNodesChange={onNodesChange}
                 onEdgesChange={handleEdgeChange}
                 onConnect={onConnect}
+                isValidConnection={isValidConnection}
             >
                 <Controls />
-                <MiniMap zoomable pannable position="top-right" />
-                <Background gap={12} size={1} />
+                <MiniMap className="dark:bg-background" zoomable pannable position="bottom-right" />
+                <Background gap={25} size={2} />
+                <ExportImageButton />
             </ReactFlow>
         </div>
     );
