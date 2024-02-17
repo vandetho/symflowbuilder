@@ -30,18 +30,11 @@ const Metadata = React.memo<MetadataProps>(({ control, name }) => {
                             name={`${name}.${index}.name`}
                             type="text"
                             placeholder="Name"
-                            key={field.id}
                             className="flex-grow"
                         />
                     </div>
                     <div className="flex-grow">
-                        <TextField
-                            control={control}
-                            name={`${name}.${index}.value`}
-                            type="text"
-                            placeholder="Value"
-                            key={field.id}
-                        />
+                        <TextField control={control} name={`${name}.${index}.value`} type="text" placeholder="Value" />
                     </div>
                     <Button variant="destructive" onClick={() => remove(index)}>
                         <Icon icon="tabler:trash" width={24} />

@@ -217,12 +217,96 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
         [onEdgesChange, setNodes],
     );
 
+    const onAddMetadata = React.useCallback(
+        (id: string) => {
+            setNodes((prevNodes) => {
+                return prevNodes.map((node) => {
+                    if (node.id === id) {
+                        return {
+                            ...node,
+                            data: {
+                                ...node.data,
+                                metadata: [...(node.data.metadata || []), { name: '', value: '' }],
+                            },
+                        };
+                    }
+                    return node;
+                });
+            });
+        },
+        [setNodes],
+    );
+
+    const onRemoveMetadata = React.useCallback(
+        (index: number, id: string) => {
+            setNodes((prevNodes) => {
+                return prevNodes.map((node) => {
+                    if (node.id === id) {
+                        return {
+                            ...node,
+                            data: {
+                                ...node.data,
+                                metadata: node.data.metadata?.filter((_, idx) => idx !== index),
+                            },
+                        };
+                    }
+                    return node;
+                });
+            });
+        },
+        [setNodes],
+    );
+
+    const onChangeMetadata = React.useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>, index: number, id: string) => {
+            setNodes((prevNodes) => {
+                return prevNodes.map((node) => {
+                    if (node.id === id) {
+                        return {
+                            ...node,
+                            data: {
+                                ...node.data,
+                                metadata: node.data.metadata?.map((meta, idx) => {
+                                    if (idx === index) {
+                                        return {
+                                            ...meta,
+                                            [e.target.name]: e.target.value,
+                                        };
+                                    }
+                                    return meta;
+                                }),
+                            },
+                        };
+                    }
+                    return node;
+                });
+            });
+        },
+        [setNodes],
+    );
+
     const NodeTypes = React.useMemo(
         () => ({
-            place: (props: NodeProps) => <PlaceNode {...props} onChangeName={onChangeName} />,
-            transition: (props: NodeProps) => <TransitionNode {...props} onChangeName={onChangeName} />,
+            place: (props: NodeProps) => (
+                <PlaceNode
+                    {...props}
+                    onChangeName={onChangeName}
+                    onAddMetadata={onAddMetadata}
+                    onRemoveMetadata={onRemoveMetadata}
+                    onChangeMetadata={onChangeMetadata}
+                />
+            ),
+            transition: (props: NodeProps) => (
+                <TransitionNode
+                    {...props}
+                    onChangeName={onChangeName}
+                    onAddMetadata={onAddMetadata}
+                    onRemoveMetadata={onRemoveMetadata}
+                    onChangeMetadata={onChangeMetadata}
+                />
+            ),
         }),
-        [onChangeName],
+        [onAddMetadata, onChangeMetadata, onChangeName, onRemoveMetadata],
     );
 
     return (
