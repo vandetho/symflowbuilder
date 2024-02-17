@@ -5,6 +5,7 @@ import {
     Connection,
     Controls,
     Edge,
+    EdgeChange,
     MiniMap,
     Node,
     NodeProps,
@@ -90,7 +91,6 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
 
     const onConnect = React.useCallback(
         (params: Edge | Connection) => {
-            console.log({ params });
             setEdges((eds) => addEdge(params, eds));
             setNodes((prevNodes) => {
                 const sourceIndex = prevNodes.findIndex((node) => node.id === params.source);
@@ -116,7 +116,7 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                     target.type === 'place' &&
                     isWorkflowTransition(source.data)
                 ) {
-                    source.data.to = (source.data.from ? [...source.data.from, target.id] : [target.id]).filter(
+                    source.data.to = (source.data.to ? [...source.data.to, target.id] : [target.id]).filter(
                         (value, index, array) => array.indexOf(value) === index,
                     );
                     prevNodes[targetIndex] = target;
@@ -175,6 +175,48 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
         [setNodes],
     );
 
+    const handleEdgeChange = React.useCallback(
+        (edge: EdgeChange[]) => {
+            edge.forEach((edge) => {
+                if (edge.type === 'remove') {
+                    const ids = edge.id.split('-').splice(1);
+                    const placeIndex = ids.findIndex((id) => id.includes('place'));
+                    const transitionIndex = ids.findIndex((id) => id.includes('transition'));
+                    const placeId = ids[placeIndex];
+                    const transitionId = ids[transitionIndex];
+                    setNodes((prevNodes) => {
+                        const placeIndex = prevNodes.findIndex((node) => node.id === placeId);
+                        const transitionIndex = prevNodes.findIndex((node) => node.id === transitionId);
+                        const place = prevNodes[placeIndex];
+                        const transition = prevNodes[transitionIndex];
+                        if (
+                            placeIndex > transitionIndex &&
+                            place &&
+                            transition &&
+                            isWorkflowTransition(transition.data)
+                        ) {
+                            transition.data.to = transition.data.to?.filter((id) => id !== placeId);
+                            prevNodes[transitionIndex] = transition;
+                        }
+                        if (
+                            placeIndex < transitionIndex &&
+                            place &&
+                            transition &&
+                            isWorkflowTransition(transition.data)
+                        ) {
+                            transition.data.from = transition.data.from?.filter((id) => id !== placeId);
+                            prevNodes[transitionIndex] = transition;
+                        }
+                        prevNodes[transitionIndex] = transition;
+                        return prevNodes;
+                    });
+                }
+            });
+            onEdgesChange(edge);
+        },
+        [onEdgesChange, setNodes],
+    );
+
     const NodeTypes = React.useMemo(
         () => ({
             place: (props: NodeProps) => <PlaceNode {...props} onChangeName={onChangeName} />,
@@ -182,6 +224,7 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
         }),
         [onChangeName],
     );
+
     return (
         <div className="flex flex-col items-center justify-center gap-3" style={{ height: '85vh', width: '99vw' }}>
             <GraphToolbar addPlaceNode={addPlaceNode} addTransitionNode={addTransitionNode} />
@@ -190,7 +233,7 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                 edges={edges}
                 nodeTypes={NodeTypes}
                 onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
+                onEdgesChange={handleEdgeChange}
                 onConnect={onConnect}
             >
                 <Controls />
