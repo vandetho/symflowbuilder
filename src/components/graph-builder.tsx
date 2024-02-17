@@ -74,6 +74,9 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                         id: `edge_${from}_${transition.name}`,
                         source: places[from],
                         target: transitions[transition.name],
+                        type: 'smoothstep',
+                        animated: true,
+                        style: { strokeWidth: 5 },
                     });
                 });
                 transition.to.forEach((to) => {
@@ -81,6 +84,9 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                         id: `edge_${transition.name}_${to}`,
                         source: transitions[transition.name],
                         target: places[to],
+                        type: 'smoothstep',
+                        animated: true,
+                        style: { strokeWidth: 5 },
                     });
                 });
             });
@@ -91,7 +97,9 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
 
     const onConnect = React.useCallback(
         (params: Edge | Connection) => {
-            setEdges((eds) => addEdge(params, eds));
+            setEdges((eds) =>
+                addEdge({ ...params, animated: true, type: 'smoothstep', style: { strokeWidth: 5 } }, eds),
+            );
             setNodes((prevNodes) => {
                 const sourceIndex = prevNodes.findIndex((node) => node.id === params.source);
                 const targetIndex = prevNodes.findIndex((node) => node.id === params.target);
