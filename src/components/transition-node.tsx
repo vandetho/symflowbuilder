@@ -4,32 +4,41 @@ import { WorkflowTransition } from '@/types/WorkflowTransition';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import GraphMetadata from '@/components/graph-metadata';
+import { Label } from '@/components/ui/label';
 
 interface TransitionNodeProps extends NodeProps {
     data: WorkflowTransition;
     onAddMetadata?: (id: string) => void;
     onRemoveMetadata?: (index: number, id: string) => void;
     onChangeMetadata?: (e: React.ChangeEvent<HTMLInputElement>, index: number, id: string) => void;
-    onChangeName?: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
 }
 
 const TransitionNode = React.memo<TransitionNodeProps>(
-    ({ data, id, onChangeName, onChangeMetadata, onRemoveMetadata, onAddMetadata }) => {
-        const handleNameChange = React.useCallback(
+    ({ data, id, onChange, onChangeMetadata, onRemoveMetadata, onAddMetadata }) => {
+        const handleChange = React.useCallback(
             (e: React.ChangeEvent<HTMLInputElement>) => {
-                if (onChangeName) {
-                    onChangeName(e, id);
+                if (onChange) {
+                    onChange(e, id);
                 }
             },
-            [id, onChangeName],
+            [id, onChange],
         );
 
         return (
             <React.Fragment>
-                <div className="p-4 shadow-md rounded-full border-2 border-teal-500">
+                <div className="p-6 shadow-md rounded-full border-2 border-teal-500 gap-2">
                     <div className="flex flex-col">
-                        <p className="text-sm font-bold">Transition</p>
-                        <Input type="text" value={data.name} onChange={handleNameChange} />
+                        <Label htmlFor={`${id}-name`} className="text-sm font-bold">
+                            Transition
+                        </Label>
+                        <Input id={`${id}-name`} name="name" type="text" value={data.name} onChange={handleChange} />
+                    </div>
+                    <div className="flex flex-col">
+                        <Label htmlFor={`${id}-guard`} className="text-sm font-bold">
+                            Guard
+                        </Label>
+                        <Input id={`${id}-guard`} name="guard" type="text" value={data.guard} onChange={handleChange} />
                     </div>
                     <Handle
                         type="target"

@@ -96,6 +96,7 @@ const ExportForm = React.memo<ExportFormProps>(({ nodes }) => {
                         const to = node.data.to || [];
                         return {
                             ...node.data,
+                            guard: node.data.guard || undefined,
                             from: from.map((id) => placeNodes[id].name),
                             to: to.map((id) => placeNodes[id].name),
                         };

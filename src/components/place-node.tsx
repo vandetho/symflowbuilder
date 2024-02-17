@@ -4,32 +4,35 @@ import { WorkflowPlace } from '@/types/WorkflowPlace';
 import { Input } from '@/components/ui/input';
 import GraphMetadata from '@/components/graph-metadata';
 import { Card, CardContent } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 
 interface PlaceNodeProps extends NodeProps {
     data: WorkflowPlace;
     onAddMetadata?: (id: string) => void;
     onRemoveMetadata?: (index: number, id: string) => void;
     onChangeMetadata?: (e: React.ChangeEvent<HTMLInputElement>, index: number, id: string) => void;
-    onChangeName?: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
 }
 
 const PlaceNode = React.memo<PlaceNodeProps>(
-    ({ data, id, onChangeName, onChangeMetadata, onAddMetadata, onRemoveMetadata }) => {
-        const handleNameChange = React.useCallback(
+    ({ data, id, onChange, onChangeMetadata, onAddMetadata, onRemoveMetadata }) => {
+        const handleChange = React.useCallback(
             (e: React.ChangeEvent<HTMLInputElement>) => {
-                if (onChangeName) {
-                    onChangeName(e, id);
+                if (onChange) {
+                    onChange(e, id);
                 }
             },
-            [id, onChangeName],
+            [id, onChange],
         );
 
         return (
             <React.Fragment>
                 <div className="p-4 shadow-md rounded-lg border-2 border-primary dark:bg-black light:bg-white">
                     <div className="flex flex-col">
-                        <p className="text-sm font-bold">Place</p>
-                        <Input type="text" value={data.name} onChange={handleNameChange} />
+                        <Label htmlFor={`${id}-name`} className="text-sm font-bold">
+                            Place
+                        </Label>
+                        <Input id={`${id}-name`} name="name" type="text" value={data.name} onChange={handleChange} />
                     </div>
                     <Handle
                         type="target"

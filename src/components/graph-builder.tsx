@@ -21,6 +21,7 @@ import { isWorkflowTransition, WorkflowTransition } from '@/types/WorkflowTransi
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { generateToken } from '@/helpers/token.helper';
 import GraphToolbar from '@/components/graph-toolbar';
+import EmptyButton from '@/components/empty-button';
 
 type GraphBuilderProps = {
     config: WorkflowConfig | undefined;
@@ -163,7 +164,7 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
         });
     }, [setNodes]);
 
-    const onChangeName = React.useCallback(
+    const onChange = React.useCallback(
         (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
             setNodes((prevState) => {
                 return prevState.map((node) => {
@@ -172,7 +173,7 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                             ...node,
                             data: {
                                 ...node.data,
-                                name: e.target.value,
+                                [e.target.name]: e.target.value,
                             },
                         };
                     }
@@ -298,7 +299,7 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
             place: (props: NodeProps) => (
                 <PlaceNode
                     {...props}
-                    onChangeName={onChangeName}
+                    onChange={onChange}
                     onAddMetadata={onAddMetadata}
                     onRemoveMetadata={onRemoveMetadata}
                     onChangeMetadata={onChangeMetadata}
@@ -307,19 +308,29 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
             transition: (props: NodeProps) => (
                 <TransitionNode
                     {...props}
-                    onChangeName={onChangeName}
+                    onChange={onChange}
                     onAddMetadata={onAddMetadata}
                     onRemoveMetadata={onRemoveMetadata}
                     onChangeMetadata={onChangeMetadata}
                 />
             ),
         }),
-        [onAddMetadata, onChangeMetadata, onChangeName, onRemoveMetadata],
+        [onAddMetadata, onChangeMetadata, onChange, onRemoveMetadata],
     );
 
+    const onEmptyPanel = React.useCallback(() => {
+        setNodes([]);
+        setEdges([]);
+    }, [setEdges, setNodes]);
+
     return (
-        <div className="flex flex-col items-center justify-center gap-3" style={{ height: '85vh', width: '99vw' }}>
-            <GraphToolbar nodes={nodes} addPlaceNode={addPlaceNode} addTransitionNode={addTransitionNode} />
+        <div className="flex flex-col items-center justify-center gap-3" style={{ height: '91vh', width: '99vw' }}>
+            <GraphToolbar
+                nodes={nodes}
+                addPlaceNode={addPlaceNode}
+                addTransitionNode={addTransitionNode}
+                onEmptyPanel={onEmptyPanel}
+            />
             <ReactFlow
                 nodes={nodes}
                 edges={edges}

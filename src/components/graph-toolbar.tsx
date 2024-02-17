@@ -4,14 +4,16 @@ import ExportButton from '@/components/export-button';
 import { Node } from 'reactflow';
 import { WorkflowPlace } from '@/types/WorkflowPlace';
 import { WorkflowTransition } from '@/types/WorkflowTransition';
+import EmptyButton from '@/components/empty-button';
 
 type GraphToolbarProps = {
     nodes: Node<WorkflowPlace | WorkflowTransition>[];
     addPlaceNode: () => void;
     addTransitionNode: () => void;
+    onEmptyPanel: () => void;
 };
 
-const GraphToolbar = React.memo<GraphToolbarProps>(({ nodes, addPlaceNode, addTransitionNode }) => {
+const GraphToolbar = React.memo<GraphToolbarProps>(({ nodes, addPlaceNode, addTransitionNode, onEmptyPanel }) => {
     return (
         <aside className="flex flex-row gap-3">
             <Button
@@ -28,6 +30,7 @@ const GraphToolbar = React.memo<GraphToolbarProps>(({ nodes, addPlaceNode, addTr
             >
                 Add Transition
             </Button>
+            <EmptyButton onEmptyPanel={onEmptyPanel} />
             <ExportButton nodes={nodes} />
         </aside>
     );
