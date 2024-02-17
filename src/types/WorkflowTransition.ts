@@ -7,3 +7,7 @@ export type WorkflowTransition = {
     guard?: string;
     metadata?: Metadata[];
 };
+
+export function isWorkflowTransition(obj: any): obj is WorkflowTransition {
+    return 'to' in obj && 'from' in obj;
+}
