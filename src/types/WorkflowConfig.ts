@@ -1,12 +1,13 @@
 import { WorkflowPlace } from '@/types/WorkflowPlace';
 import { WorkflowTransition } from '@/types/WorkflowTransition';
 import { Metadata } from '@/types/Metadata';
+import { boolean, string } from 'yup';
 
 export type WorkflowConfig = {
     name: string;
     metadata?: Metadata[];
     auditTrail: boolean;
-    events_to_dispatch?: string[];
+    eventsToDispatch?: string[];
     supports: { entityName: string }[];
     markingStore: {
         type: string;
@@ -16,4 +17,18 @@ export type WorkflowConfig = {
     places: WorkflowPlace[];
     initialMarking: string;
     transitions: WorkflowTransition[];
+};
+
+export type GraphWorkflowConfig = {
+    name: string;
+    metadata?: Metadata[];
+    eventsToDispatch?: string[];
+    auditTrail: boolean;
+    supports: { entityName: string }[];
+    markingStore: {
+        type: string;
+        property: string;
+    };
+    type: string;
+    initialMarking: string;
 };

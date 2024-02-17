@@ -1,19 +1,20 @@
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { Node } from 'reactflow';
+import { Button } from '@/components/ui/button';
+import { Form } from '@/components/ui/form';
 import TextField from '@/components/text-field';
 import Metadata from '@/app/metadata';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { WorkflowPlace } from '@/types/WorkflowPlace';
+import { isWorkflowTransition, WorkflowTransition } from '@/types/WorkflowTransition';
+import { array, boolean, object, string } from 'yup';
 import Select from '@/components/select';
 import Switch from '@/components/switch';
 import SupportEntities from '@/app/support-entities';
-import Places from '@/app/places';
-import Transitions from '@/app/transitions';
-import { Button } from '@/components/ui/button';
-import React from 'react';
-import { WorkflowConfig } from '@/types/WorkflowConfig';
-import { useForm, useWatch } from 'react-hook-form';
-import { Form } from '@/components/ui/form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { array, boolean, object, string } from 'yup';
-import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
+import { GraphWorkflowConfig, WorkflowConfig } from '@/types/WorkflowConfig';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
+import { downloadYaml } from '@/helpers/file.helper';
 
 const nameRegex = /^[a-zA-Z0-9_]+$/i;
 const entityNameRegex = /^[a-zA-Z0-9\\]+$/i;
@@ -41,84 +42,71 @@ const schema = object({
                 .required(),
         }),
     ).required(),
-    places: array(
-        object({
-            name: string()
-                .matches(nameRegex, { message: 'Place name must match the following: [a-zA-Z0-9_]' })
-                .required(),
-            metadata: array(
-                object({
-                    name: string()
-                        .matches(nameRegex, { message: 'Metadata name must match the following: [a-zA-Z0-9_]' })
-                        .required(),
-                    value: string().required(),
-                }),
-            ),
-        }),
-    ).required(),
     initialMarking: string().required(),
-    transitions: array(
-        object({
-            name: string()
-                .matches(nameRegex, { message: 'Transition name must match the following: [a-zA-Z0-9_]' })
-                .required(),
-            from: array(string().required()).required(),
-            to: array(string().required()).required(),
-            guard: string(),
-            metadata: array(
-                object({
-                    name: string()
-                        .matches(nameRegex, { message: 'Metadata name must match the following: [a-zA-Z0-9_]' })
-                        .required(),
-                    value: string().required(),
-                }),
-            ),
-        }),
-    ).required(),
 });
 
-type FormFieldsProps = {
-    config: WorkflowConfig | undefined;
-    setYaml: (yaml: WorkflowConfigYaml) => void;
-    setConfig: (config: WorkflowConfig) => void;
+type ExportFormProps = {
+    nodes: Node<WorkflowPlace | WorkflowTransition>[];
 };
 
-const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) => {
+const ExportForm = React.memo<ExportFormProps>(({ nodes }) => {
     const form = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
             name: '',
-            auditTrail: false,
             metadata: [],
-            supports: [],
+            type: 'state_machine',
+            auditTrail: false,
             markingStore: {
                 type: 'method',
                 property: 'marking',
             },
-            type: 'state_machine',
-            places: [],
-            initialMarking: '',
-            transitions: [],
+            supports: [],
         },
     });
-    const watchPlaces = useWatch({ name: 'places', control: form.control });
-    const places = React.useMemo(() => {
-        return watchPlaces.filter((field) => !!field.name).map((field) => ({ label: field.name, value: field.name }));
-    }, [watchPlaces]);
 
-    React.useEffect(() => {
-        if (config) {
-            form.reset(config);
-        }
-    }, [config, form]);
+    const places = React.useMemo(() => {
+        return nodes
+            .filter((node) => node.type === 'place')
+            .map((node) => {
+                return {
+                    label: node.data.name,
+                    value: node.data.name,
+                };
+            });
+    }, [nodes]);
 
     const onSubmit = React.useCallback(
-        (config: WorkflowConfig) => {
+        (data: GraphWorkflowConfig) => {
+            const placeNodes = nodes.reduce(
+                (acc, node) => {
+                    if (node.type === 'place') {
+                        acc[node.id] = node.data;
+                    }
+                    return acc;
+                },
+                {} as Record<string, WorkflowPlace>,
+            );
+            const places = nodes.filter((node) => node.type === 'place').map((node) => node.data as WorkflowPlace);
+            const transitions = nodes
+                .filter((node) => node.type === 'transition')
+                .map((node) => {
+                    if (isWorkflowTransition(node.data)) {
+                        const from = node.data.from || [];
+                        const to = node.data.to || [];
+                        return {
+                            ...node.data,
+                            from: from.map((id) => placeNodes[id].name),
+                            to: to.map((id) => placeNodes[id].name),
+                        };
+                    }
+                    return node.data as WorkflowTransition;
+                });
+            const config: WorkflowConfig = { ...data, places, transitions };
             const yaml = WorkflowConfigHelper.toYaml(config);
-            setYaml(yaml);
-            setConfig(config);
+            downloadYaml(yaml);
         },
-        [setYaml, setConfig],
+        [nodes],
     );
 
     return (
@@ -149,7 +137,6 @@ const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) 
                         <TextField control={form.control} name="markingStore.property" label="Property" />
                     </div>
                     <SupportEntities control={form.control} />
-                    <Places control={form.control} />
                     <Select
                         control={form.control}
                         name="initialMarking"
@@ -158,12 +145,11 @@ const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) 
                         label="Initial Marking"
                         items={places}
                     />
-                    <Transitions control={form.control} places={places} />
+                    <Button type="submit">Export</Button>
                 </div>
-                <Button type="submit">Save</Button>
             </form>
         </Form>
     );
 });
 
-export default FormFields;
+export default ExportForm;

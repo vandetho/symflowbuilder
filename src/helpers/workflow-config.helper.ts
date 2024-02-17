@@ -3,9 +3,12 @@ import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { WorkflowPlace } from '@/types/WorkflowPlace';
 import { Metadata } from '@/types/Metadata';
 import { WorkflowTransition } from '@/types/WorkflowTransition';
+import { WorkflowPlaceYaml } from '@/types/WorkflowPlaceYaml';
+import { MetadataYaml } from '@/types/MetadataYaml';
+import { WorkflowTransitionYaml } from '@/types/WorkflowTransitionYaml';
 
 export class WorkflowConfigHelper {
-    static toObject = (yamlConfig: WorkflowConfigYaml) => {
+    static toObject = (yamlConfig: WorkflowConfigYaml): WorkflowConfig => {
         const workflows = yamlConfig.framework.workflows;
         const workflowName = Object.keys(workflows)[0];
         const workflow = Object.values(workflows)[0];
@@ -57,7 +60,7 @@ export class WorkflowConfigHelper {
             });
         }
 
-        const config: WorkflowConfig = {
+        return {
             name: workflowName,
             type: workflowType,
             auditTrail: workflow.audit_trail.enabled,
@@ -66,10 +69,73 @@ export class WorkflowConfigHelper {
             supports: workflow.supports.map((support) => ({ entityName: support })),
             metadata: workflowMetadata,
             markingStore: workflow.marking_store,
-            events_to_dispatch: workflow.events_to_dispatch,
+            eventsToDispatch: workflow.events_to_dispatch,
             transitions: workflowTransitions,
         };
+    };
+    static toYaml = (config: WorkflowConfig): WorkflowConfigYaml => {
+        const {
+            name,
+            metadata,
+            eventsToDispatch,
+            auditTrail,
+            places,
+            supports,
+            transitions,
+            initialMarking,
+            markingStore,
+            ...data
+        } = config;
+        const realPlaces: WorkflowPlaceYaml = {};
+        places.forEach((place) => {
+            const metadata: MetadataYaml = {};
+            if (place.metadata && place.metadata.length > 0) {
+                place.metadata.forEach((meta) => {
+                    metadata[meta.name] = meta.value;
+                });
+            }
+            realPlaces[place.name] = Object.keys(metadata).length > 0 ? { metadata } : null;
+        });
+        const realTransitions: WorkflowTransitionYaml | undefined = transitions.length > 0 ? {} : undefined;
+        transitions.forEach((transition) => {
+            const metadata: MetadataYaml = {};
+            if (realTransitions) {
+                realTransitions[transition.name] = {
+                    from: transition.from,
+                    to: transition.to,
+                    guard: transition.guard,
+                };
+                if (transition.metadata && transition.metadata.length > 0) {
+                    transition.metadata.forEach((meta) => {
+                        metadata[meta.name] = meta.value;
+                    });
+                }
+                realTransitions[transition.name].metadata = Object.keys(metadata).length > 0 ? metadata : undefined;
+            }
+        });
+        const realMetadata: MetadataYaml = {};
+        if (metadata && metadata.length > 0) {
+            metadata.forEach((meta) => {
+                realMetadata[meta.name] = meta.value;
+            });
+        }
 
-        return config;
+        return {
+            framework: {
+                workflows: {
+                    [name]: {
+                        ...data,
+                        metadata: Object.keys(realMetadata).length > 0 ? realMetadata : undefined,
+                        audit_trail: { enabled: auditTrail },
+                        supports: supports.map((support) => support.entityName),
+                        marking_store: markingStore,
+                        events_to_dispatch: eventsToDispatch,
+                        initial_marking: initialMarking,
+                        places: realPlaces,
+                        transitions: realTransitions,
+                    },
+                },
+            },
+        };
     };
 }

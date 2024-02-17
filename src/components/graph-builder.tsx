@@ -311,7 +311,7 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
 
     return (
         <div className="flex flex-col items-center justify-center gap-3" style={{ height: '85vh', width: '99vw' }}>
-            <GraphToolbar addPlaceNode={addPlaceNode} addTransitionNode={addTransitionNode} />
+            <GraphToolbar nodes={nodes} addPlaceNode={addPlaceNode} addTransitionNode={addTransitionNode} />
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
