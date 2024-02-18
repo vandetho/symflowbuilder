@@ -27,11 +27,13 @@ const PlaceNode = React.memo<PlaceNodeProps>(
 
         return (
             <React.Fragment>
-                <div className="p-4 shadow-md rounded-lg border-2 border-primary dark:bg-black light:bg-white">
-                    <div className="flex flex-col">
-                        <Label htmlFor={`${id}-name`} className="text-sm font-bold">
+                <div className="shadow-md rounded-lg border-b-2 border-l-2 border-r-2 border-primary dark:bg-black light:bg-white">
+                    <div className="bg-primary rounded-t-md p-2 m-0">
+                        <Label htmlFor={`${id}-name`} className="text-white text-sm font-bold">
                             Place
                         </Label>
+                    </div>
+                    <div className="p-2">
                         <Input id={`${id}-name`} name="name" type="text" value={data.name} onChange={handleChange} />
                     </div>
                     <Handle

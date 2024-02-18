@@ -10,6 +10,8 @@ import {
     Node,
     NodeProps,
     ReactFlow,
+    ReactFlowInstance,
+    ReactFlowProvider,
     useEdgesState,
     useNodesState,
 } from 'reactflow';
@@ -28,8 +30,10 @@ type GraphBuilderProps = {
 };
 
 export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
+    const reactFlowWrapper = React.useRef<HTMLDivElement>(null);
     const [nodes, setNodes, onNodesChange] = useNodesState<WorkflowPlace | WorkflowTransition>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+    const [reactFlowInstance, setReactFlowInstance] = React.useState<ReactFlowInstance | undefined>();
 
     React.useEffect(() => {
         if (config) {
@@ -328,29 +332,71 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
         setEdges([]);
     }, [setEdges, setNodes]);
 
+    const onDragOver = React.useCallback((event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+    }, []);
+
+    const onDrop = React.useCallback(
+        (event: React.DragEvent<HTMLDivElement>) => {
+            event.preventDefault();
+
+            const type = event.dataTransfer.getData('application/reactflow');
+
+            if (typeof type === 'undefined' || !type) {
+                return;
+            }
+
+            if (reactFlowInstance) {
+                const position = reactFlowInstance.screenToFlowPosition({
+                    x: event.clientX,
+                    y: event.clientY,
+                });
+                const newNode = {
+                    id: `${type}_${generateToken()}`,
+                    type,
+                    position,
+                    data: { name: type, metadata: [] },
+                };
+
+                setNodes((nds) => nds.concat(newNode));
+            }
+        },
+        [reactFlowInstance, setNodes],
+    );
+    console.log({ nodes });
     return (
-        <div className="flex flex-col items-center justify-center gap-3" style={{ height: '91vh', width: '99vw' }}>
-            <GraphToolbar
-                nodes={nodes}
-                addPlaceNode={addPlaceNode}
-                addTransitionNode={addTransitionNode}
-                onEmptyPanel={onEmptyPanel}
-            />
-            <ReactFlow
-                nodes={nodes}
-                edges={edges}
-                nodeTypes={NodeTypes}
-                onNodesChange={onNodesChange}
-                onEdgesChange={handleEdgeChange}
-                onConnect={onConnect}
-                isValidConnection={isValidConnection}
+        <ReactFlowProvider>
+            <div
+                ref={reactFlowWrapper}
+                className="reactflow-wrapper flex flex-col items-center justify-center gap-3"
+                style={{ height: '91vh', width: '99vw' }}
             >
-                <Controls />
-                <MiniMap className="dark:bg-background" zoomable pannable position="bottom-right" />
-                <Background gap={25} size={2} />
-                <ExportImageButton />
-            </ReactFlow>
-        </div>
+                <GraphToolbar
+                    nodes={nodes}
+                    addPlaceNode={addPlaceNode}
+                    addTransitionNode={addTransitionNode}
+                    onEmptyPanel={onEmptyPanel}
+                />
+                <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    nodeTypes={NodeTypes}
+                    onNodesChange={onNodesChange}
+                    onEdgesChange={handleEdgeChange}
+                    onConnect={onConnect}
+                    isValidConnection={isValidConnection}
+                    onInit={setReactFlowInstance}
+                    onDrop={onDrop}
+                    onDragOver={onDragOver}
+                >
+                    <Controls />
+                    <MiniMap className="dark:bg-background" zoomable pannable position="bottom-right" />
+                    <Background gap={25} size={2} />
+                    <ExportImageButton />
+                </ReactFlow>
+            </div>
+        </ReactFlowProvider>
     );
 });
 

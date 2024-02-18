@@ -27,18 +27,26 @@ const TransitionNode = React.memo<TransitionNodeProps>(
 
         return (
             <React.Fragment>
-                <div className="p-6 shadow-md rounded-full border-2 border-teal-500 gap-2">
-                    <div className="flex flex-col">
-                        <Label htmlFor={`${id}-name`} className="text-sm font-bold">
+                <div className="shadow-md rounded-lg border-b-2 border-l-2 border-r-2 border-teal-500 dark:bg-black light:bg-white">
+                    <div className="bg-teal-500 rounded-t-md p-2 m-0">
+                        <Label htmlFor={`${id}-name`} className="text-white text-sm font-bold">
                             Transition
                         </Label>
-                        <Input id={`${id}-name`} name="name" type="text" value={data.name} onChange={handleChange} />
                     </div>
-                    <div className="flex flex-col">
-                        <Label htmlFor={`${id}-guard`} className="text-sm font-bold">
-                            Guard
-                        </Label>
-                        <Input id={`${id}-guard`} name="guard" type="text" value={data.guard} onChange={handleChange} />
+                    <div className="p-2 gap-3">
+                        <Input id={`${id}-name`} name="name" type="text" value={data.name} onChange={handleChange} />
+                        <div className="flex flex-col">
+                            <Label htmlFor={`${id}-guard`} className="text-sm font-bold">
+                                Guard
+                            </Label>
+                            <Input
+                                id={`${id}-guard`}
+                                name="guard"
+                                type="text"
+                                value={data.guard}
+                                onChange={handleChange}
+                            />
+                        </div>
                     </div>
                     <Handle
                         type="target"
