@@ -64,7 +64,6 @@ export class WorkflowConfigHelper {
             name: workflowName,
             type: workflowType,
             auditTrail: workflow.audit_trail.enabled,
-            needEventsToDispatch: workflow.events_to_dispatch !== undefined,
             places: workflowPlaces,
             initialMarking: workflow.initial_marking,
             supports: workflow.supports.map((support) => ({ entityName: support })),

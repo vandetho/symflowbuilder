@@ -6,6 +6,7 @@ import {
     Controls,
     Edge,
     EdgeChange,
+    MarkerType,
     MiniMap,
     Node,
     NodeProps,
@@ -108,7 +109,16 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
     const onConnect = React.useCallback(
         (params: Edge | Connection) => {
             setEdges((eds) =>
-                addEdge({ ...params, animated: true, type: 'smoothstep', style: { strokeWidth: 5 } }, eds),
+                addEdge(
+                    {
+                        ...params,
+                        animated: true,
+                        type: 'smoothstep',
+                        style: { strokeWidth: 5 },
+                        markerEnd: { type: MarkerType.ArrowClosed },
+                    },
+                    eds,
+                ),
             );
             setNodes((prevNodes) => {
                 const sourceIndex = prevNodes.findIndex((node) => node.id === params.source);
@@ -364,7 +374,7 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
         },
         [reactFlowInstance, setNodes],
     );
-    console.log({ nodes });
+
     return (
         <ReactFlowProvider>
             <div
