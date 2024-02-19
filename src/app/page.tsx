@@ -13,10 +13,15 @@ import FileDropzone from '@/components/file-dropzone';
 import jsYaml from 'js-yaml';
 import { toast } from 'sonner';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import FormFields from '@/components/form-fields';
 import GraphBuilder from '@/components/graph-builder';
+import ReactMermaid from '@/components/react-mermaid';
 
 export default function Home() {
+    const pathname = usePathname();
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [config, setConfig] = React.useState<WorkflowConfig>();
     const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
 
@@ -36,6 +41,13 @@ export default function Home() {
         };
         reader.readAsText(file);
     }, []);
+
+    const onChangeTab = React.useCallback(
+        (value: string) => {
+            router.push(`${pathname}?tab=${value}`);
+        },
+        [pathname, router],
+    );
 
     return (
         <FileDropzone onDrop={onDrop}>
@@ -74,16 +86,23 @@ export default function Home() {
                                             The best way to build and visualize workflow for symfony
                                         </p>
                                     </div>
-                                    <Tabs defaultValue="diagram">
+                                    <Tabs
+                                        defaultValue={searchParams.get('tab') || 'graphviz'}
+                                        onValueChange={onChangeTab}
+                                    >
                                         <div className="flex flex-row justify-between items-center">
                                             <TabsList>
-                                                <TabsTrigger value="diagram">Diagram</TabsTrigger>
+                                                <TabsTrigger value="graphviz">Graphviz</TabsTrigger>
+                                                <TabsTrigger value="mermaid">Mermaid</TabsTrigger>
                                                 <TabsTrigger value="yaml">Yaml</TabsTrigger>
                                             </TabsList>
                                             <DownloadYaml yaml={yaml} />
                                         </div>
-                                        <TabsContent value="diagram">
+                                        <TabsContent value="graphviz">
                                             <Graphviz workflowConfig={config} />
+                                        </TabsContent>
+                                        <TabsContent value="mermaid">
+                                            <ReactMermaid workflowConfig={config} />
                                         </TabsContent>
                                         <TabsContent value="yaml">
                                             <YamlMarkdown yamlConfig={yaml} />

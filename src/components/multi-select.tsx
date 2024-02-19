@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { FormField, FormItem, FormLabel } from '@/components/ui/form';
-import { MultiSelect as BaseMultiSelect } from '@/components/ui/multi-select';
+import BaseMultiSelect from '@/components/ui/multi-select';
 import { SelectItem } from '@/types/SelectItem';
 
 interface MultiSelectProps {
@@ -11,7 +11,7 @@ interface MultiSelectProps {
     className?: string;
 }
 
-function MultiSelect({ control, name, className, label, items }: MultiSelectProps) {
+const MultiSelect = React.memo<MultiSelectProps>(({ control, name, className, label, items }: MultiSelectProps) => {
     return (
         <FormField
             control={control}
@@ -24,6 +24,6 @@ function MultiSelect({ control, name, className, label, items }: MultiSelectProp
             )}
         />
     );
-}
+});
 
-export { MultiSelect };
+export default MultiSelect;

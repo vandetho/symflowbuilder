@@ -1,13 +1,12 @@
 import React from 'react';
 import { SelectItem } from '@/types/SelectItem';
 import TextField from '@/components/text-field';
-import { MultiSelect } from '@/components/multi-select';
+import MultiSelect from '@/components/multi-select';
 import Metadata from '@/app/metadata';
 import { useBoolean } from 'react-use';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 type TransitionFieldProps = {
     control: any;
