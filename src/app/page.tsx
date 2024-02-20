@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
@@ -8,20 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import jsYaml from 'js-yaml';
 import { toast } from 'sonner';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import FormFields from '@/components/form-fields';
 import GraphBuilder from '@/components/graph-builder';
-import ReactMermaid from '@/components/react-mermaid';
-import YamlMarkdown from '@/components/yaml-markdown';
-import Graphviz from '@/components/graphviz';
 import ScrollTop from '@/components/scroll-top';
-import DownloadYaml from '@/components/download-yaml';
 import FileDropzone from '@/components/file-dropzone';
+import ConfigTabRenderer from '@/app/config-tab-renderer';
 
 export default function Home() {
-    const pathname = usePathname();
-    const router = useRouter();
-    const searchParams = useSearchParams();
     const [config, setConfig] = React.useState<WorkflowConfig>();
     const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
 
@@ -41,13 +34,6 @@ export default function Home() {
         };
         reader.readAsText(file);
     }, []);
-
-    const onChangeTab = React.useCallback(
-        (value: string) => {
-            router.push(`${pathname}?tab=${value}`);
-        },
-        [pathname, router],
-    );
 
     return (
         <FileDropzone onDrop={onDrop}>
@@ -86,28 +72,9 @@ export default function Home() {
                                             The best way to build and visualize workflow for symfony
                                         </p>
                                     </div>
-                                    <Tabs
-                                        defaultValue={searchParams.get('tab') || 'graphviz'}
-                                        onValueChange={onChangeTab}
-                                    >
-                                        <div className="flex flex-row justify-between items-center">
-                                            <TabsList>
-                                                <TabsTrigger value="graphviz">Graphviz</TabsTrigger>
-                                                <TabsTrigger value="mermaid">Mermaid</TabsTrigger>
-                                                <TabsTrigger value="yaml">Yaml</TabsTrigger>
-                                            </TabsList>
-                                            <DownloadYaml yaml={yaml} />
-                                        </div>
-                                        <TabsContent value="graphviz">
-                                            <Graphviz workflowConfig={config} />
-                                        </TabsContent>
-                                        <TabsContent value="mermaid">
-                                            <ReactMermaid workflowConfig={config} />
-                                        </TabsContent>
-                                        <TabsContent value="yaml">
-                                            <YamlMarkdown yamlConfig={yaml} />
-                                        </TabsContent>
-                                    </Tabs>
+                                    <Suspense fallback={<div>Loading...</div>}>
+                                        <ConfigTabRenderer config={config} yaml={yaml} />
+                                    </Suspense>
                                 </div>
                             </ResizablePanel>
                         </ResizablePanelGroup>
