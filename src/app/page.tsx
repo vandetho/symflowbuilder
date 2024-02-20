@@ -5,11 +5,6 @@ import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import YamlMarkdown from '@/components/YamlMarkdown';
-import Graphviz from '@/components/graphviz';
-import ScrollTop from '@/components/scroll-top';
-import { DownloadYaml } from '@/components/download-yaml';
-import FileDropzone from '@/components/file-dropzone';
 import jsYaml from 'js-yaml';
 import { toast } from 'sonner';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
@@ -17,6 +12,11 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import FormFields from '@/components/form-fields';
 import GraphBuilder from '@/components/graph-builder';
 import ReactMermaid from '@/components/react-mermaid';
+import YamlMarkdown from '@/components/yaml-markdown';
+import Graphviz from '@/components/graphviz';
+import ScrollTop from '@/components/scroll-top';
+import DownloadYaml from '@/components/download-yaml';
+import FileDropzone from '@/components/file-dropzone';
 
 export default function Home() {
     const pathname = usePathname();

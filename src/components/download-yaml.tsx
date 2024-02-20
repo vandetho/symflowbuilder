@@ -7,7 +7,8 @@ import { downloadYaml } from '@/helpers/file.helper';
 interface DownloadYamlProps {
     yaml: WorkflowConfigYaml | undefined;
 }
-export const DownloadYaml = React.memo<DownloadYamlProps>(({ yaml }) => {
+
+const DownloadYaml = React.memo<DownloadYamlProps>(({ yaml }) => {
     const handleExport = React.useCallback(() => {
         if (yaml) {
             downloadYaml(yaml);
@@ -20,3 +21,5 @@ export const DownloadYaml = React.memo<DownloadYamlProps>(({ yaml }) => {
         </Button>
     );
 });
+
+export default DownloadYaml;
