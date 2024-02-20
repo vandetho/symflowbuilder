@@ -9,6 +9,7 @@
         "lint": "next lint --fix"
     },
     "dependencies": {
+        "@dagrejs/dagre": "^1.0.4",
         "@hookform/resolvers": "^3.3.4",
         "@iconify/react": "^4.1.1",
         "@radix-ui/react-alert-dialog": "^1.0.5",
@@ -32,7 +33,6 @@
         "clsx": "^2.1.0",
         "cmdk": "^0.2.1",
         "d3-graphviz": "^5.3.0",
-        "d3-hierarchy": "^3.1.2",
         "graphviz-react": "^1.2.5",
         "html-to-image": "^1.11.11",
         "js-yaml": "^4.1.0",
