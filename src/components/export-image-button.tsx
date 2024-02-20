@@ -1,16 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { getRectOfNodes, getTransformForBounds, Panel, useReactFlow } from 'reactflow';
 import { Button } from '@/components/ui/button';
 import { toPng } from 'html-to-image';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 
@@ -45,7 +37,7 @@ const ExportImageButton = React.memo<ExportImageButtonProps>(() => {
                 transform: `translate(${transform[0]}px, ${transform[1]}px) scale(${transform[2]})`,
             },
         }).then(downloadImage);
-    }, []);
+    }, [getNodes, height, width]);
 
     return (
         <Panel position="top-right">

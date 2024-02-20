@@ -31,6 +31,7 @@
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.0",
         "cmdk": "^0.2.1",
+        "d3-graphviz": "^5.3.0",
         "d3-hierarchy": "^3.1.2",
         "graphviz-react": "^1.2.5",
         "html-to-image": "^1.11.11",
