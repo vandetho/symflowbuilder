@@ -23,6 +23,7 @@ export default function Home() {
     React.useEffect(() => {
         if (workflowConfig) {
             setConfig(workflowConfig);
+            setYaml(WorkflowConfigHelper.toYaml(workflowConfig));
         }
     }, [workflowConfig]);
 
