@@ -25,6 +25,7 @@ import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { generateToken } from '@/helpers/token.helper';
 import GraphToolbar from '@/components/graph-toolbar';
 import ExportImageButton from '@/components/export-image-button';
+import { SessionStorageContext } from '@/contexts/session-storage-context';
 
 type GraphBuilderProps = {
     config: WorkflowConfig | undefined;
@@ -32,8 +33,9 @@ type GraphBuilderProps = {
 
 export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
     const reactFlowWrapper = React.useRef<HTMLDivElement>(null);
-    const [nodes, setNodes, onNodesChange] = useNodesState<WorkflowPlace | WorkflowTransition>([]);
-    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+    const { nodeConfig, edgeConfig, setEdgeConfig, setNodeConfig } = React.useContext(SessionStorageContext);
+    const [nodes, setNodes, onNodesChange] = useNodesState<WorkflowPlace | WorkflowTransition>(nodeConfig || []);
+    const [edges, setEdges, onEdgesChange] = useEdgesState(edgeConfig || []);
     const [reactFlowInstance, setReactFlowInstance] = React.useState<ReactFlowInstance | undefined>();
 
     React.useEffect(() => {
@@ -97,9 +99,11 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                 });
             });
             setNodes([...placeNodes, ...transitionNodes]);
+            setNodeConfig([...placeNodes, ...transitionNodes]);
             setEdges([...transitionEdges]);
+            setEdgeConfig([...transitionEdges]);
         }
-    }, [config, setEdges, setNodes]);
+    }, [config, setEdgeConfig, setEdges, setNodeConfig, setNodes]);
 
     const isValidConnection = React.useCallback(
         (connection: Connection) => !(connection.target?.includes('place') && connection.source?.includes('place')),
@@ -120,39 +124,39 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                     eds,
                 ),
             );
-            setNodes((prevNodes) => {
-                const sourceIndex = prevNodes.findIndex((node) => node.id === params.source);
-                const targetIndex = prevNodes.findIndex((node) => node.id === params.target);
-                const source = prevNodes[sourceIndex];
-                const target = prevNodes[targetIndex];
-                if (
-                    target &&
-                    source &&
-                    source.type === 'place' &&
-                    target.type === 'transition' &&
-                    isWorkflowTransition(target.data)
-                ) {
-                    target.data.from = (target.data.from ? [...target.data.from, source.id] : [source.id]).filter(
-                        (value, index, array) => array.indexOf(value) === index,
-                    );
-                    prevNodes[targetIndex] = target;
-                }
-                if (
-                    target &&
-                    source &&
-                    source.type === 'transition' &&
-                    target.type === 'place' &&
-                    isWorkflowTransition(source.data)
-                ) {
-                    source.data.to = (source.data.to ? [...source.data.to, target.id] : [target.id]).filter(
-                        (value, index, array) => array.indexOf(value) === index,
-                    );
-                    prevNodes[targetIndex] = target;
-                }
-                return prevNodes;
-            });
+            const tmpNodes = [...nodes];
+            const sourceIndex = tmpNodes.findIndex((node) => node.id === params.source);
+            const targetIndex = tmpNodes.findIndex((node) => node.id === params.target);
+            const source = tmpNodes[sourceIndex];
+            const target = tmpNodes[targetIndex];
+            if (
+                target &&
+                source &&
+                source.type === 'place' &&
+                target.type === 'transition' &&
+                isWorkflowTransition(target.data)
+            ) {
+                target.data.from = (target.data.from ? [...target.data.from, source.id] : [source.id]).filter(
+                    (value, index, array) => array.indexOf(value) === index,
+                );
+                tmpNodes[targetIndex] = target;
+            }
+            if (
+                target &&
+                source &&
+                source.type === 'transition' &&
+                target.type === 'place' &&
+                isWorkflowTransition(source.data)
+            ) {
+                source.data.to = (source.data.to ? [...source.data.to, target.id] : [target.id]).filter(
+                    (value, index, array) => array.indexOf(value) === index,
+                );
+                tmpNodes[targetIndex] = target;
+            }
+            setNodes(tmpNodes);
+            setNodeConfig(tmpNodes);
         },
-        [setEdges, setNodes],
+        [nodes, setEdges, setNodeConfig, setNodes],
     );
 
     const addPlaceNode = React.useCallback(() => {
@@ -362,17 +366,18 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                     x: event.clientX,
                     y: event.clientY,
                 });
-                const newNode = {
+                const newNode: Node<WorkflowPlace> = {
                     id: `${type}_${generateToken()}`,
                     type,
                     position,
                     data: { name: type, metadata: [] },
                 };
-
-                setNodes((nds) => nds.concat(newNode));
+                const tmpNodes = [...nodes, newNode];
+                setNodes(tmpNodes);
+                setNodeConfig(tmpNodes);
             }
         },
-        [reactFlowInstance, setNodes],
+        [nodes, reactFlowInstance, setNodeConfig, setNodes],
     );
 
     return (

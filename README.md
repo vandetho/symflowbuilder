@@ -1,6 +1,6 @@
 # SymFlowBuilder—The platform where symfony workflows are made easy!
 <hr />
-<img src="src/assets/logo-128.png" alt="SymFlowBuilder" width="128" height="118" />
+<img src="src/assets/logo-128.png" alt="SymFlowBuilder" width="128" height="120" />
 
 A platform aimed at simplifying the Symfony Workflow configuration process,
 offering a graphical interface for easy visualization and management of workflows.
@@ -10,6 +10,32 @@ It caters to the needs of both novice and experienced Symfony developers,
 streamlining the workflow configuration process and enhancing productivity across Symfony projects.
 
 https://www.symflowbuilder.com
+
+## Why Use SymFlowBuilder?
+* **Time-Saving**: The platform significantly reduces the time and effort required to configure workflows in Symfony projects.
+* **Error Reduction**: The visual interface minimizes the chances of human error in workflow configuration.
+* **Enhanced Collaboration**: The visual representation of workflows makes it easier for teams to understand and collaborate on workflow designs.
+* **Streamlined Development**: The platform simplifies the process of designing, configuring, and exporting workflows, making it easier for developers to manage complex workflows.
+* **Compatibility**: SymFlowBuilder is designed to be compatible with different Symfony versions, ensuring that it remains relevant as Symfony evolves.
+* **User-Friendly**: The intuitive drag-and-drop interface makes it easy for developers of all levels to design and configure workflows.
+
+In a classic Symfony application, the workflow configuration is done in a YAML file. By following this flow:
+```mermaid
+graph LR
+A[Design Flowchart]
+B[Build Configuration In Yaml]
+C[Dump Configuration]
+A --> B
+B --> C
+```
+
+With SymFlowBuilder, the process is simplified and streamlined:
+```mermaid
+graph LR
+A[Design Flowchart]
+B[Export Configuration]
+A --> B
+```
 
 ## Key Features:
 This platform offers the following features which will make your task of making workflow more easily and streamline:
@@ -28,3 +54,8 @@ This platform offers the following features which will make your task of making 
   This visualization aspect not only aids in the rapid development and troubleshooting of workflows but also facilitates better team collaboration
   by making the workflows easily understandable for everyone involved,
   regardless of their technical depth in Symfony.
+* **Form Builder**:
+  The platform also includes a form builder
+  that allows users to define the form fields and their types,
+  which are then used to generate the form configuration for the workflow.
+  This feature is particularly useful for developers who are not familiar with Symfony's form configuration syntax.
