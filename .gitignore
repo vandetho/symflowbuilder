@@ -40,3 +40,6 @@ next-env.d.ts
 yaml
 
 .env*
+
+public/sw.js
+public/workbox-*.js
