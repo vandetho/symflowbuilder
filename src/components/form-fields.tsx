@@ -14,6 +14,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { array, boolean, object, string } from 'yup';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
+import { SessionStorageContext } from '@/contexts/session-storage-context';
 
 const nameRegex = /^[a-zA-Z0-9_]+$/i;
 const entityNameRegex = /^[a-zA-Z0-9\\]+$/i;
@@ -84,8 +85,10 @@ type FormFieldsProps = {
 };
 
 const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) => {
+    const { setWorkflowConfig } = React.useContext(SessionStorageContext);
     const form = useForm({
         resolver: yupResolver(schema),
+        mode: 'onBlur',
         defaultValues: {
             name: '',
             auditTrail: false,
@@ -117,8 +120,9 @@ const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) 
             const yaml = WorkflowConfigHelper.toYaml(config);
             setYaml(yaml);
             setConfig(config);
+            setWorkflowConfig(config);
         },
-        [setYaml, setConfig],
+        [setYaml, setConfig, setWorkflowConfig],
     );
 
     return (

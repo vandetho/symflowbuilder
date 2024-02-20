@@ -13,27 +13,39 @@ import GraphBuilder from '@/components/graph-builder';
 import ScrollTop from '@/components/scroll-top';
 import FileDropzone from '@/components/file-dropzone';
 import ConfigTabRenderer from '@/app/config-tab-renderer';
+import { SessionStorageContext } from '@/contexts/session-storage-context';
 
 export default function Home() {
-    const [config, setConfig] = React.useState<WorkflowConfig>();
+    const { workflowConfig, setWorkflowConfig } = React.useContext(SessionStorageContext);
+    const [config, setConfig] = React.useState<WorkflowConfig | undefined>(workflowConfig);
     const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
 
-    const onDrop = React.useCallback((file: File) => {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            const text = e.target?.result as string;
-            try {
-                const doc: WorkflowConfigYaml = jsYaml.load(text) as WorkflowConfigYaml;
-                const config = WorkflowConfigHelper.toObject(doc);
-                setConfig(config);
-                setYaml(doc);
-            } catch (e) {
-                console.error('The file is not a valid yaml file. Please try again.');
-                toast.error('The file is not a valid yaml file. Please try again.');
-            }
-        };
-        reader.readAsText(file);
-    }, []);
+    React.useEffect(() => {
+        if (workflowConfig) {
+            setConfig(workflowConfig);
+        }
+    }, [workflowConfig]);
+
+    const onDrop = React.useCallback(
+        (file: File) => {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const text = e.target?.result as string;
+                try {
+                    const doc: WorkflowConfigYaml = jsYaml.load(text) as WorkflowConfigYaml;
+                    const config = WorkflowConfigHelper.toObject(doc);
+                    setConfig(config);
+                    setYaml(doc);
+                    setWorkflowConfig(config);
+                } catch (e) {
+                    console.error('The file is not a valid yaml file. Please try again.');
+                    toast.error('The file is not a valid yaml file. Please try again.');
+                }
+            };
+            reader.readAsText(file);
+        },
+        [setWorkflowConfig],
+    );
 
     return (
         <FileDropzone onDrop={onDrop}>
