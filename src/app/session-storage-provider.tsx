@@ -35,9 +35,13 @@ const SessionStorageProvider = React.memo<React.PropsWithChildren<SessionStorage
         }
     }, []);
 
-    const handleWorkflowConfig = React.useCallback((config: WorkflowConfig) => {
+    const handleWorkflowConfig = React.useCallback((config: WorkflowConfig | undefined) => {
         setWorkflowConfig(config);
-        sessionStorage.setItem('workflowConfig', JSON.stringify(config));
+        if (config) {
+            sessionStorage.setItem('workflowConfig', JSON.stringify(config));
+            return;
+        }
+        sessionStorage.removeItem('workflowConfig');
     }, []);
 
     const handleNodeConfig = React.useCallback((config: Node<WorkflowPlace | WorkflowTransition>[]) => {

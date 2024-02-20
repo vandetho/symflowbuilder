@@ -12,7 +12,7 @@ export const SessionStorageContext = React.createContext<{
     workflowConfig: WorkflowConfig | undefined;
     setNodeConfig: (config: Node<WorkflowPlace | WorkflowTransition>[]) => void;
     setEdgeConfig: (config: Edge[]) => void;
-    setWorkflowConfig: (config: WorkflowConfig) => void;
+    setWorkflowConfig: (config: WorkflowConfig | undefined) => void;
 }>({
     nodeConfig: [],
     edgeConfig: [],

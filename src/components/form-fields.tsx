@@ -80,8 +80,8 @@ const schema = object({
 
 type FormFieldsProps = {
     config: WorkflowConfig | undefined;
-    setYaml: (yaml: WorkflowConfigYaml) => void;
-    setConfig: (config: WorkflowConfig) => void;
+    setYaml: (yaml: WorkflowConfigYaml | undefined) => void;
+    setConfig: (config: WorkflowConfig | undefined) => void;
 };
 
 const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) => {
@@ -125,6 +125,26 @@ const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) 
         [setYaml, setConfig, setWorkflowConfig],
     );
 
+    const handleReset = React.useCallback(() => {
+        form.reset({
+            name: '',
+            auditTrail: false,
+            metadata: [],
+            supports: [],
+            markingStore: {
+                type: 'method',
+                property: 'marking',
+            },
+            type: 'state_machine',
+            places: [],
+            initialMarking: '',
+            transitions: [],
+        });
+        setYaml(undefined);
+        setConfig(undefined);
+        setWorkflowConfig(undefined);
+    }, [form, setConfig, setYaml, setWorkflowConfig]);
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -164,7 +184,14 @@ const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) 
                     />
                     <Transitions control={form.control} places={places} />
                 </div>
-                <Button type="submit">Save</Button>
+                <div className="flex gap-3 justify-between">
+                    <Button className="flex-grow" variant="secondary" onClick={handleReset}>
+                        Reset
+                    </Button>
+                    <Button className="flex-grow" type="submit">
+                        Save
+                    </Button>
+                </div>
             </form>
         </Form>
     );
