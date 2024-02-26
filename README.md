@@ -37,6 +37,15 @@ B[Export Configuration]
 A --> B
 ```
 
+You can also import existing workflow configurations and visualize them in the platform, making it easier to understand and modify existing workflows.
+```mermaid
+graph LR
+A[Import pre-existing Configuration]
+B[Re-design Flowchart]
+C[Export Configuration]
+A --> B --> C
+```
+
 ## Key Features:
 This platform offers the following features which will make your task of making workflow more easily and streamline:
 * **User-Friendly Interface**: The interface needed to be intuitive yet powerful enough to handle complex workflow designs. I opted for a drag-and-drop interface, allowing users to visually map out their workflows. This approach also included inline editing for defining states, transitions, and attaching listeners to specific events.
@@ -50,6 +59,11 @@ This platform offers the following features which will make your task of making 
   to export the designed workflow as a Symfony-compatible configuration file.
   This required developing a sophisticated backend logic that translates visual designs into YAML configuration files,
   adhering to Symfony's standards.
+* **Importing Configuration Files**:
+  The platform also supports importing existing workflow configuration files,
+  allowing users to visualize and modify their existing workflows.
+  This feature required developing a parser that can read and interpret the YAML configuration files,
+  and then render the visual representation of the workflow.
 * **Workflow Visualization**:
   This visualization aspect not only aids in the rapid development and troubleshooting of workflows but also facilitates better team collaboration
   by making the workflows easily understandable for everyone involved,
@@ -59,3 +73,17 @@ This platform offers the following features which will make your task of making 
   that allows users to define the form fields and their types,
   which are then used to generate the form configuration for the workflow.
   This feature is particularly useful for developers who are not familiar with Symfony's form configuration syntax.
+
+## Technologies Used:
+* **Next.js**: The frontend of the platform is built using Next.js,
+  a React framework that provides server-side rendering and other performance optimizations.
+* **Tailwind CSS**: The UI components are styled using Tailwind CSS,
+  a utility-first CSS framework that allows for rapid UI development.
+* **React Flow**: The drag-and-drop interface is powered by React Flow,
+  a library that provides a flexible and customizable flowchart component.
+
+## Future Enhancements:
+* **User Authentication**: Implementing user authentication and user-specific workflows.
+* **Workflow Versioning**: Adding support for versioning of workflows.
+* **Export to Other Formats**: Supporting export to other formats such as XML and JSON.
+* **Possibility to link workflows to Symfony Applications**: Enabling the platform to link workflows to specific Symfony applications, allowing for seamless integration with Symfony projects and modify the workflow directly from the platform.
