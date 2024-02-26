@@ -33,6 +33,7 @@
         "clsx": "^2.1.0",
         "cmdk": "^0.2.1",
         "d3-graphviz": "^5.3.0",
+        "elkjs": "^0.9.2",
         "graphviz-react": "^1.2.5",
         "html-to-image": "^1.11.11",
         "js-yaml": "^4.1.0",

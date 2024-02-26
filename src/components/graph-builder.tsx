@@ -26,6 +26,7 @@ import { generateToken } from '@/helpers/token.helper';
 import GraphToolbar from '@/components/graph-toolbar';
 import ExportImageButton from '@/components/export-image-button';
 import { SessionStorageContext } from '@/contexts/session-storage-context';
+import ElkConstructor from 'elkjs';
 
 type GraphBuilderProps = {
     config: WorkflowConfig | undefined;
@@ -98,10 +99,54 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                     });
                 });
             });
-            setNodes([...placeNodes, ...transitionNodes]);
-            setNodeConfig([...placeNodes, ...transitionNodes]);
-            setEdges([...transitionEdges]);
-            setEdgeConfig([...transitionEdges]);
+
+            const nodes = [...placeNodes, ...transitionNodes];
+            const edges = [...transitionEdges];
+
+            const elk = new ElkConstructor();
+            const graph = {
+                id: 'root',
+                layoutOptions: {
+                    'elk.algorithm': 'layered',
+                    'elk.direction': 'RIGHT',
+                    'nodePlacement.strategy': 'SIMPLE',
+                    'elk.spacing.nodeNode': '100', // Increase the distance between nodes
+                    'elk.layered.spacing.nodeNodeBetweenLayers': '200', // Increase the distance between layers
+                },
+                children: nodes.map((node) => ({
+                    ...node,
+                    width: 210,
+                    height: 150,
+                })),
+                edges: edges.map((edge) => ({
+                    ...edge,
+                    sources: [edge.source],
+                    targets: [edge.target],
+                })),
+            };
+
+            elk.layout(graph).then((layout) => {
+                if (layout.children) {
+                    const newNodes: any[] = layout.children.map((child) => ({
+                        ...nodes.find((n) => n.id === child.id),
+                        position: { x: child.x, y: child.y },
+                    }));
+                    console.log({ nodes: newNodes, layout: layout });
+
+                    setNodes(newNodes);
+                    setNodeConfig(newNodes);
+                }
+                if (layout.edges) {
+                    const newEdges: any[] = layout.edges.map((edge) => ({
+                        ...edges.find((e) => e.id === edge.id),
+                        source: edge.sources[0],
+                        target: edge.targets[0],
+                    }));
+
+                    setEdges(newEdges);
+                    setEdgeConfig(newEdges);
+                }
+            });
         }
     }, [config, setEdgeConfig, setEdges, setNodeConfig, setNodes]);
 
