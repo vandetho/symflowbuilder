@@ -2,6 +2,14 @@
 <hr />
 <img src="src/assets/logo-128.png" alt="SymFlowBuilder" width="128" height="120" />
 
+## Table of Contents
+- [Introduction](#introduction)
+- [Why Use SymFlowBuilder?](#why-use-symflowbuilder)
+- [Key Features](#key-features)
+- [Technologies Used](#technologies-used)
+- [Future Enhancements](#future-enhancements)
+
+## Introduction
 A platform aimed at simplifying the Symfony Workflow configuration process,
 offering a graphical interface for easy visualization and management of workflows.
 This tool allows developers to design, configure, and export workflows with minimal hassle,
@@ -10,6 +18,17 @@ It caters to the needs of both novice and experienced Symfony developers,
 streamlining the workflow configuration process and enhancing productivity across Symfony projects.
 
 https://www.symflowbuilder.com
+
+<p style="text-align: center">
+  <img src="src/assets/graph-builder.png" alt="Graph Builder" />
+  <em>Building your workflow with ease using the drag-and-drop interface</em>
+</p>
+
+<p style="text-align: center">
+  <img src="src/assets/form-builder.png" alt="Graph Builder" />
+  <em>Building your workflow with ease using the form interface and visualize it in the graph with mermaid or graphviz</em>
+</p>
+
 
 ## Why Use SymFlowBuilder?
 * **Time-Saving**: The platform significantly reduces the time and effort required to configure workflows in Symfony projects.
