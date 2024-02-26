@@ -65,6 +65,11 @@ C[Export Configuration]
 A --> B --> C
 ```
 
+<p style="text-align: center">
+  <img src="src/assets/drag-and-drop-file.png" alt="Drag and Drop File to Import Configuration" />
+  <em>Importing pre-existing workflow configuration files to visualize and modify them in the platform</em>
+</p>
+
 ## Key Features:
 This platform offers the following features which will make your task of making workflow more easily and streamline:
 * **User-Friendly Interface**: The interface needed to be intuitive yet powerful enough to handle complex workflow designs. I opted for a drag-and-drop interface, allowing users to visually map out their workflows. This approach also included inline editing for defining states, transitions, and attaching listeners to specific events.
