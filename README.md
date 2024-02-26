@@ -85,5 +85,7 @@ This platform offers the following features which will make your task of making 
 ## Future Enhancements:
 * **User Authentication**: Implementing user authentication and user-specific workflows.
 * **Workflow Versioning**: Adding support for versioning of workflows.
+* **Undo/Redo Functionality**: Enabling users to undo and redo changes made to the workflow.
+* **Collaboration Features**: Adding features that facilitate collaboration among team members, such as comments, annotations, and notifications.
 * **Export to Other Formats**: Supporting export to other formats such as XML and JSON.
 * **Possibility to link workflows to Symfony Applications**: Enabling the platform to link workflows to specific Symfony applications, allowing for seamless integration with Symfony projects and modify the workflow directly from the platform.
