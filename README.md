@@ -10,12 +10,15 @@
 - [Future Enhancements](#future-enhancements)
 
 ## Introduction
-A platform aimed at simplifying the Symfony Workflow configuration process,
-offering a graphical interface for easy visualization and management of workflows.
-This tool allows developers to design, configure, and export workflows with minimal hassle,
-significantly reducing development time and errors associated with manual configuration.
-It caters to the needs of both novice and experienced Symfony developers,
-streamlining the workflow configuration process and enhancing productivity across Symfony projects.
+SymFlowBuilder is a platform that simplifies the process of designing, configuring,
+and exporting workflows in Symfony applications and makes it easier for developers to manage complex workflows
+and streamline their development process.
+This platform provides an intuitive drag-and-drop interface that allows developers to visually map out their workflows,
+define states, transitions, and attach listeners to specific events.
+The platform also includes a form builder that allows users to define the form fields and their types,
+which are then used to generate the form configuration for the workflow.
+The platform is designed to be compatible with different Symfony versions,
+ensuring that it remains relevant as Symfony evolves.
 
 https://www.symflowbuilder.com
 
