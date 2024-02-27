@@ -2,11 +2,13 @@ import axios from 'axios';
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { primaryMain } from '@/theme/palette';
+import connectMongo from '@/util/connect-mongo';
+import User from '@/models/user.schema';
 
 async function refreshAccessToken(tokenObject: any) {
     try {
         // Get a new set of tokens with a refreshToken
-        const tokenResponse = await axios.post(`${process.env.BACKEND_URL}/api/token/refresh`, {
+        const tokenResponse = await axios.post(`/api/refresh-token`, {
             refreshToken: tokenObject.refreshToken,
         });
 
@@ -26,89 +28,32 @@ async function refreshAccessToken(tokenObject: any) {
 export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
-            name: 'Credentials',
+            name: 'credentials',
+            // The credentials object is what's used to generate Next Auths default login page - We will not use it however.
             credentials: {
-                firstName: {
-                    label: 'firstName',
-                    type: 'string',
-                    placeholder: 'John',
-                },
-                lastName: {
-                    label: 'lastName',
-                    type: 'string',
-                    placeholder: 'Doe',
-                },
-                email: {
-                    label: 'email',
-                    type: 'email',
-                    placeholder: 'jsmith@kromb.io',
-                },
-                confirmEmail: {
-                    label: 'email',
-                    type: 'email',
-                    placeholder: 'jsmith@kromb.io',
-                },
+                email: { label: 'Email', type: 'email' },
                 password: { label: 'Password', type: 'password' },
-                confirmPassword: { label: 'Password', type: 'password' },
-                agreeTerms: { label: 'Agree Terms', type: 'checkbox' },
-                accessToken: { type: 'string' },
-                refreshToken: { type: 'string' },
-                authType: { type: 'radio', options: ['login', 'register'] },
             },
-            async authorize(credentials) {
+            // Authorize callback is ran upon calling the signin function
+            authorize: async (credentials) => {
                 if (credentials) {
-                    if (credentials.accessToken && credentials.refreshToken) {
-                        return { token: credentials.accessToken, refreshToken: credentials.refreshToken };
-                    }
-                    if (credentials.authType === 'register') {
-                        const payload = {
-                            firstName: credentials.firstName,
-                            lastName: credentials.lastName,
-                            email: credentials.email,
-                            plainPassword: credentials.password,
-                            agreeTerms: credentials.agreeTerms,
-                        };
+                    connectMongo();
+                    const user = await User.findOne({ email: credentials.email }).select('+password');
 
-                        const res = await fetch('/api/sign-up', {
-                            method: 'POST',
-                            body: JSON.stringify(payload),
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                        });
-
-                        const user = await res.json();
-                        if (!res.ok) {
-                            throw new Error(user.message);
-                        }
-                        if (res.ok && user) {
-                            return user;
-                        }
-                        return null;
+                    if (!user) {
+                        throw new Error('No user with a matching email was found.');
                     }
 
-                    const payload = {
-                        email: credentials.email,
-                        password: credentials.password,
-                    };
+                    const pwValid = await user.comparePassword(credentials.password);
 
-                    const res = await fetch('/api/sing-in', {
-                        method: 'POST',
-                        body: JSON.stringify(payload),
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    });
+                    if (!pwValid) {
+                        throw new Error('Your password is invalid');
+                    }
 
-                    const user = await res.json();
-                    if (!res.ok) {
-                        throw new Error(user.message);
-                    }
-                    if (res.ok && user) {
-                        return user;
-                    }
+                    return user;
                 }
-                return null;
+
+                throw new Error('Invalid credentials provided.');
             },
         }),
     ],

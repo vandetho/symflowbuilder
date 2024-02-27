@@ -11,6 +11,7 @@ import GoogleAnalytics from '@/app/GoogleAnalytics';
 import { primaryMain } from '@/theme/palette';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import SessionStorageProvider from '@/app/session-storage-provider';
+import { NextAuthProvider } from '@/app/NextAuthProvider';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -73,11 +74,13 @@ export default function RootLayout({
         <html lang="en">
             <body className={cn('min-h-screen bg-background font-sans antialiased', inter.variable)}>
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                    <NavBar />
-                    <TooltipProvider>
-                        <SessionStorageProvider>{children}</SessionStorageProvider>
-                    </TooltipProvider>
-                    <Toaster position="top-right" />
+                    <NextAuthProvider>
+                        <NavBar />
+                        <TooltipProvider>
+                            <SessionStorageProvider>{children}</SessionStorageProvider>
+                        </TooltipProvider>
+                        <Toaster position="top-right" />
+                    </NextAuthProvider>
                 </ThemeProvider>
                 <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
             </body>
