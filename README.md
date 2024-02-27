@@ -47,7 +47,7 @@ graph LR
 A[Design Flowchart]
 B[Build Configuration In Yaml]
 C[Dump Configuration]
-D[Error]
+D[Evaluate Configuration]
 A --> B
 B --> C
 C --> D
