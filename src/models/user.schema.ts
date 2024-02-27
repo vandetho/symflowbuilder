@@ -37,6 +37,7 @@ const userSchema = new Schema<IUser>(
             virtuals: true,
             transform: (_, ret) => {
                 delete ret._id;
+                delete ret.password;
             },
         },
     },
