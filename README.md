@@ -47,8 +47,11 @@ graph LR
 A[Design Flowchart]
 B[Build Configuration In Yaml]
 C[Dump Configuration]
+D[Error]
 A --> B
 B --> C
+C --> D
+D --> B
 ```
 
 With SymFlowBuilder, the process is simplified and streamlined:
