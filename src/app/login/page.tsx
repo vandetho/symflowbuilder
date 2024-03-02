@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import { supabase } from '@/lib/initSupabase';
 
 const LoginPage = () => {
     const [emailAddress, setEmailAddress] = useState<string>('');
@@ -15,25 +14,6 @@ const LoginPage = () => {
         }
 
         setIsLoading(true);
-        const { data, error } = await supabase.auth.signInWithOtp({
-            email: emailAddress,
-            options: {
-                emailRedirectTo: window.location.origin,
-            },
-        });
-
-        if (error) {
-            console.error(error);
-            throw new Error('Something went wrong');
-        }
-
-        if (data) {
-            setIsTokenSent(true);
-            setTimeout(() => {
-                setIsTokenSent(false); // show the login ui after 5 seconds
-                setIsLoading(false);
-            }, 5000);
-        }
     };
 
     return (

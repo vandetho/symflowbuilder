@@ -119,3 +119,9 @@ This platform offers the following features which will make your task of making 
 * **Collaboration Features**: Adding features that facilitate collaboration among team members, such as comments, annotations, and notifications.
 * **Export to Other Formats**: Supporting export to other formats such as XML and JSON.
 * **Possibility to link workflows to Symfony Applications**: Enabling the platform to link workflows to specific Symfony applications, allowing for seamless integration with Symfony projects and modify the workflow directly from the platform.
+
+## Contributing
+Contributions are welcome! Feel free to submit a pull request or open an issue if you have any suggestions or feedback.
+
+## License
+This project is open-source and available under the [MIT License](LICENSE).
