@@ -1,10 +1,10 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 
 const LoginPage = () => {
-    const [emailAddress, setEmailAddress] = useState<string>('');
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [isTokenSent, setIsTokenSent] = useState<boolean>(false);
+    const [emailAddress, setEmailAddress] = React.useState<string>('');
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const [isTokenSent, setIsTokenSent] = React.useState<boolean>(false);
 
     const authenticateUser = async (e: React.FormEvent) => {
         e.preventDefault();
