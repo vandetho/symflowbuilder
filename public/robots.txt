@@ -1,0 +1,6 @@
+User-agent: *
+Disallow:
+
+
+Sitemap: https://symflowbuilder.com/sitemap.xml
+Sitemap: https://www.symflowbuilder.com/sitemap.xml
