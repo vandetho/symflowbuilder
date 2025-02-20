@@ -1,8 +1,9 @@
 import React from 'react';
 import mermaid from 'mermaid';
 import { useTheme } from 'next-themes';
+import { MermaidConfig } from 'mermaid';
 
-const DEFAULT_CONFIG = {
+const DEFAULT_CONFIG: MermaidConfig = {
     theme: 'dark',
     logLevel: 'fatal',
     fontFamily: 'Inter',
