@@ -14,8 +14,6 @@ import ScrollTop from '@/components/scroll-top';
 import FileDropzone from '@/components/file-dropzone';
 import ConfigTabRenderer from '@/app/config-tab-renderer';
 import { SessionStorageContext } from '@/contexts/session-storage-context';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 
 export default function Home() {
     const { workflowConfig, setWorkflowConfig } = React.useContext(SessionStorageContext);
@@ -72,19 +70,6 @@ export default function Home() {
                                         <p className="text-sm">
                                             Drop your workflow configuration file here or click below to upload
                                         </p>
-                                        <div className="grid w-full max-w-sm items-center gap-1.5">
-                                            <div className="space-y-2 text-sm">
-                                                <Label htmlFor="file" className="text-sm font-medium">
-                                                    File (.xml, .yml, .yaml)
-                                                </Label>
-                                                <Input
-                                                    id="file"
-                                                    type="file"
-                                                    placeholder="File"
-                                                    accept=".xml,.yml,.yaml"
-                                                />
-                                            </div>
-                                        </div>
                                     </div>
                                     <hr className="my-4" />
                                     <FormFields setYaml={setYaml} config={config} setConfig={setConfig} />
