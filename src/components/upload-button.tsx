@@ -26,6 +26,7 @@ import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
 
 const schema = object({
     url: string().url().required(),
+    workflowName: string().required(),
 });
 
 interface UploadButtonProps {
@@ -51,7 +52,6 @@ export const UploadButton: React.FC<UploadButtonProps> = ({ onDone }) => {
 
     const onSubmit = React.useCallback((data: { url: string }) => {
         axios.get(data.url).then((response) => {
-            console.log({ response });
             try {
                 const doc: WorkflowConfigYaml = jsYaml.load(response.data) as WorkflowConfigYaml;
                 const config = WorkflowConfigHelper.toObject(doc);
@@ -85,13 +85,20 @@ export const UploadButton: React.FC<UploadButtonProps> = ({ onDone }) => {
                     </div>
                     <p>Or</p>
                     <Form {...form}>
-                        <form className="flex gap-4 w-full items-end" onSubmit={form.handleSubmit(onSubmit)}>
+                        <form className="flex flex-col gap-4 w-full" onSubmit={form.handleSubmit(onSubmit)}>
                             <TextField
                                 control={form.control}
                                 name="url"
                                 label="Url"
                                 className="w-full"
                                 placeholder="https://example.com/your-file.yml"
+                            />
+                            <TextField
+                                control={form.control}
+                                name="workflowName"
+                                label="Workflow name"
+                                className="w-full"
+                                placeholder="task_workflow"
                             />
                             <Button type="submit">Validate</Button>
                         </form>
