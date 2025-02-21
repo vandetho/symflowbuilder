@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Node } from 'reactflow';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import TextField from '@/components/text-field';
+import { TextField } from '@/components/text-field';
 import Metadata from '@/app/metadata';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { WorkflowPlace } from '@/types/WorkflowPlace';

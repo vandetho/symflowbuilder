@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
 import { useFieldArray } from 'react-hook-form';
-import TextField from '@/components/text-field';
+import { TextField } from '@/components/text-field';
 
 interface MetadataProps {
     control: any;

@@ -1,4 +1,4 @@
-import TextField from '@/components/text-field';
+import { TextField } from '@/components/text-field';
 import Metadata from '@/app/metadata';
 import Select from '@/components/select';
 import Switch from '@/components/switch';

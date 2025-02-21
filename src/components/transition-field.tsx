@@ -1,6 +1,6 @@
 import React from 'react';
 import { SelectItem } from '@/types/SelectItem';
-import TextField from '@/components/text-field';
+import { TextField } from '@/components/text-field';
 import MultiSelect from '@/components/multi-select';
 import Metadata from '@/app/metadata';
 import { useBoolean } from 'react-use';

@@ -11,40 +11,67 @@ import {
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { object, string } from 'yup';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Form } from '@/components/ui/form';
+import axios from 'axios';
+import { TextField } from '@/components/text-field';
 
-interface UploadButtonProps {}
+const schema = object({
+    url: string().url().required(),
+});
 
-export const UploadButton: React.FC<UploadButtonProps> = ({}) => {
+interface UploadButtonProps {
+    onDone: (file: File) => void;
+}
+
+export const UploadButton: React.FC<UploadButtonProps> = ({ onDone }) => {
+    const form = useForm({
+        resolver: yupResolver(schema),
+        defaultValues: {
+            url: '',
+        },
+    });
+
+    const onSubmit = React.useCallback((data: { url: string }) => {
+        axios.get(data.url).then((response) => {
+            console.log({ response });
+        });
+    }, []);
+
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline">Upload File</Button>
+                <Button>Upload File</Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Upload a file</DialogTitle>
                     <DialogDescription>
                         You can upload a file to import your workflow configuration from a yaml or xml file.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <div className="space-y-2 text-sm">
-                                <Label htmlFor="file" className="text-sm font-medium">
-                                    File (.xml, .yml, .yaml)
-                                </Label>
-                                <Input id="file" type="file" placeholder="File" accept=".xml,.yml,.yaml" />
-                            </div>
-                        </div>
+                <div className="flex flex-col gap-4 py-4 w-full">
+                    <div className="space-y-2 text-sm w-full">
+                        <Label htmlFor="file" className="text-sm font-medium">
+                            File (.xml, .yml, .yaml)
+                        </Label>
+                        <Input id="file" type="file" placeholder="File" accept=".xml,.yml,.yaml" />
                     </div>
                     <p>Or</p>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="username" className="text-right">
-                            Username
-                        </Label>
-                        <Input id="username" value="@peduarte" className="col-span-3" />
-                    </div>
+                    <Form {...form}>
+                        <form className="flex gap-4 w-full items-end" onSubmit={form.handleSubmit(onSubmit)}>
+                            <TextField
+                                control={form.control}
+                                name="url"
+                                label="Url"
+                                className="w-full"
+                                placeholder="https://example.com/your-file.yml"
+                            />
+                            <Button type="submit">Validate</Button>
+                        </form>
+                    </Form>
                 </div>
                 <DialogFooter>
                     <Button type="submit">Save changes</Button>

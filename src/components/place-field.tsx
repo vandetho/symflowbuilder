@@ -1,11 +1,10 @@
 import React from 'react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useBoolean } from 'react-use';
-import TextField from '@/components/text-field';
+import { TextField } from '@/components/text-field';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
 import Metadata from '@/app/metadata';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 type PlaceFieldProps = {
     control: any;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFieldArray } from 'react-hook-form';
-import TextField from '@/components/text-field';
+import { TextField } from '@/components/text-field';
 import { Button } from '@/components/ui/button';
 
 type SupportEntitiesProps = {

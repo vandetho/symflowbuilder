@@ -1,43 +1,34 @@
-import React from 'react';
-import { Input, InputProps } from '@/components/ui/input';
+import React, { useId } from 'react';
 import { FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Control } from 'react-hook-form';
+import { Textarea, TextareaProps } from '@/components/ui/textarea';
 
-interface TextFieldProps extends InputProps {
-    control: Control<any>;
+interface TextAreaFieldProps extends TextareaProps {
+    control: any;
     name: string;
     label?: string;
-    description?: string;
     startIcon?: React.ReactNode;
     endIcon?: React.ReactNode;
-    required?: boolean;
+    description?: string;
 }
 
-export const TextField = React.memo<TextFieldProps>(
-    ({ id, control, label, name, description, startIcon, endIcon, required, onChange, ...props }) => {
-        const localId = React.useId();
+export const TextAreaField = React.memo<TextAreaFieldProps>(
+    ({ id, control, label, name, startIcon, endIcon, description, ...props }) => {
+        const localId = useId();
         return (
             <FormField
                 control={control}
                 name={name}
                 render={({ field }) => (
                     <FormItem className={props.className}>
-                        {label && (
-                            <FormLabel htmlFor={id || localId} aria-required={required}>
-                                {label}
-                                {required && <span className="ml-1 text-red-500">*</span>}
-                            </FormLabel>
-                        )}
-                        <div className="flex w-full items-center space-x-2">
+                        {label && <FormLabel htmlFor={id || localId}>{label}</FormLabel>}
+                        <div className="flex flex-row gap-2">
                             {startIcon && startIcon}
-                            <Input
+                            <Textarea
                                 {...props}
                                 {...field}
                                 onChange={(event) => {
                                     field.onChange(event);
-                                    if (onChange) {
-                                        onChange(event);
-                                    }
+                                    props.onChange && props.onChange(event);
                                 }}
                                 id={id || localId}
                             />
@@ -51,5 +42,3 @@ export const TextField = React.memo<TextFieldProps>(
         );
     },
 );
-
-TextField.displayName = 'TextField';

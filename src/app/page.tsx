@@ -14,6 +14,7 @@ import ScrollTop from '@/components/scroll-top';
 import FileDropzone from '@/components/file-dropzone';
 import ConfigTabRenderer from '@/app/config-tab-renderer';
 import { SessionStorageContext } from '@/contexts/session-storage-context';
+import { UploadButton } from '@/components/upload-button';
 
 export default function Home() {
     const { workflowConfig, setWorkflowConfig } = React.useContext(SessionStorageContext);
@@ -70,6 +71,7 @@ export default function Home() {
                                         <p className="text-sm">
                                             Drop your workflow configuration file here or click below to upload
                                         </p>
+                                        <UploadButton onDone={onDrop} />
                                     </div>
                                     <hr className="my-4" />
                                     <FormFields setYaml={setYaml} config={config} setConfig={setConfig} />
