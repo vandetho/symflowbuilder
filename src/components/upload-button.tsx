@@ -1,6 +1,7 @@
 import React from 'react';
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -17,16 +18,24 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Form } from '@/components/ui/form';
 import axios from 'axios';
 import { TextField } from '@/components/text-field';
+import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
+import jsYaml from 'js-yaml';
+import { toast } from 'sonner';
+import { WorkflowConfig } from '@/types/WorkflowConfig';
+import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
 
 const schema = object({
     url: string().url().required(),
 });
 
 interface UploadButtonProps {
-    onDone: (file: File) => void;
+    onDone: (config: WorkflowConfig, yamlConfig: WorkflowConfigYaml) => void;
 }
 
 export const UploadButton: React.FC<UploadButtonProps> = ({ onDone }) => {
+    const [config, setConfig] = React.useState<WorkflowConfig>();
+    const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
+
     const form = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
@@ -34,9 +43,24 @@ export const UploadButton: React.FC<UploadButtonProps> = ({ onDone }) => {
         },
     });
 
+    const handleDone = React.useCallback(() => {
+        if (config && yaml) {
+            onDone(config, yaml);
+        }
+    }, [config, onDone, yaml]);
+
     const onSubmit = React.useCallback((data: { url: string }) => {
         axios.get(data.url).then((response) => {
             console.log({ response });
+            try {
+                const doc: WorkflowConfigYaml = jsYaml.load(response.data) as WorkflowConfigYaml;
+                const config = WorkflowConfigHelper.toObject(doc);
+                setConfig(config);
+                setYaml(doc);
+            } catch (e) {
+                toast.error('The file is not a valid yaml file. Please try again.');
+                console.error('The file is not a valid yaml file. Please try again.');
+            }
         });
     }, []);
 
@@ -74,7 +98,12 @@ export const UploadButton: React.FC<UploadButtonProps> = ({ onDone }) => {
                     </Form>
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Save changes</Button>
+                    <DialogClose asChild>
+                        <Button type="button" variant="secondary">
+                            Close
+                        </Button>
+                    </DialogClose>
+                    <Button onClick={handleDone}>Done</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

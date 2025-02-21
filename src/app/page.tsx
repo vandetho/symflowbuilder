@@ -49,6 +49,15 @@ export default function Home() {
         [setWorkflowConfig],
     );
 
+    const onChangeConfig = React.useCallback(
+        (config: WorkflowConfig, yamlConfig?: WorkflowConfigYaml) => {
+            setConfig(config);
+            setYaml(yamlConfig);
+            setWorkflowConfig(config);
+        },
+        [setWorkflowConfig],
+    );
+
     return (
         <FileDropzone onDrop={onDrop}>
             <Tabs defaultValue="form">
@@ -71,7 +80,7 @@ export default function Home() {
                                         <p className="text-sm">
                                             Drop your workflow configuration file here or click below to upload
                                         </p>
-                                        <UploadButton onDone={onDrop} />
+                                        <UploadButton onDone={onChangeConfig} />
                                     </div>
                                     <hr className="my-4" />
                                     <FormFields setYaml={setYaml} config={config} setConfig={setConfig} />
