@@ -42,6 +42,7 @@ export const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
                         <MultiSelect
                             id={localId}
                             {...field}
+                            defaultValue={field.value}
                             className={className}
                             disabled={disabled}
                             options={options}
