@@ -1,15 +1,15 @@
 import React from 'react';
 import { useFieldArray } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import { SelectItem } from '@/types/SelectItem';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Icon } from '@iconify/react';
 import { useBoolean } from 'react-use';
 import TransitionField from '@/components/transition-field';
+import { Option } from '@/components/ui/multi-select';
 
 interface TransitionsProps {
     control: any;
-    places: SelectItem[];
+    places: Option[];
 }
 
 const Transitions = React.memo<TransitionsProps>(({ control, places }) => {

@@ -15,6 +15,7 @@ import { array, boolean, object, string } from 'yup';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
 import { SessionStorageContext } from '@/contexts/session-storage-context';
+import { Option } from '@/components/ui/multi-select';
 
 const nameRegex = /^[a-zA-Z0-9_]+$/i;
 const entityNameRegex = /^[a-zA-Z0-9\\]+$/i;
@@ -105,7 +106,7 @@ const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) 
         },
     });
     const watchPlaces = useWatch({ name: 'places', control: form.control });
-    const places = React.useMemo(() => {
+    const places = React.useMemo<Option[]>(() => {
         return watchPlaces.filter((field) => !!field.name).map((field) => ({ label: field.name, value: field.name }));
     }, [watchPlaces]);
 

@@ -1,17 +1,17 @@
 import React from 'react';
-import { SelectItem } from '@/types/SelectItem';
 import { TextField } from '@/components/text-field';
-import MultiSelect from '@/components/multi-select';
 import Metadata from '@/app/metadata';
 import { useBoolean } from 'react-use';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
+import { MultiSelectField } from '@/components/multi-select-field';
+import { Option } from '@/components/ui/multi-select';
 
 type TransitionFieldProps = {
     control: any;
     index: number;
-    places: SelectItem[];
+    places: Option[];
 };
 
 const TransitionField = React.memo<TransitionFieldProps>(({ control, index, places }) => {
@@ -25,6 +25,7 @@ const TransitionField = React.memo<TransitionFieldProps>(({ control, index, plac
                     type="text"
                     label="Transition name"
                     placeholder="Transition name"
+                    className="w-full"
                 />
                 <CollapsibleTrigger asChild>
                     <Button variant="ghost" size="sm">
@@ -41,19 +42,19 @@ const TransitionField = React.memo<TransitionFieldProps>(({ control, index, plac
                     label="Guard"
                     placeholder="Guard"
                 />
-                <MultiSelect
+                <MultiSelectField
                     control={control}
                     name={`transitions.${index}.from`}
-                    className="w-[300px]"
+                    className="w-full"
                     label="From"
-                    items={places}
+                    options={places}
                 />
-                <MultiSelect
+                <MultiSelectField
                     control={control}
                     name={`transitions.${index}.to`}
-                    className="w-[300px]"
+                    className="w-full"
                     label="To"
-                    items={places}
+                    options={places}
                 />
                 <Metadata control={control} name={`transitions.${index}.metadata`} />
             </CollapsibleContent>
