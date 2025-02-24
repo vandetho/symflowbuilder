@@ -11,84 +11,22 @@ import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { useForm, useWatch } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { array, boolean, object, string } from 'yup';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
-import { SessionStorageContext } from '@/contexts/session-storage-context';
 import { Option } from '@/components/ui/multi-select';
+import { useSessionStorageDispatch } from '@/hooks/session-storage-hook';
+import { formFieldSchema } from '@/schema/form-field-schema';
 
-const nameRegex = /^[a-zA-Z0-9_]+$/i;
-const entityNameRegex = /^[a-zA-Z0-9\\]+$/i;
-
-const schema = object({
-    name: string().matches(nameRegex, { message: 'Workflow name must match the following: [a-zA-Z0-9_]' }).required(),
-    metadata: array(
-        object({
-            name: string()
-                .matches(nameRegex, { message: 'Metadata name must match the following: [a-zA-Z0-9_]' })
-                .required(),
-            value: string().required(),
-        }),
-    ),
-    auditTrail: boolean().required(),
-    markingStore: object({
-        type: string().required(),
-        property: string().required(),
-    }).required(),
-    type: string().required(),
-    supports: array(
-        object({
-            entityName: string()
-                .matches(entityNameRegex, { message: 'Support entity name must match the following: [a-zA-Z0-9\\]' })
-                .required(),
-        }),
-    ).required(),
-    places: array(
-        object({
-            name: string()
-                .matches(nameRegex, { message: 'Place name must match the following: [a-zA-Z0-9_]' })
-                .required(),
-            metadata: array(
-                object({
-                    name: string()
-                        .matches(nameRegex, { message: 'Metadata name must match the following: [a-zA-Z0-9_]' })
-                        .required(),
-                    value: string().required(),
-                }),
-            ),
-        }),
-    ).required(),
-    initialMarking: string().required(),
-    transitions: array(
-        object({
-            name: string()
-                .matches(nameRegex, { message: 'Transition name must match the following: [a-zA-Z0-9_]' })
-                .required(),
-            from: array(string().required()).required(),
-            to: array(string().required()).required(),
-            guard: string(),
-            metadata: array(
-                object({
-                    name: string()
-                        .matches(nameRegex, { message: 'Metadata name must match the following: [a-zA-Z0-9_]' })
-                        .required(),
-                    value: string().required(),
-                }),
-            ),
-        }),
-    ).required(),
-});
-
-type FormFieldsProps = {
+interface FormFieldsProps {
     config: WorkflowConfig | undefined;
     setYaml: (yaml: WorkflowConfigYaml | undefined) => void;
     setConfig: (config: WorkflowConfig | undefined) => void;
-};
+}
 
 const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) => {
-    const { setWorkflowConfig } = React.useContext(SessionStorageContext);
+    const dispatch = useSessionStorageDispatch();
     const form = useForm({
-        resolver: yupResolver(schema),
+        resolver: yupResolver(formFieldSchema),
         mode: 'onBlur',
         defaultValues: {
             name: '',
@@ -121,9 +59,9 @@ const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) 
             const yaml = WorkflowConfigHelper.toYaml(config);
             setYaml(yaml);
             setConfig(config);
-            setWorkflowConfig(config);
+            dispatch({ type: 'SET_WORKFLOW_CONFIG', payload: config });
         },
-        [setYaml, setConfig, setWorkflowConfig],
+        [setYaml, setConfig, dispatch],
     );
 
     const handleReset = React.useCallback(() => {
@@ -143,8 +81,8 @@ const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) 
         });
         setYaml(undefined);
         setConfig(undefined);
-        setWorkflowConfig(undefined);
-    }, [form, setConfig, setYaml, setWorkflowConfig]);
+        dispatch({ type: 'SET_WORKFLOW_CONFIG', payload: undefined });
+    }, [form, setYaml, setConfig, dispatch]);
 
     return (
         <Form {...form}>

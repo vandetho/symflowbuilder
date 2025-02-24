@@ -3,14 +3,14 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
-import { ThemeProvider } from '@/app/theme-provider';
+import { ThemeProvider } from '@/providers/theme-provider';
 import NavBar from '@/app/nav-bar';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import GoogleAnalytics from '@/app/GoogleAnalytics';
 import { primaryMain } from '@/theme/palette';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import SessionStorageProvider from '@/app/session-storage-provider';
+import SessionStorageProvider from '@/providers/session-storage-provider';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 

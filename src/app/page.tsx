@@ -12,12 +12,13 @@ import FormFields from '@/components/form-fields';
 import GraphBuilder from '@/components/graph-builder';
 import ScrollTop from '@/components/scroll-top';
 import FileDropzone from '@/components/file-dropzone';
-import ConfigTabRenderer from '@/app/config-tab-renderer';
-import { SessionStorageContext } from '@/contexts/session-storage-context';
+import ConfigTabRenderer from '@/components/config-tab-renderer';
 import { UploadButton } from '@/components/upload-button';
+import { useSessionStorageDispatch, useSessionStorageState } from '@/hooks/session-storage-hook';
 
 export default function Home() {
-    const { workflowConfig, setWorkflowConfig } = React.useContext(SessionStorageContext);
+    const { workflowConfig } = useSessionStorageState();
+    const dispatch = useSessionStorageDispatch();
     const [config, setConfig] = React.useState<WorkflowConfig | undefined>(workflowConfig);
     const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
 
@@ -38,7 +39,7 @@ export default function Home() {
                     const config = WorkflowConfigHelper.toObject(doc);
                     setConfig(config);
                     setYaml(doc);
-                    setWorkflowConfig(config);
+                    dispatch({ type: 'SET_WORKFLOW_CONFIG', payload: config });
                 } catch (e) {
                     console.error('The file is not a valid yaml file. Please try again.');
                     toast.error('The file is not a valid yaml file. Please try again.');
@@ -46,16 +47,16 @@ export default function Home() {
             };
             reader.readAsText(file);
         },
-        [setWorkflowConfig],
+        [dispatch],
     );
 
     const onChangeConfig = React.useCallback(
         (config: WorkflowConfig, yamlConfig?: WorkflowConfigYaml) => {
             setConfig(config);
             setYaml(yamlConfig);
-            setWorkflowConfig(config);
+            dispatch({ type: 'SET_WORKFLOW_CONFIG', payload: config });
         },
-        [setWorkflowConfig],
+        [dispatch],
     );
 
     return (

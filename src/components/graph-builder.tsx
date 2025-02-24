@@ -25,8 +25,8 @@ import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { generateToken } from '@/helpers/token.helper';
 import GraphToolbar from '@/components/graph-toolbar';
 import ExportImageButton from '@/components/export-image-button';
-import { SessionStorageContext } from '@/contexts/session-storage-context';
 import ElkConstructor from 'elkjs';
+import { useSessionStorageDispatch, useSessionStorageState } from '@/hooks/session-storage-hook';
 
 type GraphBuilderProps = {
     config: WorkflowConfig | undefined;
@@ -34,7 +34,8 @@ type GraphBuilderProps = {
 
 export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
     const reactFlowWrapper = React.useRef<HTMLDivElement>(null);
-    const { nodeConfig, edgeConfig, setEdgeConfig, setNodeConfig } = React.useContext(SessionStorageContext);
+    const { nodeConfig, edgeConfig } = useSessionStorageState();
+    const dispatch = useSessionStorageDispatch();
     const [nodes, setNodes, onNodesChange] = useNodesState<WorkflowPlace | WorkflowTransition>(nodeConfig || []);
     const [edges, setEdges, onEdgesChange] = useEdgesState(edgeConfig || []);
     const [reactFlowInstance, setReactFlowInstance] = React.useState<ReactFlowInstance | undefined>();
@@ -131,10 +132,8 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                         ...nodes.find((n) => n.id === child.id),
                         position: { x: child.x, y: child.y },
                     }));
-                    console.log({ nodes: newNodes, layout: layout });
-
                     setNodes(newNodes);
-                    setNodeConfig(newNodes);
+                    dispatch({ type: 'SET_NODE_CONFIG', payload: newNodes });
                 }
                 if (layout.edges) {
                     const newEdges: any[] = layout.edges.map((edge) => ({
@@ -144,11 +143,11 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                     }));
 
                     setEdges(newEdges);
-                    setEdgeConfig(newEdges);
+                    dispatch({ type: 'SET_EDGE_CONFIG', payload: newEdges });
                 }
             });
         }
-    }, [config, setEdgeConfig, setEdges, setNodeConfig, setNodes]);
+    }, [config, dispatch, setEdges, setNodes]);
 
     const isValidConnection = React.useCallback(
         (connection: Connection) => !(connection.target?.includes('place') && connection.source?.includes('place')),
@@ -199,9 +198,9 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                 tmpNodes[targetIndex] = target;
             }
             setNodes(tmpNodes);
-            setNodeConfig(tmpNodes);
+            dispatch({ type: 'SET_NODE_CONFIG', payload: tmpNodes });
         },
-        [nodes, setEdges, setNodeConfig, setNodes],
+        [dispatch, nodes, setEdges, setNodes],
     );
 
     const addPlaceNode = React.useCallback(() => {
@@ -419,10 +418,10 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                 };
                 const tmpNodes = [...nodes, newNode];
                 setNodes(tmpNodes);
-                setNodeConfig(tmpNodes);
+                dispatch({ type: 'SET_NODE_CONFIG', payload: tmpNodes });
             }
         },
-        [nodes, reactFlowInstance, setNodeConfig, setNodes],
+        [dispatch, nodes, reactFlowInstance, setNodes],
     );
 
     return (
