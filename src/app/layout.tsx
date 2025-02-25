@@ -74,15 +74,17 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <body className={cn('min-h-screen bg-background font-sans antialiased', inter.variable)}>
-                <SearchParamsProvider>
-                    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                        <NavBar />
-                        <TooltipProvider>
-                            <SessionStorageProvider>{children}</SessionStorageProvider>
-                        </TooltipProvider>
-                        <Toaster position="top-right" />
-                    </ThemeProvider>
-                </SearchParamsProvider>
+                <React.Suspense fallback={`<div>Loading...</div>`}>
+                    <SearchParamsProvider>
+                        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                            <NavBar />
+                            <TooltipProvider>
+                                <SessionStorageProvider>{children}</SessionStorageProvider>
+                            </TooltipProvider>
+                            <Toaster position="top-right" />
+                        </ThemeProvider>
+                    </SearchParamsProvider>
+                </React.Suspense>
                 <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
             </body>
         </html>
