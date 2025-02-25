@@ -1,24 +1,43 @@
-import next_pwa from 'next-pwa';
-
-const isDev = process.env.NODE_ENV !== 'production';
-
-const withPWA = next_pwa({
-    dest: 'public',
-    disable: process.env.NODE_ENV === 'development',
-    register: true,
-    skipWaiting: true,
-    exclude: [
-        ({ asset }) => {
-            return !!(
-                asset.name.startsWith('server/') ||
-                asset.name.match(/^((app-|^)build-manifest\.json|react-loadable-manifest\.json)$/) ||
-                (isDev && !asset.name.startsWith('static/runtime/'))
-            );
-        },
-    ],
-});
-
 /** @type {import('next').NextConfig} */
-const nextConfig = withPWA({});
+const nextConfig = {
+    headers: async () => {
+        return [
+            {
+                source: '/(.*)',
+                headers: [
+                    {
+                        key: 'X-Content-Type-Options',
+                        value: 'nosniff',
+                    },
+                    {
+                        key: 'X-Frame-Options',
+                        value: 'DENY',
+                    },
+                    {
+                        key: 'Referrer-Policy',
+                        value: 'strict-origin-when-cross-origin',
+                    },
+                ],
+            },
+            {
+                source: '/sw.js',
+                headers: [
+                    {
+                        key: 'Content-Type',
+                        value: 'application/javascript; charset=utf-8',
+                    },
+                    {
+                        key: 'Cache-Control',
+                        value: 'no-cache, no-store, must-revalidate',
+                    },
+                    {
+                        key: 'Content-Security-Policy',
+                        value: "default-src 'self'; script-src 'self'",
+                    },
+                ],
+            },
+        ];
+    },
+};
 
 export default nextConfig;
