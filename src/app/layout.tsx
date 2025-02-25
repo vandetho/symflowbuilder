@@ -3,15 +3,16 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
+import './global.css';
+
 import { ThemeProvider } from '@/providers/theme-provider';
 import NavBar from '@/components/nav-bar';
 import { Toaster } from '@/components/ui/sonner';
 import GoogleAnalytics from '@/app/GoogleAnalytics';
 import { primaryMain } from '@/theme/palette';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import SessionStorageProvider from '@/providers/session-storage-provider';
-
-import './global.css';
+import { SessionStorageProvider } from '@/providers/session-storage-provider';
+import { SearchParamsProvider } from '@/providers/search-params-provider';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -73,13 +74,15 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <body className={cn('min-h-screen bg-background font-sans antialiased', inter.variable)}>
-                <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                    <NavBar />
-                    <TooltipProvider>
-                        <SessionStorageProvider>{children}</SessionStorageProvider>
-                    </TooltipProvider>
-                    <Toaster position="top-right" />
-                </ThemeProvider>
+                <SearchParamsProvider>
+                    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                        <NavBar />
+                        <TooltipProvider>
+                            <SessionStorageProvider>{children}</SessionStorageProvider>
+                        </TooltipProvider>
+                        <Toaster position="top-right" />
+                    </ThemeProvider>
+                </SearchParamsProvider>
                 <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
             </body>
         </html>

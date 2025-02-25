@@ -4,9 +4,10 @@ import DownloadYaml from '@/components/download-yaml';
 import Graphviz from '@/components/graphviz';
 import ReactMermaid from '@/components/react-mermaid';
 import YamlMarkdown from '@/components/yaml-markdown';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
+import { useSearchParamsState } from '@/hooks/search-params-hook';
 
 type ConfigTabRendererProps = {
     config: WorkflowConfig | undefined;
@@ -16,21 +17,21 @@ type ConfigTabRendererProps = {
 const ConfigTabRenderer = React.memo<ConfigTabRendererProps>(({ config, yaml }) => {
     const pathname = usePathname();
     const router = useRouter();
-    const searchParams = useSearchParams();
+    const { builder, display } = useSearchParamsState();
 
     const onChangeDisplay = React.useCallback(
         (display: string) => {
             const query = new URLSearchParams({
                 display,
-                builder: searchParams.get('builder') || 'form',
+                builder,
             });
             router.push(`${pathname}?${query.toString()}`);
         },
-        [pathname, router, searchParams],
+        [builder, pathname, router],
     );
 
     return (
-        <Tabs defaultValue={searchParams.get('display') || 'graphviz'} onValueChange={onChangeDisplay}>
+        <Tabs defaultValue={display} onValueChange={onChangeDisplay}>
             <div className="flex flex-row justify-between items-center">
                 <TabsList>
                     <TabsTrigger value="graphviz">Graphviz</TabsTrigger>

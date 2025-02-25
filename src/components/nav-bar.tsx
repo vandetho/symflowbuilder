@@ -7,22 +7,26 @@ import Blogs from '@/app/blogs';
 import Image from 'next/image';
 import Logo from '@/assets/logo-34.png';
 import Link from 'next/link';
+import { useSearchParamsState } from '@/hooks/search-params-hook';
 
 interface NavBarProps {}
 
 const NavBar = React.memo<NavBarProps>(() => {
+    const state = useSearchParamsState();
+    const query = new URLSearchParams(state);
+    const homepageUrl = `/?${query.toString()}`;
     return (
         <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container flex h-14 max-w-screen-2xl items-center">
                 <div className="mr-4 hidden md:flex">
-                    <Link className="mr-6 flex items-center space-x-2" href="/public">
+                    <Link className="mr-6 flex items-center space-x-2" href={homepageUrl}>
                         <Image src={Logo} alt="Symflowbuilder" width={35} height={33} priority />
                         <span className="hidden text-primary font-bold sm:inline-block">SymFlowBuilder</span>
                     </Link>
                     <nav className="flex items-center gap-6 text-sm">
                         <Link
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                            href="/public"
+                            href={homepageUrl}
                         >
                             Homepage
                         </Link>

@@ -6,7 +6,7 @@ import { sessionStorageInitialState, sessionStorageReducer } from '@/reducers/se
 
 type SessionStorageProvider = {};
 
-const SessionStorageProvider = React.memo<React.PropsWithChildren<SessionStorageProvider>>(({ children }) => {
+export const SessionStorageProvider = React.memo<React.PropsWithChildren<SessionStorageProvider>>(({ children }) => {
     const [state, dispatch] = React.useReducer(sessionStorageReducer, sessionStorageInitialState);
 
     React.useEffect(() => {
@@ -37,4 +37,4 @@ const SessionStorageProvider = React.memo<React.PropsWithChildren<SessionStorage
     );
 });
 
-export default SessionStorageProvider;
+SessionStorageProvider.displayName = 'SessionStorageProvider';

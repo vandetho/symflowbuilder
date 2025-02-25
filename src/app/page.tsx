@@ -15,13 +15,14 @@ import FileDropzone from '@/components/file-dropzone';
 import ConfigTabRenderer from '@/components/config-tab-renderer';
 import { UploadButton } from '@/components/upload-button';
 import { useSessionStorageDispatch, useSessionStorageState } from '@/hooks/session-storage-hook';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useSearchParamsState } from '@/hooks/search-params-hook';
 
 export default function Home() {
     const { workflowConfig } = useSessionStorageState();
     const pathname = usePathname();
     const router = useRouter();
-    const searchParams = useSearchParams();
+    const { builder, display } = useSearchParamsState();
 
     const dispatch = useSessionStorageDispatch();
     const [config, setConfig] = React.useState<WorkflowConfig | undefined>(workflowConfig);
@@ -67,17 +68,17 @@ export default function Home() {
     const onChangeBuilder = React.useCallback(
         (builder: string) => {
             const query = new URLSearchParams({
-                display: searchParams.get('display') || 'graphviz',
+                display,
                 builder,
             });
             router.push(`${pathname}?${query.toString()}`);
         },
-        [pathname, router, searchParams],
+        [display, pathname, router],
     );
 
     return (
         <FileDropzone onDrop={onDrop}>
-            <Tabs defaultValue={searchParams.get('builder') || 'form'} onValueChange={onChangeBuilder}>
+            <Tabs defaultValue={builder} onValueChange={onChangeBuilder}>
                 <div className="flex items-center justify-center p-4">
                     <TabsList>
                         <TabsTrigger value="form">Form Builder</TabsTrigger>
