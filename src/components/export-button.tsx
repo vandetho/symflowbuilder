@@ -10,7 +10,7 @@ type ExportButtonProps = {
     nodes: Node<WorkflowPlace | WorkflowTransition>[];
 };
 
-const ExportButton = React.memo<ExportButtonProps>(({ nodes }) => (
+export const ExportButton = React.memo<ExportButtonProps>(({ nodes }) => (
     <Dialog>
         <DialogTrigger asChild>
             <Button variant="secondary" className="bg-primary text-white p-2 rounded-md shadow-md hover:shadow-lg">
@@ -26,4 +26,4 @@ const ExportButton = React.memo<ExportButtonProps>(({ nodes }) => (
     </Dialog>
 ));
 
-export default ExportButton;
+ExportButton.displayName = 'ExportButton';

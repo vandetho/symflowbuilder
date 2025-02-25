@@ -53,3 +53,5 @@ export const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
         />
     );
 };
+
+MultiSelectField.displayName = 'MultiSelectField';

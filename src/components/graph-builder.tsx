@@ -17,14 +17,14 @@ import {
     useNodesState,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import PlaceNode from '@/components/place-node';
-import TransitionNode from '@/components/transition-node';
+import { PlaceNode } from '@/components/place-node';
+import { TransitionNode } from '@/components/transition-node';
 import { WorkflowPlace } from '@/types/WorkflowPlace';
 import { isWorkflowTransition, WorkflowTransition } from '@/types/WorkflowTransition';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { generateToken } from '@/helpers/token.helper';
-import GraphToolbar from '@/components/graph-toolbar';
-import ExportImageButton from '@/components/export-image-button';
+import { GraphToolbar } from '@/components/graph-toolbar';
+import { ExportImageButton } from '@/components/export-image-button';
 import ElkConstructor from 'elkjs';
 import { useSessionStorageDispatch, useSessionStorageState } from '@/hooks/session-storage-hook';
 

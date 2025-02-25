@@ -2,7 +2,7 @@ import React from 'react';
 import { Handle, NodeProps, NodeToolbar, Position } from 'reactflow';
 import { WorkflowPlace } from '@/types/WorkflowPlace';
 import { Input } from '@/components/ui/input';
-import GraphMetadata from '@/components/graph-metadata';
+import { GraphMetadata } from '@/components/graph-metadata';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 
@@ -14,7 +14,7 @@ interface PlaceNodeProps extends NodeProps {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
 }
 
-const PlaceNode = React.memo<PlaceNodeProps>(
+export const PlaceNode = React.memo<PlaceNodeProps>(
     ({ data, id, onChange, onChangeMetadata, onAddMetadata, onRemoveMetadata }) => {
         const handleChange = React.useCallback(
             (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,4 +65,4 @@ const PlaceNode = React.memo<PlaceNodeProps>(
     },
 );
 
-export default PlaceNode;
+PlaceNode.displayName = 'PlaceNode';

@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { downloadYaml } from '@/helpers/file.helper';
@@ -8,7 +7,7 @@ interface DownloadYamlProps {
     yaml: WorkflowConfigYaml | undefined;
 }
 
-const DownloadYaml = React.memo<DownloadYamlProps>(({ yaml }) => {
+export const DownloadYaml = React.memo<DownloadYamlProps>(({ yaml }) => {
     const handleExport = React.useCallback(() => {
         if (yaml) {
             downloadYaml(yaml);
@@ -22,4 +21,4 @@ const DownloadYaml = React.memo<DownloadYamlProps>(({ yaml }) => {
     );
 });
 
-export default DownloadYaml;
+DownloadYaml.displayName = 'DownloadYaml';

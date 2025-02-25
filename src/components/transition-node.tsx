@@ -3,7 +3,7 @@ import { Handle, NodeProps, NodeToolbar, Position } from 'reactflow';
 import { WorkflowTransition } from '@/types/WorkflowTransition';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import GraphMetadata from '@/components/graph-metadata';
+import { GraphMetadata } from '@/components/graph-metadata';
 import { Label } from '@/components/ui/label';
 
 interface TransitionNodeProps extends NodeProps {
@@ -14,7 +14,7 @@ interface TransitionNodeProps extends NodeProps {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
 }
 
-const TransitionNode = React.memo<TransitionNodeProps>(
+export const TransitionNode = React.memo<TransitionNodeProps>(
     ({ data, id, onChange, onChangeMetadata, onRemoveMetadata, onAddMetadata }) => {
         const handleChange = React.useCallback(
             (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,4 +77,4 @@ const TransitionNode = React.memo<TransitionNodeProps>(
     },
 );
 
-export default TransitionNode;
+TransitionNode.displayName = 'TransitionNode';

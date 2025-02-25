@@ -9,7 +9,7 @@ interface MetadataProps {
     name: string;
 }
 
-const Metadata = React.memo<MetadataProps>(({ control, name }) => {
+export const Metadata = React.memo<MetadataProps>(({ control, name }) => {
     const { fields, append, remove } = useFieldArray({
         control,
         name,
@@ -45,4 +45,4 @@ const Metadata = React.memo<MetadataProps>(({ control, name }) => {
     );
 });
 
-export default Metadata;
+Metadata.displayName = 'Metadata';

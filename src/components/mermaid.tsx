@@ -46,7 +46,7 @@ interface MermaidProps {
     flowDefinition: string;
 }
 
-const Mermaid = React.memo<MermaidProps>(({ flowDefinition }) => {
+export const Mermaid = React.memo<MermaidProps>(({ flowDefinition }) => {
     const { theme, systemTheme } = useTheme();
 
     mermaid.initialize({
@@ -62,4 +62,4 @@ const Mermaid = React.memo<MermaidProps>(({ flowDefinition }) => {
     return <div className="mermaid whitespace-pre-line p-5">{flowDefinition}</div>;
 });
 
-export default Mermaid;
+Mermaid.displayName = 'Mermaid';

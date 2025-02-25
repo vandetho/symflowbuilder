@@ -19,7 +19,7 @@ const imageHeight = 768;
 
 type ExportImageButtonProps = {};
 
-const ExportImageButton = React.memo<ExportImageButtonProps>(() => {
+export const ExportImageButton = React.memo<ExportImageButtonProps>(() => {
     const { getNodes } = useReactFlow();
     const [width, setWidth] = React.useState(imageWidth);
     const [height, setHeight] = React.useState(imageHeight);
@@ -86,4 +86,4 @@ const ExportImageButton = React.memo<ExportImageButtonProps>(() => {
     );
 });
 
-export default ExportImageButton;
+ExportImageButton.displayName = 'ExportImageButton';

@@ -7,7 +7,7 @@ type SupportEntitiesProps = {
     control: any;
 };
 
-const SupportEntities = React.memo<SupportEntitiesProps>(({ control }) => {
+export const SupportEntities = React.memo<SupportEntitiesProps>(({ control }) => {
     const { fields, append, remove } = useFieldArray({
         control,
         name: 'supports',
@@ -43,4 +43,4 @@ const SupportEntities = React.memo<SupportEntitiesProps>(({ control }) => {
     );
 });
 
-export default SupportEntities;
+SupportEntities.displayName = 'SupportEntities';

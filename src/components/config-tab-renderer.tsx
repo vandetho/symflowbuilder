@@ -1,9 +1,9 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import DownloadYaml from '@/components/download-yaml';
-import Graphviz from '@/components/graphviz';
-import ReactMermaid from '@/components/react-mermaid';
-import YamlMarkdown from '@/components/yaml-markdown';
+import { DownloadYaml } from '@/components/download-yaml';
+import { Graphviz } from '@/components/graphviz';
+import { ReactMermaid } from '@/components/react-mermaid';
+import { YamlMarkdown } from '@/components/yaml-markdown';
 import { usePathname, useRouter } from 'next/navigation';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { WorkflowConfig } from '@/types/WorkflowConfig';

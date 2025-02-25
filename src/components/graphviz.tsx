@@ -11,7 +11,7 @@ interface GraphvizProps {
     workflowConfig: WorkflowConfig | undefined;
 }
 
-const Graphviz = React.memo<GraphvizProps>(({ workflowConfig }) => {
+export const Graphviz = React.memo<GraphvizProps>(({ workflowConfig }) => {
     if (workflowConfig) {
         let dot =
             `digraph ${workflowConfig.name} { \n` +
@@ -63,4 +63,4 @@ const Graphviz = React.memo<GraphvizProps>(({ workflowConfig }) => {
     return undefined;
 });
 
-export default Graphviz;
+Graphviz.displayName = 'Graphviz';

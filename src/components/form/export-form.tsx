@@ -4,46 +4,17 @@ import { Node } from 'reactflow';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { TextField } from '@/components/text-field';
-import Metadata from '@/app/metadata';
+import { Metadata } from '@/components/metadata';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { WorkflowPlace } from '@/types/WorkflowPlace';
 import { isWorkflowTransition, WorkflowTransition } from '@/types/WorkflowTransition';
-import { array, boolean, object, string } from 'yup';
-import Select from '@/components/select';
-import Switch from '@/components/switch';
-import SupportEntities from '@/app/support-entities';
+import { SelectField } from '@/components/select-field';
+import { Switch } from '@/components/switch';
+import { SupportEntities } from '@/components/support-entities';
 import { GraphWorkflowConfig, WorkflowConfig } from '@/types/WorkflowConfig';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
 import { downloadYaml } from '@/helpers/file.helper';
-
-const nameRegex = /^[a-zA-Z0-9_]+$/i;
-const entityNameRegex = /^[a-zA-Z0-9\\]+$/i;
-
-const schema = object({
-    name: string().matches(nameRegex, { message: 'Workflow name must match the following: [a-zA-Z0-9_]' }).required(),
-    metadata: array(
-        object({
-            name: string()
-                .matches(nameRegex, { message: 'Metadata name must match the following: [a-zA-Z0-9_]' })
-                .required(),
-            value: string().required(),
-        }),
-    ),
-    auditTrail: boolean().required(),
-    markingStore: object({
-        type: string().required(),
-        property: string().required(),
-    }).required(),
-    type: string().required(),
-    supports: array(
-        object({
-            entityName: string()
-                .matches(entityNameRegex, { message: 'Support entity name must match the following: [a-zA-Z0-9\\]' })
-                .required(),
-        }),
-    ).required(),
-    initialMarking: string().required(),
-});
+import { exportSchema } from '@/schema/export-schema';
 
 type ExportFormProps = {
     nodes: Node<WorkflowPlace | WorkflowTransition>[];
@@ -51,7 +22,7 @@ type ExportFormProps = {
 
 const ExportForm = React.memo<ExportFormProps>(({ nodes }) => {
     const form = useForm({
-        resolver: yupResolver(schema),
+        resolver: yupResolver(exportSchema),
         defaultValues: {
             name: '',
             metadata: [],
@@ -122,7 +93,7 @@ const ExportForm = React.memo<ExportFormProps>(({ nodes }) => {
                         placeholder="Workflow name"
                     />
                     <Metadata control={form.control} name="metadata" />
-                    <Select
+                    <SelectField
                         control={form.control}
                         name="type"
                         className="w-[300px]"
@@ -138,7 +109,7 @@ const ExportForm = React.memo<ExportFormProps>(({ nodes }) => {
                         <TextField control={form.control} name="markingStore.property" label="Property" />
                     </div>
                     <SupportEntities control={form.control} />
-                    <Select
+                    <SelectField
                         control={form.control}
                         name="initialMarking"
                         className="w-[300px]"

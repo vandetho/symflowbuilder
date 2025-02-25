@@ -11,7 +11,7 @@ interface SwitchProps extends React.ComponentPropsWithoutRef<typeof SwitchPrimit
     label?: string;
 }
 
-const Switch = React.memo<SwitchProps>(({ id, control, className, name, label, ...props }) => (
+export const Switch = React.memo<SwitchProps>(({ id, control, className, name, label, ...props }) => (
     <Controller
         control={control}
         name={name}
@@ -24,4 +24,4 @@ const Switch = React.memo<SwitchProps>(({ id, control, className, name, label, .
     ></Controller>
 ));
 
-export default Switch;
+Switch.displayName = 'Switch';

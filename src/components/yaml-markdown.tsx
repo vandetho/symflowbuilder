@@ -1,13 +1,13 @@
 import React from 'react';
-import ReactMarkdown from '@/components/react-markdown';
 import jsYaml from 'js-yaml';
+import { ReactMarkdown } from '@/components/react-markdown';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 
 interface YamlMarkdownProps {
     yamlConfig: WorkflowConfigYaml | undefined;
 }
 
-const YamlMarkdown = React.memo<YamlMarkdownProps>(({ yamlConfig }) => {
+export const YamlMarkdown = React.memo<YamlMarkdownProps>(({ yamlConfig }) => {
     return (
         <div className="flex flex-col gap-3">
             <ReactMarkdown>
@@ -25,4 +25,4 @@ const YamlMarkdown = React.memo<YamlMarkdownProps>(({ yamlConfig }) => {
     );
 });
 
-export default YamlMarkdown;
+YamlMarkdown.displayName = 'YamlMarkdown';

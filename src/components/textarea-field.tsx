@@ -42,3 +42,5 @@ export const TextAreaField = React.memo<TextAreaFieldProps>(
         );
     },
 );
+
+TextAreaField.displayName = 'TextAreaField';

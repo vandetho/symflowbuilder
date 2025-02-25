@@ -4,14 +4,14 @@ import { useBoolean } from 'react-use';
 import { TextField } from '@/components/text-field';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
-import Metadata from '@/app/metadata';
+import { Metadata } from '@/components/metadata';
 
 type PlaceFieldProps = {
     control: any;
     index: number;
 };
 
-const PlaceField = React.memo<PlaceFieldProps>(({ control, index }) => {
+export const PlaceField = React.memo<PlaceFieldProps>(({ control, index }) => {
     const [open, onToggle] = useBoolean(true);
     return (
         <Collapsible open={open} onOpenChange={() => onToggle()}>
@@ -37,4 +37,4 @@ const PlaceField = React.memo<PlaceFieldProps>(({ control, index }) => {
     );
 });
 
-export default PlaceField;
+PlaceField.displayName = 'PlaceField';

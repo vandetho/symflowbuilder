@@ -1,5 +1,4 @@
 import React from 'react';
-import { ControlButton } from 'reactflow';
 import { Icon } from '@iconify/react';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,7 +17,7 @@ interface EmptyButtonProps {
     onEmptyPanel: () => void;
 }
 
-const EmptyButton = React.memo<EmptyButtonProps>(({ onEmptyPanel }) => {
+export const EmptyButton = React.memo<EmptyButtonProps>(({ onEmptyPanel }) => {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -44,4 +43,4 @@ const EmptyButton = React.memo<EmptyButtonProps>(({ onEmptyPanel }) => {
     );
 });
 
-export default EmptyButton;
+EmptyButton.displayName = 'EmptyButton';

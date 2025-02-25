@@ -1,10 +1,10 @@
 import React from 'react';
 import Markdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
+import remarkDirective from 'remark-directive';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coldarkDark, duotoneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import rehypeRaw from 'rehype-raw';
-import remarkDirective from 'remark-directive';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
 import { useTheme } from 'next-themes';
@@ -13,7 +13,7 @@ interface ReactMarkdownProps {
     children: string | undefined | null;
 }
 
-const ReactMarkdown = React.memo<ReactMarkdownProps>(({ children }) => {
+export const ReactMarkdown = React.memo<ReactMarkdownProps>(({ children }) => {
     const { theme, systemTheme } = useTheme();
     const [isCopied, setCopied] = React.useState(false);
 
@@ -92,4 +92,4 @@ const ReactMarkdown = React.memo<ReactMarkdownProps>(({ children }) => {
     );
 });
 
-export default ReactMarkdown;
+ReactMarkdown.displayName = 'ReactMarkdown';

@@ -12,7 +12,7 @@ type GraphMetadataProps = {
     onChangeMetadata?: (e: React.ChangeEvent<HTMLInputElement>, index: number, id: string) => void;
 };
 
-const GraphMetadata = React.memo<GraphMetadataProps>(
+export const GraphMetadata = React.memo<GraphMetadataProps>(
     ({ id, metadata, onAddMetadata, onRemoveMetadata, onChangeMetadata }) => {
         const handleAddMetadata = React.useCallback(() => {
             if (onAddMetadata) {
@@ -71,4 +71,4 @@ const GraphMetadata = React.memo<GraphMetadataProps>(
     },
 );
 
-export default GraphMetadata;
+GraphMetadata.displayName = 'GraphMetadata';

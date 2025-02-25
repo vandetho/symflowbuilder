@@ -2,12 +2,12 @@
 
 import React from 'react';
 import { Icon } from '@iconify/react';
-import { ThemeToggle } from '@/components/theme-toggle';
-import Blogs from '@/app/blogs';
 import Image from 'next/image';
-import Logo from '@/assets/logo-34.png';
 import Link from 'next/link';
 import { useSearchParamsState } from '@/hooks/search-params-hook';
+import Blogs from '@/components/blogs';
+import Logo from '@/assets/logo-34.png';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 interface NavBarProps {}
 

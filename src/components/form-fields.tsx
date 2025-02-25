@@ -1,12 +1,12 @@
-import { TextField } from '@/components/text-field';
-import Metadata from '@/app/metadata';
-import Select from '@/components/select';
-import Switch from '@/components/switch';
-import SupportEntities from '@/app/support-entities';
-import Places from '@/app/places';
-import Transitions from '@/app/transitions';
-import { Button } from '@/components/ui/button';
 import React from 'react';
+import { TextField } from '@/components/text-field';
+import { Metadata } from '@/components/metadata';
+import { SelectField } from '@/components/select-field';
+import { Switch } from '@/components/switch';
+import { SupportEntities } from '@/components/support-entities';
+import { Places } from '@/components/places';
+import { Transitions } from '@/components/transitions';
+import { Button } from '@/components/ui/button';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { useForm, useWatch } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
@@ -96,7 +96,7 @@ export const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setCon
                         placeholder="Workflow name"
                     />
                     <Metadata control={form.control} name="metadata" />
-                    <Select
+                    <SelectField
                         control={form.control}
                         name="type"
                         className="w-[300px]"
@@ -113,7 +113,7 @@ export const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setCon
                     </div>
                     <SupportEntities control={form.control} />
                     <Places control={form.control} />
-                    <Select
+                    <SelectField
                         control={form.control}
                         name="initialMarking"
                         className="w-[300px]"

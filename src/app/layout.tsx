@@ -3,12 +3,12 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
-import './global.css';
+import '@/styles/global.css';
 
 import { ThemeProvider } from '@/providers/theme-provider';
 import NavBar from '@/components/nav-bar';
 import { Toaster } from '@/components/ui/sonner';
-import GoogleAnalytics from '@/app/GoogleAnalytics';
+import GoogleAnalytics from '@/components/google-analytics';
 import { primaryMain } from '@/theme/palette';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { SessionStorageProvider } from '@/providers/session-storage-provider';

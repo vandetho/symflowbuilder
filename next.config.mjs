@@ -1,4 +1,4 @@
-import next_pwa from "next-pwa";
+import next_pwa from 'next-pwa';
 
 const isDev = process.env.NODE_ENV !== 'production';
 

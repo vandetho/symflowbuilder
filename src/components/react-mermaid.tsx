@@ -2,13 +2,13 @@ import React from 'react';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { generateToken } from '@/helpers/token.helper';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import Mermaid from '@/components/mermaid';
+import { Mermaid } from '@/components/mermaid';
 
 type ReactMermaidProps = {
     workflowConfig: WorkflowConfig | undefined;
 };
 
-const ReactMermaid = React.memo<ReactMermaidProps>(({ workflowConfig }) => {
+export const ReactMermaid = React.memo<ReactMermaidProps>(({ workflowConfig }) => {
     const [direction, setDirection] = React.useState<'LR' | 'TD' | 'TB' | 'RL' | 'BT' | string>('LR');
     const [flowDefinition, setFlowDefinition] = React.useState<string | undefined>(undefined);
 
@@ -73,4 +73,4 @@ const ReactMermaid = React.memo<ReactMermaidProps>(({ workflowConfig }) => {
     );
 });
 
-export default ReactMermaid;
+ReactMermaid.displayName = 'ReactMermaid';

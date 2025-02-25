@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextField } from '@/components/text-field';
-import Metadata from '@/app/metadata';
+import { Metadata } from '@/components/metadata';
 import { useBoolean } from 'react-use';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ type TransitionFieldProps = {
     places: Option[];
 };
 
-const TransitionField = React.memo<TransitionFieldProps>(({ control, index, places }) => {
+export const TransitionField = React.memo<TransitionFieldProps>(({ control, index, places }) => {
     const [open, onToggle] = useBoolean(true);
     return (
         <Collapsible open={open} onOpenChange={() => onToggle()}>
@@ -62,4 +62,4 @@ const TransitionField = React.memo<TransitionFieldProps>(({ control, index, plac
     );
 });
 
-export default TransitionField;
+TransitionField.displayName = 'TransitionField';
