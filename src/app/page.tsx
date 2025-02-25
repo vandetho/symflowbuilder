@@ -15,9 +15,14 @@ import FileDropzone from '@/components/file-dropzone';
 import ConfigTabRenderer from '@/components/config-tab-renderer';
 import { UploadButton } from '@/components/upload-button';
 import { useSessionStorageDispatch, useSessionStorageState } from '@/hooks/session-storage-hook';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export default function Home() {
     const { workflowConfig } = useSessionStorageState();
+    const pathname = usePathname();
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
     const dispatch = useSessionStorageDispatch();
     const [config, setConfig] = React.useState<WorkflowConfig | undefined>(workflowConfig);
     const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
@@ -59,9 +64,20 @@ export default function Home() {
         [dispatch],
     );
 
+    const onChangeBuilder = React.useCallback(
+        (builder: string) => {
+            const query = new URLSearchParams({
+                display: searchParams.get('display') || 'graphviz',
+                builder,
+            });
+            router.push(`${pathname}?${query.toString()}`);
+        },
+        [pathname, router, searchParams],
+    );
+
     return (
         <FileDropzone onDrop={onDrop}>
-            <Tabs defaultValue="form">
+            <Tabs defaultValue={searchParams.get('builder') || 'form'} onValueChange={onChangeBuilder}>
                 <div className="flex items-center justify-center p-4">
                     <TabsList>
                         <TabsTrigger value="form">Form Builder</TabsTrigger>

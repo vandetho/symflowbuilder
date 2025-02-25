@@ -18,15 +18,19 @@ const ConfigTabRenderer = React.memo<ConfigTabRendererProps>(({ config, yaml }) 
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const onChangeTab = React.useCallback(
-        (value: string) => {
-            router.push(`${pathname}?tab=${value}`);
+    const onChangeDisplay = React.useCallback(
+        (display: string) => {
+            const query = new URLSearchParams({
+                display,
+                builder: searchParams.get('builder') || 'form',
+            });
+            router.push(`${pathname}?${query.toString()}`);
         },
-        [pathname, router],
+        [pathname, router, searchParams],
     );
 
     return (
-        <Tabs defaultValue={searchParams.get('tab') || 'graphviz'} onValueChange={onChangeTab}>
+        <Tabs defaultValue={searchParams.get('display') || 'graphviz'} onValueChange={onChangeDisplay}>
             <div className="flex flex-row justify-between items-center">
                 <TabsList>
                     <TabsTrigger value="graphviz">Graphviz</TabsTrigger>
