@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
 import { ThemeProvider } from '@/providers/theme-provider';
-import NavBar from '@/app/nav-bar';
+import NavBar from '@/components/nav-bar';
 import { Toaster } from '@/components/ui/sonner';
 import GoogleAnalytics from '@/app/GoogleAnalytics';
 import { primaryMain } from '@/theme/palette';
