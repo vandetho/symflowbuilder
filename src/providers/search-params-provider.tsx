@@ -12,18 +12,11 @@ interface SearchParamsProviderProps {
 
 export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) => {
     const searchParams = useSearchParams();
-    const [state, dispatch] = React.useReducer(searchParamsReducer, searchParamsInitialState);
-
-    React.useEffect(() => {
-        const display = searchParams.get('display');
-        const builder = searchParams.get('builder');
-        if (display) {
-            dispatch({ type: 'SET_DISPLAY', payload: display as DisplayType });
-        }
-        if (builder) {
-            dispatch({ type: 'SET_BUILDER', payload: builder as BuilderType });
-        }
-    }, [searchParams]);
+    const [state, dispatch] = React.useReducer(searchParamsReducer, {
+        ...searchParamsInitialState,
+        display: searchParams.get('display') as DisplayType,
+        builder: searchParams.get('builder') as BuilderType,
+    });
 
     return (
         <SearchParamsContextState.Provider value={state}>

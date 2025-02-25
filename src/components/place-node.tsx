@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { GraphMetadata } from '@/components/graph-metadata';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import '@/styles/react-flow.css';
 
 interface PlaceNodeProps extends NodeProps {
     data: WorkflowPlace;
@@ -25,6 +26,8 @@ export const PlaceNode = React.memo<PlaceNodeProps>(
             [id, onChange],
         );
 
+        const handleClassName = '!w-6 !h-6 border-none rounded-sm !bg-primary';
+
         return (
             <React.Fragment>
                 <div className="shadow-md rounded-lg border-b-2 border-l-2 border-r-2 border-primary">
@@ -36,16 +39,8 @@ export const PlaceNode = React.memo<PlaceNodeProps>(
                     <div className="p-2">
                         <Input id={`${id}-name`} name="name" type="text" value={data.name} onChange={handleChange} />
                     </div>
-                    <Handle
-                        type="target"
-                        position={Position.Left}
-                        className="w-1 h-8 border-none rounded-sm !bg-primary"
-                    />
-                    <Handle
-                        type="source"
-                        position={Position.Right}
-                        className="w-1 h-8 border-none rounded-sm !bg-primary"
-                    />
+                    <Handle type="target" position={Position.Left} className={`${handleClassName} !-translate-x-1/3`} />
+                    <Handle type="source" position={Position.Right} className={`${handleClassName} !translate-x-1/3`} />
                 </div>
                 <NodeToolbar position={Position.Bottom}>
                     <Card>
