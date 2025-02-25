@@ -12,8 +12,13 @@ import { ThemeToggle } from '@/components/theme-toggle';
 interface NavBarProps {}
 
 const NavBar = React.memo<NavBarProps>(() => {
-    const state = useSearchParamsState();
-    const query = new URLSearchParams(state);
+    const { workflowUrl, display, workflowName, builder } = useSearchParamsState();
+    const query = new URLSearchParams({
+        display,
+        builder,
+        workflowUrl: workflowUrl ? workflowUrl : '',
+        workflowName: workflowName ? workflowName : '',
+    });
     const homepageUrl = `/?${query.toString()}`;
     return (
         <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

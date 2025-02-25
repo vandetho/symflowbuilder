@@ -3,6 +3,8 @@ import { SearchParamsContextActionType, SearchParamsContextStateType } from '@/t
 export const searchParamsInitialState: SearchParamsContextStateType = {
     display: 'graphviz',
     builder: 'form',
+    workflowUrl: null,
+    workflowName: null,
 };
 
 export function searchParamsReducer(state: SearchParamsContextStateType, action: SearchParamsContextActionType) {

@@ -23,7 +23,6 @@ export default function Home() {
     const pathname = usePathname();
     const router = useRouter();
     const { builder, display } = useSearchParamsState();
-
     const dispatch = useSessionStorageDispatch();
     const [config, setConfig] = React.useState<WorkflowConfig | undefined>(workflowConfig);
     const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
@@ -47,8 +46,6 @@ export default function Home() {
                     setYaml(doc);
                     dispatch({ type: 'SET_WORKFLOW_CONFIG', payload: config });
                 } catch (e) {
-                    console.log({ e });
-                    console.error('The file is not a valid yaml file. Please try again.');
                     toast.error('The file is not a valid yaml file. Please try again.');
                 }
             };
