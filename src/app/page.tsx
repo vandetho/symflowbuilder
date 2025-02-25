@@ -47,6 +47,7 @@ export default function Home() {
                     setYaml(doc);
                     dispatch({ type: 'SET_WORKFLOW_CONFIG', payload: config });
                 } catch (e) {
+                    console.log({ e });
                     console.error('The file is not a valid yaml file. Please try again.');
                     toast.error('The file is not a valid yaml file. Please try again.');
                 }

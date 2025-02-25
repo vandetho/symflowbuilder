@@ -23,16 +23,23 @@ export class WorkflowConfigHelper {
             });
         }
 
+        console.log({ places });
+
         const workflowPlaces: WorkflowPlace[] = Object.keys(places).map((key) => {
             const place = places[key];
-            const workflowPlace: WorkflowPlace = { name: key };
-            const metadata: Metadata[] = [];
-            if (place && place.metadata) {
-                const placeMetadata = place.metadata;
-                Object.keys(place.metadata).forEach((meta) => {
-                    metadata.push({ name: meta, value: placeMetadata[meta] });
-                });
-                workflowPlace.metadata = metadata;
+            const workflowPlace: WorkflowPlace = { name: typeof place === 'string' ? place : key };
+            if (place) {
+                const metadata: Metadata[] = [];
+                if (typeof place === 'string') {
+                    workflowPlace.metadata = [];
+                    return workflowPlace;
+                } else if (place.metadata) {
+                    const placeMetadata = place.metadata;
+                    Object.keys(place.metadata).forEach((meta) => {
+                        metadata.push({ name: meta, value: placeMetadata[meta] });
+                    });
+                    workflowPlace.metadata = metadata;
+                }
             }
             return workflowPlace;
         });
@@ -66,7 +73,9 @@ export class WorkflowConfigHelper {
             auditTrail: workflow.audit_trail.enabled,
             places: workflowPlaces,
             initialMarking: workflow.initial_marking,
-            supports: workflow.supports.map((support) => ({ entityName: support })),
+            supports: Array.isArray(workflow.supports)
+                ? workflow.supports.map((support) => ({ entityName: support }))
+                : [{ entityName: workflow.supports }],
             metadata: workflowMetadata,
             markingStore: workflow.marking_store,
             eventsToDispatch: workflow.events_to_dispatch,

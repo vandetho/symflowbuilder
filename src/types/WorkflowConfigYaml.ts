@@ -15,7 +15,7 @@ export type WorkflowConfigYaml = {
                     type: string;
                     property: string;
                 };
-                supports: string[];
+                supports: string | string[];
                 type: string;
                 places: WorkflowPlaceYaml;
                 initial_marking: string;
