@@ -16,12 +16,13 @@ import { ConfigTabRenderer } from '@/components/config-tab-renderer';
 import { UploadButton } from '@/components/upload-button';
 import { useSessionStorageDispatch, useSessionStorageState } from '@/hooks/session-storage-hook';
 import { usePathname, useRouter } from 'next/navigation';
-import { useSearchParamsState } from '@/hooks/search-params-hook';
+import { useSearchParamsDispatch, useSearchParamsState } from '@/hooks/search-params-hook';
 
 export default function Home() {
     const pathname = usePathname();
     const router = useRouter();
     const { builder, display } = useSearchParamsState();
+    const searchParamsDispatch = useSearchParamsDispatch();
     const { workflowConfig } = useSessionStorageState();
     const dispatch = useSessionStorageDispatch();
     const [config, setConfig] = React.useState<WorkflowConfig | undefined>(workflowConfig);
@@ -55,12 +56,19 @@ export default function Home() {
     );
 
     const onChangeConfig = React.useCallback(
-        (config: WorkflowConfig, yamlConfig?: WorkflowConfigYaml) => {
+        (config: WorkflowConfig, yamlConfig?: WorkflowConfigYaml, workflowUrl?: string, workflowName?: string) => {
+            if (workflowName && workflowUrl) {
+                searchParamsDispatch({ type: 'SET_WORKFLOW_URL', payload: workflowUrl });
+                searchParamsDispatch({ type: 'SET_WORKFLOW_NAME', payload: workflowName });
+                router.replace(
+                    `${pathname}?workflowUrl=${workflowUrl}&workflowName=${workflowName}&builder=${builder}&display=${display}`,
+                );
+            }
             setConfig(config);
             setYaml(yamlConfig);
             dispatch({ type: 'SET_WORKFLOW_CONFIG', payload: config });
         },
-        [dispatch],
+        [builder, dispatch, display, pathname, router, searchParamsDispatch],
     );
 
     const onChangeBuilder = React.useCallback(

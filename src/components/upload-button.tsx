@@ -25,47 +25,58 @@ import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
 
 const schema = object({
-    url: string().url().required(),
+    workflowUrl: string().url().required(),
     workflowName: string().required(),
 });
 
 interface UploadButtonProps {
-    onDone: (config: WorkflowConfig, yamlConfig: WorkflowConfigYaml) => void;
+    onDone: (
+        config: WorkflowConfig,
+        yamlConfig: WorkflowConfigYaml,
+        workflowUrl?: string,
+        workflowName?: string,
+    ) => void;
 }
 
 export const UploadButton: React.FC<UploadButtonProps> = ({ onDone }) => {
+    const [open, setOpen] = React.useState(false);
     const [config, setConfig] = React.useState<WorkflowConfig>();
     const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
+    const [workflowUrl, setWorkflowUrl] = React.useState<string>();
+    const [workflowName, setWorkflowName] = React.useState<string>();
 
     const form = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
-            url: '',
+            workflowUrl: '',
+            workflowName: '',
         },
     });
 
     const handleDone = React.useCallback(() => {
         if (config && yaml) {
-            onDone(config, yaml);
+            onDone(config, yaml, workflowUrl, workflowName);
         }
-    }, [config, onDone, yaml]);
+        setOpen(false);
+    }, [config, onDone, workflowName, workflowUrl, yaml]);
 
-    const onSubmit = React.useCallback((data: { url: string }) => {
-        axios.get(data.url).then((response) => {
+    const onSubmit = React.useCallback((data: { workflowUrl: string; workflowName: string }) => {
+        axios.get(data.workflowUrl).then((response) => {
             try {
                 const doc: WorkflowConfigYaml = jsYaml.load(response.data) as WorkflowConfigYaml;
                 const config = WorkflowConfigHelper.toObject(doc);
                 setConfig(config);
                 setYaml(doc);
+                setWorkflowUrl(data.workflowUrl);
+                setWorkflowName(data.workflowName);
             } catch (e) {
                 toast.error('The file is not a valid yaml file. Please try again.');
-                console.error('The file is not a valid yaml file. Please try again.');
             }
         });
     }, []);
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>Upload File</Button>
             </DialogTrigger>
@@ -88,8 +99,8 @@ export const UploadButton: React.FC<UploadButtonProps> = ({ onDone }) => {
                         <form className="flex flex-col gap-4 w-full" onSubmit={form.handleSubmit(onSubmit)}>
                             <TextField
                                 control={form.control}
-                                name="url"
-                                label="Url"
+                                name="workflowUrl"
+                                label="Workflow Url"
                                 className="w-full"
                                 placeholder="https://example.com/your-file.yml"
                             />
