@@ -19,10 +19,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useSearchParamsState } from '@/hooks/search-params-hook';
 
 export default function Home() {
-    const { workflowConfig } = useSessionStorageState();
     const pathname = usePathname();
     const router = useRouter();
     const { builder, display } = useSearchParamsState();
+    const { workflowConfig } = useSessionStorageState();
     const dispatch = useSessionStorageDispatch();
     const [config, setConfig] = React.useState<WorkflowConfig | undefined>(workflowConfig);
     const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
@@ -73,7 +73,7 @@ export default function Home() {
         },
         [display, pathname, router],
     );
-
+    console.log({ builder });
     return (
         <FileDropzone onDrop={onDrop}>
             <Tabs defaultValue={builder} onValueChange={onChangeBuilder}>

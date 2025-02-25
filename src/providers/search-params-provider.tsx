@@ -14,10 +14,10 @@ export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) =>
     const searchParams = useSearchParams();
     const [state, dispatch] = React.useReducer(searchParamsReducer, {
         ...searchParamsInitialState,
-        display: searchParams.get('display') as DisplayType,
-        builder: searchParams.get('builder') as BuilderType,
-        workflowUrl: searchParams.get('workflowUrl'),
-        workflowName: searchParams.get('workflowName'),
+        display: (searchParams.get('display') as DisplayType) || 'graphviz',
+        builder: (searchParams.get('builder') as BuilderType) || 'form',
+        workflowUrl: searchParams.get('workflowUrl') || '',
+        workflowName: searchParams.get('workflowName') || '',
     });
 
     return (
