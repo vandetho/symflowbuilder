@@ -14,7 +14,7 @@ type ConfigTabRendererProps = {
     yaml: WorkflowConfigYaml | undefined;
 };
 
-const ConfigTabRenderer = React.memo<ConfigTabRendererProps>(({ config, yaml }) => {
+export const ConfigTabRenderer = React.memo<ConfigTabRendererProps>(({ config, yaml }) => {
     const pathname = usePathname();
     const router = useRouter();
     const { builder, display } = useSearchParamsState();
@@ -53,4 +53,4 @@ const ConfigTabRenderer = React.memo<ConfigTabRendererProps>(({ config, yaml }) 
     );
 });
 
-export default ConfigTabRenderer;
+ConfigTabRenderer.displayName = 'ConfigTabRenderer';

@@ -1,18 +1,18 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React from 'react';
+import jsYaml from 'js-yaml';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import jsYaml from 'js-yaml';
 import { toast } from 'sonner';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
-import FormFields from '@/components/form-fields';
-import GraphBuilder from '@/components/graph-builder';
-import ScrollTop from '@/components/scroll-top';
-import FileDropzone from '@/components/file-dropzone';
-import ConfigTabRenderer from '@/components/config-tab-renderer';
+import { FormFields } from '@/components/form-fields';
+import { GraphBuilder } from '@/components/graph-builder';
+import { ScrollTop } from '@/components/scroll-top';
+import { FileDropzone } from '@/components/file-dropzone';
+import { ConfigTabRenderer } from '@/components/config-tab-renderer';
 import { UploadButton } from '@/components/upload-button';
 import { useSessionStorageDispatch, useSessionStorageState } from '@/hooks/session-storage-hook';
 import { usePathname, useRouter } from 'next/navigation';
@@ -113,9 +113,9 @@ export default function Home() {
                                             The best way to build and visualize workflow for symfony
                                         </p>
                                     </div>
-                                    <Suspense fallback={<div>Loading...</div>}>
+                                    <React.Suspense fallback={<div>Loading...</div>}>
                                         <ConfigTabRenderer config={config} yaml={yaml} />
-                                    </Suspense>
+                                    </React.Suspense>
                                 </div>
                             </ResizablePanel>
                         </ResizablePanelGroup>

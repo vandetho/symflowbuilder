@@ -459,4 +459,4 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
     );
 });
 
-export default GraphBuilder;
+GraphBuilder.displayName = 'GraphBuilder';

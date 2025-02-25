@@ -23,7 +23,7 @@ interface FormFieldsProps {
     setConfig: (config: WorkflowConfig | undefined) => void;
 }
 
-const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) => {
+export const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) => {
     const dispatch = useSessionStorageDispatch();
     const form = useForm({
         resolver: yupResolver(formFieldSchema),
@@ -136,4 +136,4 @@ const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setConfig }) 
     );
 });
 
-export default FormFields;
+FormFields.displayName = 'FormFields';

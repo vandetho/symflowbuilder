@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react';
 
 type ScrollTopProps = {};
 
-const ScrollTop: React.FC<ScrollTopProps> = ({}) => {
+export const ScrollTop: React.FC<ScrollTopProps> = ({}) => {
     return (
         <div className="flex fixed right-2 bottom-2">
             <Button
@@ -20,4 +20,4 @@ const ScrollTop: React.FC<ScrollTopProps> = ({}) => {
     );
 };
 
-export default ScrollTop;
+ScrollTop.displayName = 'ScrollTop';

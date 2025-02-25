@@ -55,4 +55,4 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({ onDrop, children }) 
     );
 };
 
-export default FileDropzone;
+FileDropzone.displayName = 'FileDropzone';
