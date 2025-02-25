@@ -5,12 +5,13 @@ import { cn } from '@/lib/utils';
 
 import { ThemeProvider } from '@/providers/theme-provider';
 import NavBar from '@/app/nav-bar';
-import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import GoogleAnalytics from '@/app/GoogleAnalytics';
 import { primaryMain } from '@/theme/palette';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import SessionStorageProvider from '@/providers/session-storage-provider';
+
+import './global.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 

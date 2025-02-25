@@ -27,9 +27,9 @@ const PlaceNode = React.memo<PlaceNodeProps>(
 
         return (
             <React.Fragment>
-                <div className="shadow-md rounded-lg border-b-2 border-l-2 border-r-2 border-primary dark:bg-black light:bg-white">
+                <div className="shadow-md rounded-lg border-b-2 border-l-2 border-r-2 border-primary">
                     <div className="bg-primary rounded-t-md p-2 m-0">
-                        <Label htmlFor={`${id}-name`} className="text-white text-sm font-bold">
+                        <Label htmlFor={`${id}-name`} className="text-black text-sm font-bold">
                             Place
                         </Label>
                     </div>
