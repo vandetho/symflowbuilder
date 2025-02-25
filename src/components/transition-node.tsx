@@ -28,7 +28,7 @@ const TransitionNode = React.memo<TransitionNodeProps>(
         return (
             <React.Fragment>
                 <div className="shadow-md rounded-lg border-b-2 border-l-2 border-r-2 border-teal-500 dark:bg-black light:bg-white">
-                    <div className="bg-teal-500 rounded-t-md p-2 m-0">
+                    <div className="bg-teal-500 rounded-t-md p-2 m-0 flex justify-center items-center">
                         <Label htmlFor={`${id}-name`} className="text-white text-sm font-bold">
                             Transition
                         </Label>

@@ -29,30 +29,27 @@ export const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
         <FormField
             control={control}
             name={name}
-            render={({ field }) => {
-                console.log({ name, field: field.value });
-                return (
-                    <FormItem>
-                        {label && (
-                            <FormLabel htmlFor={localId} aria-required={required}>
-                                {label}
-                                {required && <span className="ml-1 text-red-500">*</span>}
-                            </FormLabel>
-                        )}
-                        <MultiSelect
-                            id={localId}
-                            {...field}
-                            defaultValue={field.value}
-                            className={className}
-                            disabled={disabled}
-                            options={options}
-                            onValueChange={field.onChange}
-                        />
-                        <FormMessage />
-                        {description && <FormDescription>{description}</FormDescription>}
-                    </FormItem>
-                );
-            }}
+            render={({ field }) => (
+                <FormItem>
+                    {label && (
+                        <FormLabel htmlFor={localId} aria-required={required}>
+                            {label}
+                            {required && <span className="ml-1 text-red-500">*</span>}
+                        </FormLabel>
+                    )}
+                    <MultiSelect
+                        id={localId}
+                        {...field}
+                        defaultValue={field.value}
+                        className={className}
+                        disabled={disabled}
+                        options={options}
+                        onValueChange={field.onChange}
+                    />
+                    <FormMessage />
+                    {description && <FormDescription>{description}</FormDescription>}
+                </FormItem>
+            )}
         />
     );
 };
