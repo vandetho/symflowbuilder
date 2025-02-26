@@ -58,11 +58,15 @@ export default function Home() {
     const onChangeConfig = React.useCallback(
         (config: WorkflowConfig, yamlConfig?: WorkflowConfigYaml, workflowUrl?: string, workflowName?: string) => {
             if (workflowName && workflowUrl) {
+                const query = new URLSearchParams({
+                    display,
+                    builder,
+                    workflowName,
+                    workflowUrl,
+                });
                 searchParamsDispatch({ type: 'SET_WORKFLOW_URL', payload: workflowUrl });
                 searchParamsDispatch({ type: 'SET_WORKFLOW_NAME', payload: workflowName });
-                router.replace(
-                    `${pathname}?workflowUrl=${workflowUrl}&workflowName=${workflowName}&builder=${builder}&display=${display}`,
-                );
+                router.replace(`${pathname}?${query.toString()}`);
             }
             setConfig(config);
             setYaml(yamlConfig);
@@ -81,7 +85,7 @@ export default function Home() {
             });
             router.push(`${pathname}?${query.toString()}`);
         },
-        [display, pathname, router],
+        [display, pathname, router, workflowName, workflowUrl],
     );
 
     return (
