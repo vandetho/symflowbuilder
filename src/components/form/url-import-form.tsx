@@ -14,6 +14,8 @@ import { Form } from '@/components/ui/form';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 
 interface UrlImportFormProps {
+    workflowUrl?: string;
+    workflowName?: string;
     onValid: (params: {
         config: WorkflowConfig;
         yamlConfig: WorkflowConfigYaml;
@@ -22,14 +24,14 @@ interface UrlImportFormProps {
     }) => void;
 }
 
-export const UrlImportForm: React.FC<UrlImportFormProps> = ({ onValid }) => {
+export const UrlImportForm: React.FC<UrlImportFormProps> = ({ onValid, workflowUrl, workflowName }) => {
     const [valid, setValid] = React.useState(false);
     const [validating, setValidating] = React.useState(false);
     const form = useForm({
         resolver: yupResolver(urlImportSchema),
         defaultValues: {
-            workflowUrl: '',
-            workflowName: '',
+            workflowUrl: workflowUrl || '',
+            workflowName: workflowName || '',
         },
     });
 
