@@ -12,6 +12,7 @@ interface SearchParamsProviderProps {
 
 export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) => {
     const searchParams = useSearchParams();
+    const [show, setShow] = React.useState(false);
     const [state, dispatch] = React.useReducer(searchParamsReducer, {
         ...searchParamsInitialState,
         display: (searchParams.get('display') as DisplayType) || 'graphviz',
@@ -32,10 +33,18 @@ export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) =>
         });
     }, [searchParams]);
 
+    React.useEffect(() => {
+        if (searchParams.get('workflowUrl')) {
+            setShow(true);
+        }
+    }, [searchParams]);
+
     return (
-        <SearchParamsContextState.Provider value={state}>
-            <SearchParamsContextDispatch.Provider value={dispatch}>{children}</SearchParamsContextDispatch.Provider>
-        </SearchParamsContextState.Provider>
+        <React.Fragment>
+            <SearchParamsContextState.Provider value={state}>
+                <SearchParamsContextDispatch.Provider value={dispatch}>{children}</SearchParamsContextDispatch.Provider>
+            </SearchParamsContextState.Provider>
+        </React.Fragment>
     );
 };
 
