@@ -8,10 +8,9 @@ import { MetadataYaml } from '@/types/MetadataYaml';
 import { WorkflowTransitionYaml } from '@/types/WorkflowTransitionYaml';
 
 export class WorkflowConfigHelper {
-    static toObject = (yamlConfig: WorkflowConfigYaml): WorkflowConfig => {
+    static toObject = (yamlConfig: WorkflowConfigYaml, workflowName?: string): WorkflowConfig => {
         const workflows = yamlConfig.framework.workflows;
-        const workflowName = Object.keys(workflows)[0];
-        const workflow = Object.values(workflows)[0];
+        const workflow = workflowName ? workflows[workflowName] : Object.values(workflows)[0];
         const workflowType = workflow.type;
         const places = workflow.places;
         const metadata = workflow.metadata;
@@ -58,6 +57,7 @@ export class WorkflowConfigHelper {
                 }
                 workflowTransitions.push({
                     name: key,
+                    guard: transition.guard,
                     from: Array.isArray(from) ? from : [from],
                     to: Array.isArray(to) ? to : [to],
                     metadata,
@@ -66,7 +66,7 @@ export class WorkflowConfigHelper {
         }
 
         return {
-            name: workflowName,
+            name: workflowName ? workflowName : Object.keys(workflows)[0],
             type: workflowType,
             auditTrail: typeof workflow.audit_trail === 'boolean' ? workflow.audit_trail : workflow.audit_trail.enabled,
             places: workflowPlaces,

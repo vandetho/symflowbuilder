@@ -56,7 +56,17 @@ export default function Home() {
     );
 
     const onChangeConfig = React.useCallback(
-        (config: WorkflowConfig, yamlConfig?: WorkflowConfigYaml, workflowUrl?: string, workflowName?: string) => {
+        ({
+            config,
+            yamlConfig,
+            workflowUrl,
+            workflowName,
+        }: {
+            config: WorkflowConfig;
+            yamlConfig?: WorkflowConfigYaml;
+            workflowUrl?: string;
+            workflowName?: string;
+        }) => {
             if (workflowName && workflowUrl) {
                 const query = new URLSearchParams({
                     display,

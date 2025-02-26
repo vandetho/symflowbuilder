@@ -23,6 +23,7 @@ import jsYaml from 'js-yaml';
 import { toast } from 'sonner';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
+import { Loader2 } from 'lucide-react';
 
 const schema = object({
     workflowUrl: string().url().required(),
@@ -30,18 +31,20 @@ const schema = object({
 });
 
 interface UploadButtonProps {
-    onDone: (
-        config: WorkflowConfig,
-        yamlConfig: WorkflowConfigYaml,
-        workflowUrl?: string,
-        workflowName?: string,
-    ) => void;
+    onDone: (params: {
+        config: WorkflowConfig;
+        yamlConfig: WorkflowConfigYaml;
+        workflowUrl?: string;
+        workflowName?: string;
+    }) => void;
 }
 
 export const UploadButton: React.FC<UploadButtonProps> = ({ onDone }) => {
     const [open, setOpen] = React.useState(false);
     const [config, setConfig] = React.useState<WorkflowConfig>();
     const [yaml, setYaml] = React.useState<WorkflowConfigYaml>();
+    const [valid, setValid] = React.useState(false);
+    const [validating, setValidating] = React.useState(false);
     const [workflowUrl, setWorkflowUrl] = React.useState<string>();
     const [workflowName, setWorkflowName] = React.useState<string>();
 
@@ -55,23 +58,26 @@ export const UploadButton: React.FC<UploadButtonProps> = ({ onDone }) => {
 
     const handleDone = React.useCallback(() => {
         if (config && yaml) {
-            onDone(config, yaml, workflowUrl, workflowName);
+            onDone({ config, yamlConfig: yaml, workflowUrl, workflowName });
         }
         setOpen(false);
     }, [config, onDone, workflowName, workflowUrl, yaml]);
 
     const onSubmit = React.useCallback((data: { workflowUrl: string; workflowName: string }) => {
+        setValidating(true);
         axios.get(data.workflowUrl).then((response) => {
             try {
                 const doc: WorkflowConfigYaml = jsYaml.load(response.data) as WorkflowConfigYaml;
-                const config = WorkflowConfigHelper.toObject(doc);
+                const config = WorkflowConfigHelper.toObject(doc, data.workflowName);
                 setConfig(config);
                 setYaml(doc);
                 setWorkflowUrl(data.workflowUrl);
                 setWorkflowName(data.workflowName);
+                setValid(true);
             } catch (e) {
                 toast.error('The file is not a valid yaml file. Please try again.');
             }
+            setValidating(false);
         });
     }, []);
 
@@ -101,17 +107,28 @@ export const UploadButton: React.FC<UploadButtonProps> = ({ onDone }) => {
                                 control={form.control}
                                 name="workflowUrl"
                                 label="Workflow Url"
-                                className="w-full"
+                                disabled={validating}
+                                className={`w-full ${valid ? 'border-green-500' : ''}`}
                                 placeholder="https://example.com/your-file.yml"
                             />
                             <TextField
                                 control={form.control}
                                 name="workflowName"
                                 label="Workflow name"
-                                className="w-full"
+                                disabled={validating}
+                                className={`w-full ${valid ? 'border-green-500' : ''}`}
                                 placeholder="task_workflow"
                             />
-                            <Button type="submit">Validate</Button>
+                            <Button type="submit">
+                                {validating ? (
+                                    <React.Fragment>
+                                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                        Validating...
+                                    </React.Fragment>
+                                ) : (
+                                    'Validate'
+                                )}
+                            </Button>
                         </form>
                     </Form>
                 </div>
