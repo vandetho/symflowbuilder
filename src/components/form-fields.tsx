@@ -50,6 +50,7 @@ export const FormFields = React.memo<FormFieldsProps>(({ config, setYaml, setCon
 
     React.useEffect(() => {
         if (config) {
+            console.log({ config });
             form.reset(config);
         }
     }, [config, form]);

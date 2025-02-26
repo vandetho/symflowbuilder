@@ -23,7 +23,7 @@ export const SelectField = React.memo<SelectFieldProps>(
                 render={({ field }) => (
                     <FormItem>
                         {label && <FormLabel>{label}</FormLabel>}
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                             <FormControl>
                                 <SelectTrigger {...props} id={id} className={cn('flex-1', className)}>
                                     <SelectValue placeholder={placeholder} />

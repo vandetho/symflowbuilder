@@ -69,6 +69,7 @@ export const UploadButton: React.FC<UploadButtonProps> = ({ onDone }) => {
             try {
                 const doc: WorkflowConfigYaml = jsYaml.load(response.data) as WorkflowConfigYaml;
                 const config = WorkflowConfigHelper.toObject(doc, data.workflowName);
+                console.log({ config });
                 setConfig(config);
                 setYaml(doc);
                 setWorkflowUrl(data.workflowUrl);
