@@ -9,7 +9,7 @@ type ReactMermaidProps = {
 };
 
 export const ReactMermaid = React.memo<ReactMermaidProps>(({ workflowConfig }) => {
-    const [direction, setDirection] = React.useState<'LR' | 'TD' | 'TB' | 'RL' | 'BT' | string>('LR');
+    const [direction, setDirection] = React.useState<'LR' | 'TB' | 'RL' | 'BT' | string>('LR');
     const [flowDefinition, setFlowDefinition] = React.useState<string | undefined>(undefined);
 
     React.useEffect(() => {
@@ -62,7 +62,6 @@ export const ReactMermaid = React.memo<ReactMermaidProps>(({ workflowConfig }) =
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="LR">Left to Right</SelectItem>
-                    <SelectItem value="TD">Top Down</SelectItem>
                     <SelectItem value="TB">Top Bottom</SelectItem>
                     <SelectItem value="RL">Right to Left</SelectItem>
                     <SelectItem value="BT">Bottom Top</SelectItem>
