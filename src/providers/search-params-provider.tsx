@@ -20,6 +20,18 @@ export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) =>
         workflowName: searchParams.get('workflowName') || '',
     });
 
+    React.useEffect(() => {
+        dispatch({
+            type: 'SET_SEARCH_PARAMS',
+            payload: {
+                display: (searchParams.get('display') as DisplayType) || 'graphviz',
+                builder: (searchParams.get('builder') as BuilderType) || 'form',
+                workflowUrl: searchParams.get('workflowUrl') || '',
+                workflowName: searchParams.get('workflowName') || '',
+            },
+        });
+    }, [searchParams]);
+
     return (
         <SearchParamsContextState.Provider value={state}>
             <SearchParamsContextDispatch.Provider value={dispatch}>{children}</SearchParamsContextDispatch.Provider>

@@ -21,6 +21,9 @@ export type SearchParamsContextActionType =
     | {
           type: 'SET_WORKFLOW_NAME';
           payload: string | null;
+      } | {
+            type: 'SET_SEARCH_PARAMS';
+            payload: SearchParamsContextStateType;
       };
 
 export type DisplayType = 'graphviz' | 'mermaid' | 'yaml';

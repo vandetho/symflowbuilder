@@ -6,9 +6,11 @@ export type WorkflowConfigYaml = {
     framework: {
         workflows: {
             [key: string]: {
-                audit_trail: {
-                    enabled: boolean;
-                };
+                audit_trail:
+                    | {
+                          enabled: boolean;
+                      }
+                    | boolean;
                 metadata?: MetadataYaml;
                 events_to_dispatch?: string[];
                 marking_store: {

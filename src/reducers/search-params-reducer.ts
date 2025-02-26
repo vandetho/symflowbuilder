@@ -13,6 +13,12 @@ export function searchParamsReducer(state: SearchParamsContextStateType, action:
             return { ...state, display: action.payload };
         case 'SET_BUILDER':
             return { ...state, builder: action.payload };
+        case 'SET_WORKFLOW_URL':
+            return { ...state, workflowUrl: action.payload };
+        case 'SET_WORKFLOW_NAME':
+            return { ...state, workflowName: action.payload };
+        case 'SET_SEARCH_PARAMS':
+            return { ...state, ...action.payload };
         default:
             return state;
     }

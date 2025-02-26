@@ -23,8 +23,6 @@ export class WorkflowConfigHelper {
             });
         }
 
-        console.log({ places });
-
         const workflowPlaces: WorkflowPlace[] = Object.keys(places).map((key) => {
             const place = places[key];
             const workflowPlace: WorkflowPlace = { name: typeof place === 'string' ? place : key };
@@ -70,7 +68,7 @@ export class WorkflowConfigHelper {
         return {
             name: workflowName,
             type: workflowType,
-            auditTrail: workflow.audit_trail.enabled,
+            auditTrail: typeof workflow.audit_trail === 'boolean' ? workflow.audit_trail : workflow.audit_trail.enabled,
             places: workflowPlaces,
             initialMarking: workflow.initial_marking,
             supports: Array.isArray(workflow.supports)

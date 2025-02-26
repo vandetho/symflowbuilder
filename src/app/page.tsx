@@ -21,7 +21,7 @@ import { useSearchParamsDispatch, useSearchParamsState } from '@/hooks/search-pa
 export default function Home() {
     const pathname = usePathname();
     const router = useRouter();
-    const { builder, display } = useSearchParamsState();
+    const { builder, display, workflowName, workflowUrl } = useSearchParamsState();
     const searchParamsDispatch = useSearchParamsDispatch();
     const { workflowConfig } = useSessionStorageState();
     const dispatch = useSessionStorageDispatch();
@@ -76,12 +76,14 @@ export default function Home() {
             const query = new URLSearchParams({
                 display,
                 builder,
+                workflowName: workflowName || '',
+                workflowUrl: workflowUrl || '',
             });
             router.push(`${pathname}?${query.toString()}`);
         },
         [display, pathname, router],
     );
-    console.log({ builder });
+
     return (
         <FileDropzone onDrop={onDrop}>
             <Tabs defaultValue={builder} onValueChange={onChangeBuilder}>
