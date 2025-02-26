@@ -17,31 +17,31 @@ export const ReactMermaid = React.memo<ReactMermaidProps>(({ workflowConfig }) =
             let graphString = `graph ${direction}\n`;
             const places: { [key: string]: string } = {};
             workflowConfig.places.forEach((place) => {
-                const placeName = `${place.name}_${generateToken()}`;
-                places[place.name] = placeName;
+                const placeId = `place_${generateToken()}`;
+                places[place.name] = placeId;
                 if (place.name === workflowConfig.initialMarking) {
-                    graphString += `${placeName}([${place.name}])\n`;
+                    graphString += `${placeId}([${place.name}])\n`;
                 } else {
-                    graphString += `${placeName}((${place.name}))\n`;
+                    graphString += `${placeId}((${place.name}))\n`;
                 }
                 if (place.metadata) {
                     place.metadata.forEach((meta) => {
                         if (meta.name === 'bg_color') {
-                            graphString += `style ${placeName} fill:${meta.value}\n`;
+                            graphString += `style ${placeId} fill:${meta.value}\n`;
                         }
                     });
                 }
             });
             const transitions: { [key: string]: string } = {};
             workflowConfig.transitions.forEach((transition) => {
-                const transitionName = `${transition.name}_${generateToken()}`;
-                transitions[transition.name] = transitionName;
-                graphString += `${transitionName}[${transition.name}]\n`;
+                const transitionId = `transition_${generateToken()}`;
+                transitions[transition.name] = transitionId;
+                graphString += `${transitionId}[${transition.name}]\n`;
                 transition.from.forEach((from) => {
-                    graphString += `${places[from]} --> ${transitionName}\n`;
+                    graphString += `${places[from]} --> ${transitionId}\n`;
                 });
                 transition.to.forEach((to) => {
-                    graphString += `${transitionName} --> ${places[to]}\n`;
+                    graphString += `${transitionId} --> ${places[to]}\n`;
                 });
             });
 

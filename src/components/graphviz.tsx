@@ -23,31 +23,31 @@ export const Graphviz = React.memo<GraphvizProps>(({ workflowConfig }) => {
 
         workflowConfig.places.forEach((place) => {
             const token = generateToken({ size: 16 });
-            const placeName = `${place.name}_${token}`;
+            const placeId = `place_${token}`;
             const bgColor = place.metadata?.find((meta) => meta.name === 'bg_color');
             let fillColor: string | undefined = undefined;
             if (bgColor) {
                 fillColor = bgColor.value;
             }
             if (place.name === workflowConfig.initialMarking) {
-                dot += `  ${placeName} [shape="circle" label="${place.name}" style="filled"];\n`;
+                dot += `  ${placeId} [shape="circle" label="${place.name}" style="filled"];\n`;
             } else {
-                dot += `  ${placeName} [shape="circle" label="${place.name}" ${fillColor ? ` style="filled" fillcolor="${fillColor}"` : ''}];\n`;
+                dot += `  ${placeId} [shape="circle" label="${place.name}" ${fillColor ? ` style="filled" fillcolor="${fillColor}"` : ''}];\n`;
             }
-            places[place.name] = placeName;
+            places[place.name] = placeId;
         });
         workflowConfig.transitions.forEach((transition) => {
             const token = generateToken({ size: 16 });
-            const transitionName = `${transition.name}_${token}`;
-            dot += `  ${transitionName} [shape="box" label="${transition.name}"];\n`;
-            transitions[transition.name] = transitionName;
+            const transitionId = `transition_${token}`;
+            dot += `  ${transitionId} [shape="box" label="${transition.name}"];\n`;
+            transitions[transition.name] = transitionId;
         });
         workflowConfig.transitions.forEach((transition) => {
             transition.from.forEach((from) => {
-                dot += `  ${places[from]} -> ${transitions[transition.name]};\n`;
+                dot += `  "${places[from]}" -> "${transitions[transition.name]}";\n`;
             });
             transition.to.forEach((to) => {
-                dot += `  ${transitions[transition.name]} -> ${places[to]};\n`;
+                dot += `  "${transitions[transition.name]}" -> "${places[to]}";\n`;
             });
         });
         dot += '}';
