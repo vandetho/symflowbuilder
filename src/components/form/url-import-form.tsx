@@ -14,6 +14,7 @@ import { Form } from '@/components/ui/form';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 
 interface UrlImportFormProps {
+    buttonTitle?: string;
     workflowUrl?: string;
     workflowName?: string;
     onValid: (params: {
@@ -24,7 +25,12 @@ interface UrlImportFormProps {
     }) => void;
 }
 
-export const UrlImportForm: React.FC<UrlImportFormProps> = ({ onValid, workflowUrl, workflowName }) => {
+export const UrlImportForm: React.FC<UrlImportFormProps> = ({
+    onValid,
+    workflowUrl,
+    workflowName,
+    buttonTitle = 'Validate',
+}) => {
     const [valid, setValid] = React.useState(false);
     const [validating, setValidating] = React.useState(false);
     const form = useForm({
@@ -84,7 +90,7 @@ export const UrlImportForm: React.FC<UrlImportFormProps> = ({ onValid, workflowU
                             Validating...
                         </React.Fragment>
                     ) : (
-                        'Validate'
+                        buttonTitle
                     )}
                 </Button>
             </form>

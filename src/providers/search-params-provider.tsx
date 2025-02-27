@@ -5,17 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import { SearchParamsContextDispatch, SearchParamsContextState } from '@/contexts/search-params-context';
 import { searchParamsInitialState, searchParamsReducer } from '@/reducers/search-params-reducer';
 import { BuilderType, DisplayType } from '@/types/SearchParams';
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { UrlImportForm } from '@/components/form/url-import-form';
-import { Button } from '@/components/ui/button';
 
 interface SearchParamsProviderProps {
     children: React.ReactNode;
@@ -66,17 +57,10 @@ export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) =>
                     <UrlImportForm
                         workflowUrl={state.workflowUrl || ''}
                         workflowName={state.workflowName || ''}
+                        buttonTitle="Import Workflow"
                         onValid={() => {}}
                     />
                 </DialogContent>
-                <DialogFooter>
-                    <DialogClose asChild>
-                        <Button type="button" variant="secondary">
-                            Close
-                        </Button>
-                    </DialogClose>
-                    <Button onClick={() => {}}>Done</Button>
-                </DialogFooter>
             </Dialog>
         </React.Fragment>
     );
