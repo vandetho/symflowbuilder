@@ -1,7 +1,7 @@
 import React from 'react';
 import Dropzone from 'react-dropzone';
 import { useBoolean } from 'react-use';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 type FileDropzoneProps = {
     onDrop?: (files: File) => void;
@@ -39,6 +39,9 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({ onDrop, children }) 
                                 <DialogContent className="sm:max-w-[425px]">
                                     <DialogHeader>
                                         <DialogTitle>File dropzone</DialogTitle>
+                                        <DialogDescription>
+                                            Drop your workflow configuration yaml file here
+                                        </DialogDescription>
                                     </DialogHeader>
                                     <div className="border-dashed border-4 rounded-md w-[375px] h-[375px] flex flex-col items-center justify-center">
                                         <p className="text-lg text-center font-bold">
