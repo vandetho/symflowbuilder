@@ -27,12 +27,19 @@ import { GraphToolbar } from '@/components/graph-toolbar';
 import { ExportImageButton } from '@/components/export-image-button';
 import ElkConstructor from 'elkjs';
 import { useSessionStorageDispatch, useSessionStorageState } from '@/hooks/session-storage-hook';
+import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 
 type GraphBuilderProps = {
     config: WorkflowConfig | undefined;
+    onChangeConfig: (params: {
+        config: WorkflowConfig;
+        yamlConfig: WorkflowConfigYaml;
+        workflowUrl?: string;
+        workflowName?: string;
+    }) => void;
 };
 
-export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
+export const GraphBuilder = React.memo<GraphBuilderProps>(({ config, onChangeConfig }) => {
     const reactFlowWrapper = React.useRef<HTMLDivElement>(null);
     const { nodeConfig, edgeConfig } = useSessionStorageState();
     const dispatch = useSessionStorageDispatch();
@@ -436,6 +443,7 @@ export const GraphBuilder = React.memo<GraphBuilderProps>(({ config }) => {
                     addPlaceNode={addPlaceNode}
                     addTransitionNode={addTransitionNode}
                     onEmptyPanel={onEmptyPanel}
+                    onChangeConfig={onChangeConfig}
                 />
                 <ReactFlow
                     nodes={nodes}

@@ -5,16 +5,25 @@ import { ExportButton } from '@/components/export-button';
 import { WorkflowPlace } from '@/types/WorkflowPlace';
 import { WorkflowTransition } from '@/types/WorkflowTransition';
 import { EmptyButton } from '@/components/empty-button';
+import { UploadButton } from '@/components/upload-button';
+import { WorkflowConfig } from '@/types/WorkflowConfig';
+import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 
 type GraphToolbarProps = {
     nodes: Node<WorkflowPlace | WorkflowTransition>[];
     addPlaceNode: () => void;
     addTransitionNode: () => void;
     onEmptyPanel: () => void;
+    onChangeConfig: (params: {
+        config: WorkflowConfig;
+        yamlConfig: WorkflowConfigYaml;
+        workflowUrl?: string;
+        workflowName?: string;
+    }) => void;
 };
 
 export const GraphToolbar = React.memo<GraphToolbarProps>(
-    ({ nodes, addPlaceNode, addTransitionNode, onEmptyPanel }) => {
+    ({ nodes, addPlaceNode, addTransitionNode, onEmptyPanel, onChangeConfig }) => {
         const onDragStart = (event: React.DragEvent<HTMLButtonElement>, nodeType: 'place' | 'transition') => {
             event.dataTransfer.setData('application/reactflow', nodeType);
             event.dataTransfer.effectAllowed = 'move';
@@ -42,6 +51,7 @@ export const GraphToolbar = React.memo<GraphToolbarProps>(
                 </Button>
                 <EmptyButton onEmptyPanel={onEmptyPanel} />
                 <ExportButton nodes={nodes} />
+                <UploadButton onDone={onChangeConfig} />
             </aside>
         );
     },

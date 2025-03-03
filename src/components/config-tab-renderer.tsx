@@ -8,7 +8,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { useSearchParamsState } from '@/hooks/search-params-hook';
-import { JsonMarkdown } from '@/components/json-markdown';
+import { ReactJsonViewer } from '@/components/react-json-viewer';
 
 type ConfigTabRendererProps = {
     config: WorkflowConfig | undefined;
@@ -51,8 +51,8 @@ export const ConfigTabRenderer = React.memo<ConfigTabRendererProps>(({ config, y
             <TabsContent value="yaml">
                 <YamlMarkdown yamlConfig={yaml} />
             </TabsContent>
-            <TabsContent value="yaml">
-                <JsonMarkdown yamlConfig={yaml} />
+            <TabsContent value="json">
+                <ReactJsonViewer yamlConfig={yaml} />
             </TabsContent>
         </Tabs>
     );

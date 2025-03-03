@@ -145,7 +145,7 @@ export default function Home() {
                     </div>
                 </TabsContent>
                 <TabsContent value="graph">
-                    <GraphBuilder config={config} />
+                    <GraphBuilder config={config} onChangeConfig={onChangeConfig} />
                 </TabsContent>
             </Tabs>
         </FileDropzone>
