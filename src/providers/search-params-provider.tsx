@@ -7,6 +7,9 @@ import { searchParamsInitialState, searchParamsReducer } from '@/reducers/search
 import { BuilderType, DisplayType } from '@/types/SearchParams';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { UrlImportForm } from '@/components/form/url-import-form';
+import { WorkflowConfig } from '@/types/WorkflowConfig';
+import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
+import { useSessionStorageDispatch } from '@/hooks/session-storage-hook';
 
 interface SearchParamsProviderProps {
     children: React.ReactNode;
@@ -14,6 +17,7 @@ interface SearchParamsProviderProps {
 
 export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) => {
     const searchParams = useSearchParams();
+    const sessionStorageDispatch = useSessionStorageDispatch();
     const [show, setShow] = React.useState(false);
     const [state, dispatch] = React.useReducer(searchParamsReducer, {
         ...searchParamsInitialState,
@@ -41,6 +45,21 @@ export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) =>
         }
     }, [searchParams]);
 
+    const onChangeConfig = React.useCallback(
+        ({
+            config,
+        }: {
+            config: WorkflowConfig;
+            yamlConfig?: WorkflowConfigYaml;
+            workflowUrl?: string;
+            workflowName?: string;
+        }) => {
+            sessionStorageDispatch({ type: 'SET_WORKFLOW_CONFIG', payload: config });
+            setShow(false);
+        },
+        [sessionStorageDispatch],
+    );
+
     return (
         <React.Fragment>
             <SearchParamsContextState.Provider value={state}>
@@ -58,7 +77,7 @@ export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) =>
                         workflowUrl={state.workflowUrl || ''}
                         workflowName={state.workflowName || ''}
                         buttonTitle="Import Workflow"
-                        onValid={() => {}}
+                        onValid={onChangeConfig}
                     />
                 </DialogContent>
             </Dialog>

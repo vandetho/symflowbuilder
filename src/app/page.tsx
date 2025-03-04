@@ -99,55 +99,57 @@ export default function Home() {
     );
 
     return (
-        <FileDropzone onDrop={onDrop}>
-            <Tabs defaultValue={builder} onValueChange={onChangeBuilder}>
-                <div className="flex items-center justify-center p-4">
-                    <TabsList>
-                        <TabsTrigger value="form">Form Builder</TabsTrigger>
-                        <TabsTrigger value="graph">Graph Builder</TabsTrigger>
-                    </TabsList>
-                </div>
-                <TabsContent value="form">
-                    <div className="flex min-h-screen flex-col items-center justify-between">
-                        <ResizablePanelGroup direction="horizontal">
-                            <ResizablePanel defaultSize={50} minSize={25}>
-                                <div className="flex flex-col h-full p-6 border-2 rounded-l-md">
-                                    <div className="flex flex-col gap-2">
-                                        <p className="text-2xl">Create new workflow configuration</p>
-                                        <p className="text-lg">
-                                            The best way to build and visualize workflow for symfony
-                                        </p>
-                                        <p className="text-sm">
-                                            Drop your workflow configuration file here or click below to upload
-                                        </p>
-                                        <UploadButton onDone={onChangeConfig} />
-                                    </div>
-                                    <hr className="my-4" />
-                                    <FormFields setYaml={setYaml} config={config} setConfig={setConfig} />
-                                </div>
-                            </ResizablePanel>
-                            <ResizableHandle withHandle />
-                            <ResizablePanel defaultSize={50} minSize={25}>
-                                <div className="flex flex-col h-full p-6 border-2 rounded-r-md">
-                                    <div className="flex flex-col gap-2">
-                                        <p className="text-2xl">View your workflow configuration</p>
-                                        <p className="text-lg">
-                                            The best way to build and visualize workflow for symfony
-                                        </p>
-                                    </div>
-                                    <React.Suspense fallback={<div>Loading...</div>}>
-                                        <ConfigTabRenderer config={config} yaml={yaml} />
-                                    </React.Suspense>
-                                </div>
-                            </ResizablePanel>
-                        </ResizablePanelGroup>
-                        <ScrollTop />
+        <React.Fragment>
+            <FileDropzone onDrop={onDrop}>
+                <Tabs defaultValue={builder} onValueChange={onChangeBuilder}>
+                    <div className="flex items-center justify-center p-4">
+                        <TabsList>
+                            <TabsTrigger value="form">Form Builder</TabsTrigger>
+                            <TabsTrigger value="graph">Graph Builder</TabsTrigger>
+                        </TabsList>
                     </div>
-                </TabsContent>
-                <TabsContent value="graph">
-                    <GraphBuilder config={config} onChangeConfig={onChangeConfig} />
-                </TabsContent>
-            </Tabs>
-        </FileDropzone>
+                    <TabsContent value="form">
+                        <div className="flex min-h-screen flex-col items-center justify-between">
+                            <ResizablePanelGroup direction="horizontal">
+                                <ResizablePanel defaultSize={50} minSize={25}>
+                                    <div className="flex flex-col h-full p-6 border-2 rounded-l-md">
+                                        <div className="flex flex-col gap-2">
+                                            <p className="text-2xl">Create new workflow configuration</p>
+                                            <p className="text-lg">
+                                                The best way to build and visualize workflow for symfony
+                                            </p>
+                                            <p className="text-sm">
+                                                Drop your workflow configuration file here or click below to upload
+                                            </p>
+                                            <UploadButton onDone={onChangeConfig} />
+                                        </div>
+                                        <hr className="my-4" />
+                                        <FormFields setYaml={setYaml} config={config} setConfig={setConfig} />
+                                    </div>
+                                </ResizablePanel>
+                                <ResizableHandle withHandle />
+                                <ResizablePanel defaultSize={50} minSize={25}>
+                                    <div className="flex flex-col h-full p-6 border-2 rounded-r-md">
+                                        <div className="flex flex-col gap-2">
+                                            <p className="text-2xl">View your workflow configuration</p>
+                                            <p className="text-lg">
+                                                The best way to build and visualize workflow for symfony
+                                            </p>
+                                        </div>
+                                        <React.Suspense fallback={<div>Loading...</div>}>
+                                            <ConfigTabRenderer config={config} yaml={yaml} />
+                                        </React.Suspense>
+                                    </div>
+                                </ResizablePanel>
+                            </ResizablePanelGroup>
+                            <ScrollTop />
+                        </div>
+                    </TabsContent>
+                    <TabsContent value="graph">
+                        <GraphBuilder config={config} onChangeConfig={onChangeConfig} />
+                    </TabsContent>
+                </Tabs>
+            </FileDropzone>
+        </React.Fragment>
     );
 }
