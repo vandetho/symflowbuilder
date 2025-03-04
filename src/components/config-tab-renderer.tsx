@@ -18,17 +18,19 @@ type ConfigTabRendererProps = {
 export const ConfigTabRenderer = React.memo<ConfigTabRendererProps>(({ config, yaml }) => {
     const pathname = usePathname();
     const router = useRouter();
-    const { builder, display } = useSearchParamsState();
+    const { builder, display, workflowUrl, workflowName } = useSearchParamsState();
 
     const onChangeDisplay = React.useCallback(
         (display: string) => {
             const query = new URLSearchParams({
                 display,
                 builder,
+                workflowUrl: workflowUrl ? workflowUrl : '',
+                workflowName: workflowName ? workflowName : '',
             });
             router.push(`${pathname}?${query.toString()}`);
         },
-        [builder, pathname, router],
+        [builder, pathname, router, workflowName, workflowUrl],
     );
 
     return (
