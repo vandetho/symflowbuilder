@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { Form } from '@/components/ui/form';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
+import { inspect } from 'util';
 
 interface UrlImportFormProps {
     buttonTitle?: string;
@@ -45,6 +46,7 @@ export const UrlImportForm: React.FC<UrlImportFormProps> = ({
         (data: { workflowUrl: string; workflowName: string }) => {
             setValidating(true);
             axios.get(data.workflowUrl).then((response) => {
+                console.log(inspect(response, true, null, true));
                 try {
                     const doc: WorkflowConfigYaml = jsYaml.load(response.data) as WorkflowConfigYaml;
                     const config = WorkflowConfigHelper.toObject(doc, data.workflowName);

@@ -8,10 +8,8 @@ interface ReactJsonViewerProps {
     yamlConfig: WorkflowConfigYaml | undefined;
 }
 
-export const ReactJsonViewer = React.memo<ReactJsonViewerProps>(({ yamlConfig }) => {
-    return (
-        <div className="flex flex-col gap-3">{yamlConfig && <DynamicReactJson theme="monokai" src={yamlConfig} />}</div>
-    );
-});
+export const ReactJsonViewer = React.memo<ReactJsonViewerProps>(({ yamlConfig }) => (
+    <div className="flex flex-col gap-3">{yamlConfig && <DynamicReactJson theme="monokai" src={yamlConfig} />}</div>
+));
 
 ReactJsonViewer.displayName = 'JsonMarkdown';
