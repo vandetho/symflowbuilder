@@ -24,7 +24,7 @@ import { isWorkflowTransition, WorkflowTransition } from '@/types/WorkflowTransi
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { generateToken } from '@/helpers/token.helper';
 import { GraphToolbar } from '@/components/graph-toolbar';
-import { ExportImageButton } from '@/components/export-image-button';
+import { ExportImageButton } from '@/components/button/export-image-button';
 import ElkConstructor from 'elkjs';
 import { useSessionStorageDispatch, useSessionStorageState } from '@/hooks/session-storage-hook';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';

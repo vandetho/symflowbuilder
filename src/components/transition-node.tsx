@@ -3,7 +3,7 @@ import { Handle, NodeProps, NodeToolbar, Position } from 'reactflow';
 import { WorkflowTransition } from '@/types/WorkflowTransition';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { GraphMetadata } from '@/components/graph-metadata';
+import { GraphMetadata } from '@/components/graph/graph-metadata';
 import { Label } from '@/components/ui/label';
 
 interface TransitionNodeProps extends NodeProps {

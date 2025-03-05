@@ -8,8 +8,8 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/componen
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { WorkflowConfigHelper } from '@/helpers/workflow-config.helper';
-import { FormFields } from '@/components/form-fields';
-import { GraphBuilder } from '@/components/graph-builder';
+import { FormFields } from '@/components/form/form-fields';
+import { GraphBuilder } from '@/components/graph/graph-builder';
 import { ScrollTop } from '@/components/scroll-top';
 import { FileDropzone } from '@/components/file-dropzone';
 import { ConfigTabRenderer } from '@/components/config-tab-renderer';

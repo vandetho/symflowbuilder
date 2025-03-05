@@ -2,7 +2,7 @@ import React from 'react';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { generateToken } from '@/helpers/token.helper';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Mermaid } from '@/components/mermaid';
+import { Mermaid } from '@/components/graph/mermaid';
 
 type ReactMermaidProps = {
     workflowConfig: WorkflowConfig | undefined;

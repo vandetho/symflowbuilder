@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DownloadYaml } from '@/components/download-yaml';
-import { Graphviz } from '@/components/graphviz';
+import { Graphviz } from '@/components/graph/graphviz';
 import { ReactMermaid } from '@/components/react-mermaid';
 import { YamlMarkdown } from '@/components/yaml-markdown';
 import { usePathname, useRouter } from 'next/navigation';

@@ -2,7 +2,7 @@ import React from 'react';
 import { Handle, NodeProps, NodeToolbar, Position } from 'reactflow';
 import { WorkflowPlace } from '@/types/WorkflowPlace';
 import { Input } from '@/components/ui/input';
-import { GraphMetadata } from '@/components/graph-metadata';
+import { GraphMetadata } from '@/components/graph/graph-metadata';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import '@/styles/react-flow.css';
