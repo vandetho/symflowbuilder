@@ -88,6 +88,7 @@ export default function Home() {
 
     const onChangeBuilder = React.useCallback(
         (builder: string) => {
+            searchParamsDispatch({ type: 'SET_HIDE_DIALOG', payload: true });
             const query = new URLSearchParams({
                 ...searchParams,
                 hideDialog: searchParams.hideDialog.toString(),
@@ -95,7 +96,7 @@ export default function Home() {
             });
             router.push(`${pathname}?${query.toString()}`);
         },
-        [pathname, router, searchParams],
+        [pathname, router, searchParams, searchParamsDispatch],
     );
 
     return (
