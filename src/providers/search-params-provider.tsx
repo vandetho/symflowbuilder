@@ -18,29 +18,23 @@ interface SearchParamsProviderProps {
 export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) => {
     const searchParams = useSearchParams();
     const sessionStorageDispatch = useSessionStorageDispatch();
+    const display = (searchParams.get('display') as DisplayType) || 'graphviz';
+    const builder = (searchParams.get('builder') as BuilderType) || 'form';
+    const hideDialog = searchParams.get('dialog') === 'false';
+    const workflowUrl = searchParams.get('workflowUrl') || '';
+    const workflowName = searchParams.get('workflowName') || '';
     const [show, setShow] = React.useState(false);
     const [state, dispatch] = React.useReducer(searchParamsReducer, {
         ...searchParamsInitialState,
-        display: (searchParams.get('display') as DisplayType) || 'graphviz',
-        builder: (searchParams.get('builder') as BuilderType) || 'form',
-        workflowUrl: searchParams.get('workflowUrl') || '',
-        workflowName: searchParams.get('workflowName') || '',
+        display,
+        builder,
+        hideDialog,
+        workflowUrl,
+        workflowName,
     });
 
     React.useEffect(() => {
-        dispatch({
-            type: 'SET_SEARCH_PARAMS',
-            payload: {
-                display: (searchParams.get('display') as DisplayType) || 'graphviz',
-                builder: (searchParams.get('builder') as BuilderType) || 'form',
-                workflowUrl: searchParams.get('workflowUrl') || '',
-                workflowName: searchParams.get('workflowName') || '',
-            },
-        });
-    }, [searchParams]);
-
-    React.useEffect(() => {
-        if (searchParams.get('workflowUrl')) {
+        if (searchParams.get('workflowUrl') && searchParams.get('dialog') === 'true') {
             setShow(true);
         }
     }, [searchParams]);

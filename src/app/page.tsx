@@ -21,7 +21,7 @@ import { useSearchParamsDispatch, useSearchParamsState } from '@/hooks/search-pa
 export default function Home() {
     const pathname = usePathname();
     const router = useRouter();
-    const { builder, display, workflowName, workflowUrl } = useSearchParamsState();
+    const searchParams = useSearchParamsState();
     const searchParamsDispatch = useSearchParamsDispatch();
     const { workflowConfig } = useSessionStorageState();
     const dispatch = useSessionStorageDispatch();
@@ -69,8 +69,8 @@ export default function Home() {
         }) => {
             if (workflowName && workflowUrl) {
                 const query = new URLSearchParams({
-                    display,
-                    builder,
+                    ...searchParams,
+                    hideDialog: searchParams.hideDialog.toString(),
                     workflowName,
                     workflowUrl,
                 });
@@ -82,26 +82,25 @@ export default function Home() {
             setYaml(yamlConfig);
             dispatch({ type: 'SET_WORKFLOW_CONFIG', payload: config });
         },
-        [builder, dispatch, display, pathname, router, searchParamsDispatch],
+        [dispatch, pathname, router, searchParams, searchParamsDispatch],
     );
 
     const onChangeBuilder = React.useCallback(
         (builder: string) => {
             const query = new URLSearchParams({
-                display,
+                ...searchParams,
+                hideDialog: searchParams.hideDialog.toString(),
                 builder,
-                workflowName: workflowName || '',
-                workflowUrl: workflowUrl || '',
             });
             router.push(`${pathname}?${query.toString()}`);
         },
-        [display, pathname, router, workflowName, workflowUrl],
+        [pathname, router, searchParams],
     );
 
     return (
         <React.Fragment>
             <FileDropzone onDrop={onDrop}>
-                <Tabs defaultValue={builder} onValueChange={onChangeBuilder}>
+                <Tabs defaultValue={searchParams.builder} onValueChange={onChangeBuilder}>
                     <div className="flex items-center justify-center p-4">
                         <TabsList>
                             <TabsTrigger value="form">Form Builder</TabsTrigger>

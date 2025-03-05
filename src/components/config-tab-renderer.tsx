@@ -18,23 +18,22 @@ type ConfigTabRendererProps = {
 export const ConfigTabRenderer = React.memo<ConfigTabRendererProps>(({ config, yaml }) => {
     const pathname = usePathname();
     const router = useRouter();
-    const { builder, display, workflowUrl, workflowName } = useSearchParamsState();
+    const searchParams = useSearchParamsState();
 
     const onChangeDisplay = React.useCallback(
         (display: string) => {
             const query = new URLSearchParams({
+                ...searchParams,
+                hideDialog: searchParams.hideDialog.toString(),
                 display,
-                builder,
-                workflowUrl: workflowUrl ? workflowUrl : '',
-                workflowName: workflowName ? workflowName : '',
             });
             router.push(`${pathname}?${query.toString()}`);
         },
-        [builder, pathname, router, workflowName, workflowUrl],
+        [pathname, router, searchParams],
     );
 
     return (
-        <Tabs defaultValue={display} onValueChange={onChangeDisplay}>
+        <Tabs defaultValue={searchParams.display} onValueChange={onChangeDisplay}>
             <div className="flex flex-row justify-between items-center">
                 <TabsList>
                     <TabsTrigger value="graphviz">Graphviz</TabsTrigger>

@@ -1,8 +1,9 @@
 export type SearchParamsContextStateType = {
     display: DisplayType;
     builder: BuilderType;
-    workflowUrl: string | null | undefined;
-    workflowName: string | null | undefined;
+    hideDialog: boolean;
+    workflowUrl: string;
+    workflowName: string;
 };
 
 export type SearchParamsContextActionType =
@@ -15,12 +16,16 @@ export type SearchParamsContextActionType =
           payload: BuilderType;
       }
     | {
+          type: 'SET_HIDE_DIALOG';
+          payload: boolean;
+      }
+    | {
           type: 'SET_WORKFLOW_URL';
-          payload: string | null;
+          payload: string;
       }
     | {
           type: 'SET_WORKFLOW_NAME';
-          payload: string | null;
+          payload: string;
       }
     | {
           type: 'SET_SEARCH_PARAMS';

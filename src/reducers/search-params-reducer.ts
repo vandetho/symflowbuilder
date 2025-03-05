@@ -3,8 +3,9 @@ import { SearchParamsContextActionType, SearchParamsContextStateType } from '@/t
 export const searchParamsInitialState: SearchParamsContextStateType = {
     display: 'graphviz',
     builder: 'form',
-    workflowUrl: null,
-    workflowName: null,
+    hideDialog: true,
+    workflowUrl: '',
+    workflowName: '',
 };
 
 export function searchParamsReducer(state: SearchParamsContextStateType, action: SearchParamsContextActionType) {
@@ -13,6 +14,8 @@ export function searchParamsReducer(state: SearchParamsContextStateType, action:
             return { ...state, display: action.payload };
         case 'SET_BUILDER':
             return { ...state, builder: action.payload };
+        case 'SET_HIDE_DIALOG':
+            return { ...state, hideDialog: action.payload };
         case 'SET_WORKFLOW_URL':
             return { ...state, workflowUrl: action.payload };
         case 'SET_WORKFLOW_NAME':
