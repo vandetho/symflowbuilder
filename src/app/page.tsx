@@ -70,12 +70,13 @@ export default function Home() {
             if (workflowName && workflowUrl) {
                 const query = new URLSearchParams({
                     ...searchParams,
-                    hideDialog: searchParams.hideDialog.toString(),
+                    hideDialog: 'true',
                     workflowName,
                     workflowUrl,
                 });
                 searchParamsDispatch({ type: 'SET_WORKFLOW_URL', payload: workflowUrl });
                 searchParamsDispatch({ type: 'SET_WORKFLOW_NAME', payload: workflowName });
+                searchParamsDispatch({ type: 'SET_HIDE_DIALOG', payload: true });
                 router.replace(`${pathname}?${query.toString()}`);
             }
             setConfig(config);

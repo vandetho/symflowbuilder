@@ -20,7 +20,7 @@ export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) =>
     const sessionStorageDispatch = useSessionStorageDispatch();
     const display = (searchParams.get('display') as DisplayType) || 'graphviz';
     const builder = (searchParams.get('builder') as BuilderType) || 'form';
-    const hideDialog = searchParams.get('dialog') === 'false';
+    const hideDialog = searchParams.get('hideDialog') === 'false';
     const workflowUrl = searchParams.get('workflowUrl') || '';
     const workflowName = searchParams.get('workflowName') || '';
     const [show, setShow] = React.useState(false);
@@ -34,7 +34,7 @@ export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) =>
     });
 
     React.useEffect(() => {
-        if (searchParams.get('workflowUrl') && searchParams.get('dialog') === 'true') {
+        if (searchParams.get('workflowUrl') && searchParams.get('hideDialog') === 'false') {
             setShow(true);
         }
     }, [searchParams]);
