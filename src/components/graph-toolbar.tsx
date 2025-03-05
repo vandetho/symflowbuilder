@@ -5,7 +5,7 @@ import { ExportButton } from '@/components/button/export-button';
 import { WorkflowPlace } from '@/types/WorkflowPlace';
 import { WorkflowTransition } from '@/types/WorkflowTransition';
 import { EmptyButton } from '@/components/button/empty-button';
-import { UploadButton } from '@/components/upload-button';
+import { UploadButton } from '@/components/button/upload-button';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 

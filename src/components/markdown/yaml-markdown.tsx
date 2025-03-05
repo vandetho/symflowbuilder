@@ -1,6 +1,6 @@
 import React from 'react';
 import jsYaml from 'js-yaml';
-import { ReactMarkdown } from '@/components/react-markdown';
+import { ReactMarkdown } from '@/components/markdown/react-markdown';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 
 interface YamlMarkdownProps {

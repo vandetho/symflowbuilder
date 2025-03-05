@@ -1,14 +1,14 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { DownloadYaml } from '@/components/download-yaml';
+import { DownloadYaml } from '@/components/button/download-yaml';
 import { Graphviz } from '@/components/graph/graphviz';
-import { ReactMermaid } from '@/components/react-mermaid';
-import { YamlMarkdown } from '@/components/yaml-markdown';
+import { ReactMermaid } from '@/components/graph/react-mermaid';
+import { YamlMarkdown } from '@/components/markdown/yaml-markdown';
 import { usePathname, useRouter } from 'next/navigation';
 import { WorkflowConfigYaml } from '@/types/WorkflowConfigYaml';
 import { WorkflowConfig } from '@/types/WorkflowConfig';
 import { useSearchParamsState } from '@/hooks/search-params-hook';
-import { ReactJsonViewer } from '@/components/react-json-viewer';
+import { ReactJsonViewer } from '@/components/markdown/react-json-viewer';
 
 type ConfigTabRendererProps = {
     config: WorkflowConfig | undefined;

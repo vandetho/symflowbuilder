@@ -13,7 +13,7 @@ import { GraphBuilder } from '@/components/graph/graph-builder';
 import { ScrollTop } from '@/components/scroll-top';
 import { FileDropzone } from '@/components/file-dropzone';
 import { ConfigTabRenderer } from '@/components/config-tab-renderer';
-import { UploadButton } from '@/components/upload-button';
+import { UploadButton } from '@/components/button/upload-button';
 import { useSessionStorageDispatch, useSessionStorageState } from '@/hooks/session-storage-hook';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSearchParamsDispatch, useSearchParamsState } from '@/hooks/search-params-hook';
