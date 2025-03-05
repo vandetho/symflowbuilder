@@ -20,7 +20,7 @@ export type WorkflowConfigYaml = {
                 supports: string | string[];
                 type: string;
                 places: WorkflowPlaceYaml;
-                initial_marking: string;
+                initial_marking?: string;
                 transitions?: WorkflowTransitionYaml;
             };
         };

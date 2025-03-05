@@ -1,7 +1,6 @@
 import { WorkflowPlace } from '@/types/WorkflowPlace';
 import { WorkflowTransition } from '@/types/WorkflowTransition';
 import { Metadata } from '@/types/Metadata';
-import { boolean, string } from 'yup';
 
 export type WorkflowConfig = {
     name: string;
@@ -15,7 +14,7 @@ export type WorkflowConfig = {
     };
     type: string;
     places: WorkflowPlace[];
-    initialMarking: string;
+    initialMarking?: string;
     transitions: WorkflowTransition[];
 };
 

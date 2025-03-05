@@ -48,7 +48,7 @@ export const formFieldSchema = object({
             ),
         }),
     ).required(),
-    initialMarking: string().required(),
+    initialMarking: string(),
     transitions: array(
         object({
             name: string()
