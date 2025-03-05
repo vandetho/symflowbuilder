@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { SearchParamsContextDispatch, SearchParamsContextState } from '@/contexts/search-params-context';
 import { searchParamsInitialState, searchParamsReducer } from '@/reducers/search-params-reducer';
 import { BuilderType, DisplayType } from '@/types/SearchParams';
@@ -16,8 +16,10 @@ interface SearchParamsProviderProps {
 }
 
 export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) => {
+    const pathname = usePathname();
     const searchParams = useSearchParams();
     const sessionStorageDispatch = useSessionStorageDispatch();
+    const router = useRouter();
     const display = (searchParams.get('display') as DisplayType) || 'graphviz';
     const builder = (searchParams.get('builder') as BuilderType) || 'form';
     const hideDialog = searchParams.get('hideDialog') === 'false';
@@ -49,9 +51,29 @@ export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) =>
             workflowName?: string;
         }) => {
             sessionStorageDispatch({ type: 'SET_WORKFLOW_CONFIG', payload: config });
+            dispatch({ type: 'SET_HIDE_DIALOG', payload: true });
+            const query = new URLSearchParams({
+                ...state,
+                hideDialog: 'true',
+                workflowName,
+                workflowUrl,
+            });
+            router.replace(`${pathname}?${query.toString()}`);
             setShow(false);
         },
-        [sessionStorageDispatch],
+        [pathname, router, sessionStorageDispatch, state, workflowName, workflowUrl],
+    );
+
+    const handleClose = React.useCallback(
+        (open: boolean) => {
+            setShow(open);
+            const query = new URLSearchParams({
+                ...state,
+                hideDialog: 'true',
+            });
+            router.replace(`${pathname}?${query.toString()}`);
+        },
+        [pathname, router, state],
     );
 
     return (
@@ -59,7 +81,7 @@ export const SearchParamsProvider = ({ children }: SearchParamsProviderProps) =>
             <SearchParamsContextState.Provider value={state}>
                 <SearchParamsContextDispatch.Provider value={dispatch}>{children}</SearchParamsContextDispatch.Provider>
             </SearchParamsContextState.Provider>
-            <Dialog open={show} onOpenChange={setShow}>
+            <Dialog open={show} onOpenChange={handleClose}>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Import Workflow Configuration from URL</DialogTitle>
