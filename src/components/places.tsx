@@ -2,9 +2,9 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useFieldArray } from 'react-hook-form';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Icon } from '@iconify/react';
 import { useBoolean } from 'react-use';
 import { PlaceField } from '@/components/place-field';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface PlacesProps {
     control: any;
@@ -28,19 +28,14 @@ export const Places = React.memo<PlacesProps>(({ control }) => {
                     <p className="text-lg">Places</p>
                     <CollapsibleTrigger asChild>
                         <Button variant="ghost" size="sm">
-                            <Icon icon={open ? 'fa:sort-desc' : 'fa:sort-asc'} width={12} />
+                            {open ? <ChevronUp /> : <ChevronDown />}
                             <span className="sr-only">Toggle</span>
                         </Button>
                     </CollapsibleTrigger>
                 </div>
                 <CollapsibleContent>
                     {fields.map((field, index) => (
-                        <div key={field.id} className="flex flex-col gap-2 border-2 border-primary rounded-md p-4">
-                            <PlaceField control={control} index={index} />
-                            <Button variant="destructive" onClick={() => remove(index)}>
-                                Remove
-                            </Button>
-                        </div>
+                        <PlaceField control={control} index={index} onRemove={remove} key={field.id} />
                     ))}
                 </CollapsibleContent>
                 <Button variant="secondary" onClick={onAppend}>

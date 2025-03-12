@@ -2,10 +2,10 @@ import React from 'react';
 import { useFieldArray } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Icon } from '@iconify/react';
 import { useBoolean } from 'react-use';
 import { TransitionField } from '@/components/transition-field';
 import { Option } from '@/components/ui/multi-select';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface TransitionsProps {
     control: any;
@@ -30,19 +30,20 @@ export const Transitions = React.memo<TransitionsProps>(({ control, places }) =>
                     <p className="text-lg">Transitions</p>
                     <CollapsibleTrigger asChild>
                         <Button variant="ghost" size="sm">
-                            <Icon icon={open ? 'fa:sort-desc' : 'fa:sort-asc'} width={12} />
+                            {open ? <ChevronUp /> : <ChevronDown />}
                             <span className="sr-only">Toggle</span>
                         </Button>
                     </CollapsibleTrigger>
                 </div>
                 <CollapsibleContent className="gap-2">
                     {fields.map((field, index) => (
-                        <div key={field.id} className="flex flex-col gap-2 border-2 border-primary rounded-md p-4">
-                            <TransitionField control={control} index={index} places={places} />
-                            <Button variant="destructive" onClick={() => remove(index)}>
-                                Remove
-                            </Button>
-                        </div>
+                        <TransitionField
+                            control={control}
+                            index={index}
+                            places={places}
+                            onRemove={remove}
+                            key={field.id}
+                        />
                     ))}
                 </CollapsibleContent>
                 <Button variant="secondary" onClick={onAppend}>

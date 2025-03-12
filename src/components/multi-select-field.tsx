@@ -30,7 +30,7 @@ export const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
             control={control}
             name={name}
             render={({ field }) => (
-                <FormItem>
+                <FormItem className={className}>
                     {label && (
                         <FormLabel htmlFor={localId} aria-required={required}>
                             {label}
