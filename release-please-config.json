@@ -1,0 +1,46 @@
+{
+    "packages": {
+        ".": {
+            "changelog-path": "CHANGELOG.md",
+            "release-type": "node",
+            "prerelease": false,
+            "include-v-in-tag": true,
+            "pull-request-header": "Release Web App to Production 🚀"
+        }
+    },
+    "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+    "changelog-sections": [
+        {
+            "section": "✨ Features",
+            "type": "feat"
+        },
+        {
+            "section": "🐛 Bugfixes",
+            "type": "fix"
+        },
+        {
+            "section": "👽 Miscellaneous",
+            "type": "chore"
+        },
+        {
+            "section": "👽 Miscellaneous",
+            "type": "style"
+        },
+        {
+            "section": "⬆️ Dependency updates",
+            "type": "deps"
+        },
+        {
+            "section": "♻️ OPS",
+            "type": "ops"
+        },
+        {
+            "section": "♻️ OPS",
+            "type": "ci"
+        },
+        {
+            "section": "📜 Documentation",
+            "type": "docs"
+        }
+    ]
+}
