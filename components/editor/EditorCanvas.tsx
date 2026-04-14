@@ -15,8 +15,6 @@ import "@xyflow/react/dist/style.css";
 
 import { useEditorStore } from "@/stores/editor";
 import { StateNode } from "./nodes/StateNode";
-import { InitialNode } from "./nodes/InitialNode";
-import { FinalNode } from "./nodes/FinalNode";
 import { TransitionEdge } from "./edges/TransitionEdge";
 import { NodePalette } from "./panels/NodePalette";
 import { EditorToolbar } from "./panels/EditorToolbar";
@@ -26,8 +24,6 @@ import type { StateNodeData } from "@/types/workflow";
 
 const nodeTypes = {
     state: StateNode,
-    initial: InitialNode,
-    final: FinalNode,
 };
 
 const edgeTypes = {
@@ -45,7 +41,6 @@ function EditorCanvasInner() {
         setSelectedNode,
         setSelectedEdge,
         snapshot,
-        setNodes,
     } = useEditorStore();
 
     const { screenToFlowPosition } = useReactFlow();
@@ -59,7 +54,7 @@ function EditorCanvasInner() {
         (e: DragEvent) => {
             e.preventDefault();
             const type = e.dataTransfer.getData("application/reactflow");
-            if (!type) return;
+            if (type !== "state") return;
 
             const position = screenToFlowPosition({
                 x: e.clientX,
@@ -67,18 +62,15 @@ function EditorCanvasInner() {
             });
 
             const newNode = {
-                id: `${type}-${Date.now()}`,
-                type,
+                id: `state-${Date.now()}`,
+                type: "state",
                 position,
-                data:
-                    type === "state"
-                        ? ({
-                              label: "new_state",
-                              isInitial: false,
-                              isFinal: false,
-                              metadata: {},
-                          } satisfies StateNodeData)
-                        : {},
+                data: {
+                    label: "new_state",
+                    isInitial: false,
+                    isFinal: false,
+                    metadata: {},
+                } satisfies StateNodeData,
             };
 
             addNode(newNode);

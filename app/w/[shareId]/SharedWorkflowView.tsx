@@ -14,16 +14,12 @@ import Link from "next/link";
 import { GitBranch, ArrowRight } from "lucide-react";
 
 import { StateNode } from "@/components/editor/nodes/StateNode";
-import { InitialNode } from "@/components/editor/nodes/InitialNode";
-import { FinalNode } from "@/components/editor/nodes/FinalNode";
 import { TransitionEdge } from "@/components/editor/edges/TransitionEdge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 const nodeTypes = {
     state: StateNode,
-    initial: InitialNode,
-    final: FinalNode,
 };
 
 const edgeTypes = {
