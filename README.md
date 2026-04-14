@@ -1,36 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SymFlowBuilder
+
+A visual drag-and-drop builder for Symfony Workflow configurations. Design state machines graphically, then export production-ready YAML.
+
+**Live site:** [symflowbuilder.com](https://symflowbuilder.com)
+
+## Features
+
+- **Visual Editor** -- Drag-and-drop states and transitions on a React Flow canvas
+- **YAML Export** -- Production-ready Symfony workflow YAML for versions 5.4, 6.4, 7.0, and 7.1
+- **YAML Import** -- Drop in existing YAML files to visualize and edit them with auto-layout
+- **Guards & Metadata** -- Configure guard expressions, transition listeners, and metadata visually
+- **Undo / Redo** -- 50-step history with Cmd+Z / Cmd+Shift+Z
+- **No Account Required** -- The editor is fully public. Sign in to unlock cloud save, versioning, and sharing
+- **Shareable Links** -- Generate read-only public links to share workflow designs
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16 (App Router, RSC) |
+| Language | TypeScript (strict) |
+| Styling | Tailwind CSS v4, dark glassmorphism design system |
+| Graph Editor | React Flow v12 (`@xyflow/react`) |
+| State | Zustand |
+| Auth | Auth.js v5 (GitHub + Google OAuth) |
+| Database | PostgreSQL + Prisma |
+| UI | Custom glass-styled components (CVA + Radix patterns) |
+| Fonts | Sora + JetBrains Mono |
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+
+- Docker (for PostgreSQL) or a PostgreSQL instance
+
+### Setup
 
 ```bash
+# Clone the repo
+git clone https://github.com/vandetho/symflowbuilder.git
+cd symflowbuilder
+
+# Install dependencies
+npm install
+
+# Copy environment variables
+cp .env.example .env.local
+# Edit .env.local with your OAuth credentials and AUTH_SECRET
+
+# Start PostgreSQL
+docker compose up -d
+
+# Generate Prisma client and run migrations
+npx prisma generate
+npx prisma migrate dev --name init
+
+# Start the dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Description |
+|----------|-------------|
+| `AUTH_SECRET` | Random secret for Auth.js (`openssl rand -base64 32`) |
+| `AUTH_GITHUB_ID` | GitHub OAuth App client ID |
+| `AUTH_GITHUB_SECRET` | GitHub OAuth App client secret |
+| `AUTH_GOOGLE_ID` | Google OAuth client ID |
+| `AUTH_GOOGLE_SECRET` | Google OAuth client secret |
+| `DATABASE_URL` | PostgreSQL connection string |
+| `NEXT_PUBLIC_APP_URL` | Public URL of the app |
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev          # Start development server
+npm run build        # Production build
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run lint:fix     # Fix ESLint issues
+npm run format       # Format with Prettier
+npm run format:check # Check Prettier formatting
+npm run typecheck    # TypeScript type checking
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+app/
+  page.tsx                     # Landing page
+  editor/page.tsx              # Visual editor (guest-accessible)
+  editor/[id]/page.tsx         # Edit saved workflow
+  dashboard/                   # Protected user workspace
+  auth/                        # Sign in / error pages
+  w/[shareId]/page.tsx         # Public shared workflow view
+  api/workflows/               # CRUD + sharing + versioning API
 
-## Deploy on Vercel
+components/
+  editor/                      # Canvas, custom nodes, edges, panels
+  landing/                     # Hero graph, YAML preview
+  ui/                          # Glass-styled UI primitives
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+stores/editor.ts               # Zustand store (nodes, edges, undo/redo)
+lib/
+  yaml-export.ts               # Graph -> Symfony YAML
+  yaml-import.ts               # Symfony YAML -> graph
+  layout-engine.ts             # Topological auto-layout
+hooks/
+  use-autosave.ts              # Debounced cloud/local save
+  use-local-draft.ts           # localStorage persistence
+  use-workflow.ts              # Workflow CRUD operations
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Authentication Model
+
+The editor is **public-first**. No account is needed to use the full editor, export YAML, or import files.
+
+Signing in (GitHub or Google) unlocks:
+- Cloud save with auto-sync
+- Workflow versioning
+- Shareable read-only links
+- Dashboard with workflow management
+
+Guest drafts are saved to `localStorage` and automatically migrated to the cloud on sign-in.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feat/my-feature`)
+3. Commit with [conventional commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, etc.)
+4. Push and open a Pull Request
+
+CI runs ESLint, Prettier, TypeScript checks, and a production build on every PR.
+
+## License
+
+[MIT](LICENSE)
