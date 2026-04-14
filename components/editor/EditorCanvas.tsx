@@ -40,6 +40,8 @@ function EditorCanvasInner() {
         addNode,
         setSelectedNode,
         setSelectedEdge,
+        selectedNodeId,
+        selectedEdgeId,
         snapshot,
     } = useEditorStore();
 
@@ -129,11 +131,13 @@ function EditorCanvasInner() {
                     size={1}
                     color="rgba(255,255,255,0.07)"
                 />
-                <MiniMap
-                    className="!bg-[rgba(255,255,255,0.06)] !border !border-[var(--glass-border-hover)] !rounded-[14px] !shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-                    nodeColor="rgba(124,111,247,0.4)"
-                    maskColor="rgba(0,0,0,0.6)"
-                />
+                {!selectedNodeId && !selectedEdgeId && (
+                    <MiniMap
+                        className="!bg-[rgba(255,255,255,0.06)] !border !border-[var(--glass-border-hover)] !rounded-[14px] !shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+                        nodeColor="rgba(124,111,247,0.4)"
+                        maskColor="rgba(0,0,0,0.6)"
+                    />
+                )}
             </ReactFlow>
 
             <NodePalette />
