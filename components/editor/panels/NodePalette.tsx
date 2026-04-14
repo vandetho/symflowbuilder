@@ -37,7 +37,7 @@ function PaletteItem({
 
 export function NodePalette() {
     return (
-        <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
+        <div className="absolute top-16 left-4 z-10 flex flex-col gap-2">
             <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider px-1">
                 Nodes
             </span>
