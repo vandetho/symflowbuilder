@@ -3,6 +3,7 @@
 import { memo } from "react";
 import { getBezierPath, EdgeLabelRenderer, type EdgeProps } from "@xyflow/react";
 import type { TransitionEdgeData } from "@/types/workflow";
+import { useEditorStore } from "@/stores/editor";
 
 export const TransitionEdge = memo(
     ({
@@ -16,6 +17,8 @@ export const TransitionEdge = memo(
         data,
         selected,
     }: EdgeProps & { data?: TransitionEdgeData }) => {
+        const setSelectedEdge = useEditorStore((s) => s.setSelectedEdge);
+
         const [edgePath, labelX, labelY] = getBezierPath({
             sourceX,
             sourceY,
@@ -25,8 +28,23 @@ export const TransitionEdge = memo(
             targetPosition,
         });
 
+        const handleLabelClick = (e: React.MouseEvent) => {
+            e.stopPropagation();
+            setSelectedEdge(id);
+        };
+
         return (
             <>
+                {/* Invisible wider hit area for easier clicking */}
+                <path
+                    d={edgePath}
+                    strokeWidth={20}
+                    stroke="transparent"
+                    fill="none"
+                    className="react-flow__edge-interaction"
+                />
+
+                {/* Visible edge path */}
                 <path
                     id={id}
                     className="react-flow__edge-path"
@@ -37,29 +55,32 @@ export const TransitionEdge = memo(
                     strokeDasharray={data?.guard ? "6 3" : undefined}
                 />
 
+                {/* Animated dot */}
                 <circle r="3" fill="var(--accent)" opacity="0.7">
                     <animateMotion dur="2s" repeatCount="indefinite">
                         <mpath href={`#${id}`} />
                     </animateMotion>
                 </circle>
 
+                {/* Label + guard badge */}
                 <EdgeLabelRenderer>
                     <div
                         style={{
                             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
                         }}
-                        className="absolute pointer-events-all nopan"
+                        className="absolute pointer-events-all nopan cursor-pointer"
+                        onClick={handleLabelClick}
                     >
                         <div
                             className={`
-                px-2 py-1 rounded-[8px] text-[11px] font-mono font-medium
-                border backdrop-blur-sm
-                ${
-                    selected
-                        ? "bg-[var(--accent-dim)] border-[var(--accent-border)] text-[var(--accent-bright)]"
-                        : "bg-[rgba(0,0,0,0.5)] border-[var(--glass-border)] text-[var(--text-secondary)]"
-                }
-              `}
+                                px-2.5 py-1 rounded-[8px] text-[11px] font-mono font-medium
+                                border backdrop-blur-sm transition-colors
+                                ${
+                                    selected
+                                        ? "bg-[var(--accent-dim)] border-[var(--accent-border)] text-[var(--accent-bright)]"
+                                        : "bg-[rgba(0,0,0,0.5)] border-[var(--glass-border)] text-[var(--text-secondary)] hover:border-[var(--glass-border-hover)] hover:text-[var(--text-primary)]"
+                                }
+                            `}
                         >
                             {data?.label}
                         </div>
