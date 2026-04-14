@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import {
     ReactFlow,
     Background,
@@ -184,12 +184,12 @@ const DEMO_EDGES: Edge[] = [
     },
 ];
 
-export function HeroGraph() {
-    const [mounted, setMounted] = useState(false);
+const subscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
 
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+export function HeroGraph() {
+    const mounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
     if (!mounted) {
         return <div className="w-full h-[320px] rounded-[18px] glass animate-pulse" />;

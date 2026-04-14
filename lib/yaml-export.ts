@@ -4,7 +4,6 @@ import type {
     StateNodeData,
     TransitionEdgeData,
     WorkflowMeta,
-    SymfonyVersion,
 } from "@/types/workflow";
 
 interface ExportOptions {

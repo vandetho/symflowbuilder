@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import { randomBytes } from "crypto";
 
 export async function POST(

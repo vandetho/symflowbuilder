@@ -6,7 +6,6 @@ import type {
     WorkflowMeta,
     WorkflowType,
     MarkingStoreType,
-    SymfonyVersion,
 } from "@/types/workflow";
 import { DEFAULT_WORKFLOW_META } from "@/types/workflow";
 import { autoLayoutNodes } from "./layout-engine";
@@ -90,7 +89,7 @@ export function importWorkflowYaml(yamlString: string): ImportResult {
     }
 
     // Create state nodes
-    const nodes: Node[] = placeNames.map((name, index) => ({
+    const nodes: Node[] = placeNames.map((name) => ({
         id: `state-${name}`,
         type: "state",
         position: { x: 0, y: 0 }, // will be auto-laid out

@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function SettingsPage() {
@@ -16,9 +17,11 @@ export default async function SettingsPage() {
                 <CardContent className="flex flex-col gap-3">
                     <div className="flex items-center gap-4">
                         {session.user.image && (
-                            <img
+                            <Image
                                 src={session.user.image}
                                 alt=""
+                                width={48}
+                                height={48}
                                 className="w-12 h-12 rounded-full"
                             />
                         )}

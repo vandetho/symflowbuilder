@@ -1,7 +1,8 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { GitBranch, LayoutDashboard, Settings, LogOut } from "lucide-react";
+import Image from "next/image";
+import { GitBranch, LayoutDashboard, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default async function DashboardLayout({
@@ -52,9 +53,11 @@ export default async function DashboardLayout({
 
                 <div className="flex items-center gap-2 px-2">
                     {session.user.image && (
-                        <img
+                        <Image
                             src={session.user.image}
                             alt=""
+                            width={24}
+                            height={24}
                             className="w-6 h-6 rounded-full"
                         />
                     )}

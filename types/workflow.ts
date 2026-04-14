@@ -31,15 +31,17 @@ export interface WorkflowMeta {
     property: string;
 }
 
+import type { Node, Edge } from "@xyflow/react";
+
 export interface GraphJson {
-    nodes: import("@xyflow/react").Node[];
-    edges: import("@xyflow/react").Edge[];
+    nodes: Node[];
+    edges: Edge[];
     meta: WorkflowMeta;
 }
 
 export interface Snapshot {
-    nodes: import("@xyflow/react").Node[];
-    edges: import("@xyflow/react").Edge[];
+    nodes: Node[];
+    edges: Edge[];
 }
 
 export const STATE_NAME_REGEX = /^[a-z][a-z0-9_]*$/;

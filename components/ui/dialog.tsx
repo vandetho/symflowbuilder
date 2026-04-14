@@ -44,7 +44,7 @@ function Dialog({
 
 function DialogTrigger({
     children,
-    asChild,
+    asChild: _asChild,
 }: {
     children: ReactNode;
     asChild?: boolean;

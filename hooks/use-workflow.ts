@@ -27,7 +27,7 @@ export function useWorkflow() {
             const workflow = await res.json();
             toast.success("Workflow saved");
             return workflow.id as string;
-        } catch (err) {
+        } catch {
             toast.error("Failed to save workflow");
             return null;
         } finally {
