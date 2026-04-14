@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#7c6ff7"/>
+      <stop offset="100%" stop-color="#9d94ff"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#9d94ff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#7c6ff7" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- Subtle inner glow -->
+  <rect width="512" height="512" rx="112" fill="url(#glow)"/>
+  <!-- Workflow graph icon -->
+  <g transform="translate(256,256)" stroke="white" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Nodes -->
+    <circle cx="-120" cy="-80" r="32" fill="rgba(255,255,255,0.2)" stroke="white"/>
+    <circle cx="120" cy="-80" r="32" fill="rgba(255,255,255,0.2)" stroke="white"/>
+    <circle cx="0" cy="100" r="32" fill="rgba(255,255,255,0.2)" stroke="white"/>
+    <!-- Edges -->
+    <line x1="-88" y1="-80" x2="88" y2="-80"/>
+    <line x1="104" y1="-52" x2="16" y2="76"/>
+    <line x1="-104" y1="-52" x2="-16" y2="76"/>
+    <!-- Arrow dots on nodes -->
+    <circle cx="-120" cy="-80" r="10" fill="white"/>
+    <circle cx="120" cy="-80" r="10" fill="white"/>
+    <circle cx="0" cy="100" r="10" fill="white"/>
+  </g>
+</svg>

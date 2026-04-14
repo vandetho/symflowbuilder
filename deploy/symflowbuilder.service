@@ -1,0 +1,23 @@
+[Unit]
+Description=SymFlowBuilder Next.js App
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/symflowbuilder
+ExecStart=/usr/bin/node /var/www/symflowbuilder/node_modules/.bin/next start -p 3000
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+EnvironmentFile=/var/www/symflowbuilder/.env.production
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/www/symflowbuilder
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
