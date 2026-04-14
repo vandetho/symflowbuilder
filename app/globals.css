@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+:root {
+    /* Glass surfaces — always use with backdrop-filter */
+    --glass-base: rgba(255, 255, 255, 0.04);
+    --glass-surface: rgba(255, 255, 255, 0.07);
+    --glass-overlay: rgba(255, 255, 255, 0.1);
+    --glass-hover: rgba(255, 255, 255, 0.13);
+    --glass-active: rgba(255, 255, 255, 0.16);
+
+    /* Glass borders — luminous rim light effect */
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-border-hover: rgba(255, 255, 255, 0.18);
+    --glass-border-strong: rgba(255, 255, 255, 0.25);
+
+    /* Backdrop blur values */
+    --blur-sm: blur(8px);
+    --blur-md: blur(16px);
+    --blur-lg: blur(24px);
+    --blur-xl: blur(40px);
+
+    /* Text */
+    --text-primary: rgba(255, 255, 255, 0.92);
+    --text-secondary: rgba(255, 255, 255, 0.55);
+    --text-muted: rgba(255, 255, 255, 0.3);
+    --text-disabled: rgba(255, 255, 255, 0.18);
+
+    /* Accent — Electric Violet */
+    --accent: #7c6ff7;
+    --accent-bright: #9d94ff;
+    --accent-dim: rgba(124, 111, 247, 0.2);
+    --accent-border: rgba(124, 111, 247, 0.35);
+    --accent-glow: rgba(124, 111, 247, 0.15);
+
+    /* Semantic */
+    --success: #34d399;
+    --success-dim: rgba(52, 211, 153, 0.15);
+    --warning: #fbbf24;
+    --warning-dim: rgba(251, 191, 36, 0.15);
+    --danger: #f87171;
+    --danger-dim: rgba(248, 113, 113, 0.15);
+
+    /* Background */
+    --bg-base: #08080f;
+}
+
+@theme inline {
+    --font-sans: var(--font-sora);
+    --font-mono: var(--font-jetbrains-mono);
+}
+
+body {
+    background:
+        radial-gradient(ellipse at 20% 50%, #1a1040 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, #0d2040 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 80%, #1a0d30 0%, transparent 50%), #08080f;
+    color: var(--text-primary);
+    font-family: var(--font-sora), sans-serif;
+    min-height: 100vh;
+}
+
+/* Custom scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-dim) var(--glass-border);
+}
+
+*::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--glass-border);
+}
+
+*::-webkit-scrollbar-thumb {
+    background: var(--accent-dim);
+    border-radius: 3px;
+}
+
+/* Focus ring */
+*:focus-visible {
+    outline: 1.5px solid var(--accent-bright);
+    outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+}
+
+@layer utilities {
+    .glass {
+        background: var(--glass-surface);
+        backdrop-filter: var(--blur-md);
+        -webkit-backdrop-filter: var(--blur-md);
+        border: 1px solid var(--glass-border);
+    }
+
+    .glass-sm {
+        background: var(--glass-base);
+        backdrop-filter: var(--blur-sm);
+        -webkit-backdrop-filter: var(--blur-sm);
+        border: 1px solid var(--glass-border);
+    }
+
+    .glass-strong {
+        background: var(--glass-overlay);
+        backdrop-filter: var(--blur-lg);
+        -webkit-backdrop-filter: var(--blur-lg);
+        border: 1px solid var(--glass-border-strong);
+    }
+}
