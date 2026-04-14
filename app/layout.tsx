@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Sora, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "sonner";
+import { FeedbackFab } from "@/components/feedback-fab";
 import "./globals.css";
 
 const sora = Sora({
@@ -33,6 +34,7 @@ export default function RootLayout({
         >
             <body className="min-h-full flex flex-col">
                 {children}
+                <FeedbackFab />
                 <Toaster
                     theme="dark"
                     toastOptions={{

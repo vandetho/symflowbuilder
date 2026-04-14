@@ -447,9 +447,17 @@ export default function LandingPage() {
                             </Link>
                         </div>
 
-                        <p className="text-[10px] text-[var(--text-muted)]">
-                            Built for Symfony developers
-                        </p>
+                        <div className="flex items-center gap-1.5 text-[10px] text-[var(--text-muted)]">
+                            <span>Sponsored by</span>
+                            <a
+                                href="https://supportdock.io"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                            >
+                                SupportDock
+                            </a>
+                        </div>
                     </div>
                 </div>
             </footer>
