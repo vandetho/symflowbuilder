@@ -1,7 +1,12 @@
 "use client";
 
-import { memo } from "react";
-import { getBezierPath, EdgeLabelRenderer, type EdgeProps } from "@xyflow/react";
+import { memo, useCallback } from "react";
+import {
+    getBezierPath,
+    EdgeLabelRenderer,
+    useReactFlow,
+    type EdgeProps,
+} from "@xyflow/react";
 import type { TransitionEdgeData } from "@/types/workflow";
 import { useEditorStore } from "@/stores/editor";
 
@@ -18,6 +23,24 @@ export const TransitionEdge = memo(
         selected,
     }: EdgeProps & { data?: TransitionEdgeData }) => {
         const setSelectedEdge = useEditorStore((s) => s.setSelectedEdge);
+        const { setEdges } = useReactFlow();
+
+        const handleLabelClick = useCallback(
+            (e: React.MouseEvent) => {
+                e.stopPropagation();
+                e.preventDefault();
+                // Select in React Flow's internal state
+                setEdges((edges) =>
+                    edges.map((edge) => ({
+                        ...edge,
+                        selected: edge.id === id,
+                    }))
+                );
+                // Select in our Zustand store
+                setSelectedEdge(id);
+            },
+            [id, setSelectedEdge, setEdges]
+        );
 
         const [edgePath, labelX, labelY] = getBezierPath({
             sourceX,
@@ -27,11 +50,6 @@ export const TransitionEdge = memo(
             targetY,
             targetPosition,
         });
-
-        const handleLabelClick = (e: React.MouseEvent) => {
-            e.stopPropagation();
-            setSelectedEdge(id);
-        };
 
         return (
             <>
@@ -64,12 +82,17 @@ export const TransitionEdge = memo(
 
                 {/* Label + guard badge */}
                 <EdgeLabelRenderer>
+                    {/*
+                        onMouseDown + onClick both stop propagation to prevent
+                        the pane click handler from deselecting immediately
+                    */}
                     <div
                         style={{
                             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
                         }}
-                        className="absolute pointer-events-all nopan cursor-pointer"
+                        className="absolute pointer-events-auto nopan nodrag cursor-pointer"
                         onClick={handleLabelClick}
+                        onMouseDown={(e) => e.stopPropagation()}
                     >
                         <div
                             className={`
