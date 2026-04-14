@@ -30,12 +30,12 @@ function PaletteItem({
 export function NodePalette() {
     return (
         <div className="absolute top-16 left-4 z-10 flex flex-col gap-2">
-            <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider px-1">
+            <span className="text-sm font-medium text-[var(--text-primary)] px-1">
                 Drag to canvas
             </span>
             <PaletteItem label="State (Place)" icon={CircleDot} />
             <div className="mt-1 px-1">
-                <p className="text-[9px] text-[var(--text-disabled)] leading-relaxed">
+                <p className="text-xs text-[var(--text-primary)] leading-relaxed">
                     Set initial / final in
                     <br />
                     the properties panel
