@@ -1,4 +1,4 @@
-export type SymfonyVersion = "5.4" | "6.4" | "7.0" | "7.1";
+export type SymfonyVersion = "5.4" | "6.4" | "7.4" | "8.0";
 export type WorkflowType = "workflow" | "state_machine";
 export type MarkingStoreType = "method" | "property";
 

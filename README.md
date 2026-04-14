@@ -7,7 +7,7 @@ A visual drag-and-drop builder for Symfony Workflow configurations. Design state
 ## Features
 
 - **Visual Editor** -- Drag-and-drop states and transitions on a React Flow canvas
-- **YAML Export** -- Production-ready Symfony workflow YAML for versions 5.4, 6.4, 7.0, and 7.1
+- **YAML Export** -- Production-ready Symfony workflow YAML for versions 5.4, 6.4, 7.4, and 8.0
 - **YAML Import** -- Drop in existing YAML files to visualize and edit them with auto-layout
 - **Guards & Metadata** -- Configure guard expressions, transition listeners, and metadata visually
 - **Undo / Redo** -- 50-step history with Cmd+Z / Cmd+Shift+Z

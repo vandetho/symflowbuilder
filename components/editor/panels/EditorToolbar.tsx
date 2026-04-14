@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { useEditorStore } from "@/stores/editor";
 import type { SymfonyVersion } from "@/types/workflow";
 
-const SYMFONY_VERSIONS: SymfonyVersion[] = ["5.4", "6.4", "7.0", "7.1"];
+const SYMFONY_VERSIONS: SymfonyVersion[] = ["5.4", "6.4", "7.4", "8.0"];
 
 export function EditorToolbar() {
     const { workflowMeta, updateMeta, exportYaml, importYaml } = useEditorStore();

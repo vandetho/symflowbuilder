@@ -28,7 +28,7 @@ const FEATURES = [
         icon: FileCode2,
         title: "Production-Ready YAML",
         description:
-            "Export valid Symfony workflow YAML for versions 5.4, 6.4, 7.0, and 7.1. Copy to clipboard or download directly.",
+            "Export valid Symfony workflow YAML for versions 5.4, 6.4, 7.4, and 8.0. Copy to clipboard or download directly.",
     },
     {
         icon: Upload,
@@ -78,10 +78,10 @@ const STEPS = [
 ];
 
 const SYMFONY_VERSIONS = [
-    { version: "5.4", label: "LTS", status: "success" as const },
+    { version: "5.4", label: "Security", status: "warning" as const },
     { version: "6.4", label: "LTS", status: "success" as const },
-    { version: "7.0", label: "Current", status: "default" as const },
-    { version: "7.1", label: "Latest", status: "default" as const },
+    { version: "7.4", label: "LTS", status: "success" as const },
+    { version: "8.0", label: "Stable", status: "default" as const },
 ];
 
 export default function LandingPage() {
@@ -342,7 +342,7 @@ export default function LandingPage() {
                                     "Guard expressions with Symfony ExpressionLanguage",
                                     "Metadata on states and transitions",
                                     "Copy to clipboard or download as .yaml file",
-                                    "Version-aware: 5.4, 6.4, 7.0, 7.1",
+                                    "Version-aware: 5.4, 6.4, 7.4, 8.0",
                                 ].map((item) => (
                                     <li
                                         key={item}
