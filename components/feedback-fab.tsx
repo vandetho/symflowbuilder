@@ -1,7 +1,15 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { MessageCircle, X, Send, Bug, Lightbulb, HelpCircle, MessageSquare } from "lucide-react";
+import {
+    MessageCircle,
+    X,
+    Send,
+    Bug,
+    Lightbulb,
+    HelpCircle,
+    MessageSquare,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,7 +18,12 @@ import { toast } from "sonner";
 const FEEDBACK_TYPES = [
     { value: "bug", label: "Bug", icon: Bug, color: "var(--danger)" },
     { value: "feature", label: "Feature", icon: Lightbulb, color: "var(--warning)" },
-    { value: "question", label: "Question", icon: HelpCircle, color: "var(--accent-bright)" },
+    {
+        value: "question",
+        label: "Question",
+        icon: HelpCircle,
+        color: "var(--accent-bright)",
+    },
     { value: "general", label: "General", icon: MessageSquare, color: "var(--success)" },
 ] as const;
 
@@ -69,11 +82,7 @@ export function FeedbackFab() {
                 onClick={() => setOpen(!open)}
                 className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-linear-to-br from-[#7c6ff7] to-[#9d94ff] text-white shadow-[0_4px_24px_var(--accent-glow)] hover:shadow-[0_4px_32px_var(--accent-glow)] hover:brightness-110 transition-all duration-200 flex items-center justify-center cursor-pointer"
             >
-                {open ? (
-                    <X className="w-5 h-5" />
-                ) : (
-                    <MessageCircle className="w-5 h-5" />
-                )}
+                {open ? <X className="w-5 h-5" /> : <MessageCircle className="w-5 h-5" />}
             </button>
 
             {/* Feedback Panel */}

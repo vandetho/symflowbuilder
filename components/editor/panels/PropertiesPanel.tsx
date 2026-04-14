@@ -157,10 +157,8 @@ export function PropertiesPanel() {
                         <span className="px-1.5 py-0.5 rounded bg-[var(--glass-base)] border border-[var(--glass-border)]">
                             {nodes.find((n) => n.id === selectedEdge.source)
                                 ? (
-                                      nodes.find(
-                                          (n) =>
-                                              n.id === selectedEdge.source
-                                      )?.data as unknown as StateNodeData
+                                      nodes.find((n) => n.id === selectedEdge.source)
+                                          ?.data as unknown as StateNodeData
                                   ).label
                                 : selectedEdge.source}
                         </span>
@@ -168,10 +166,8 @@ export function PropertiesPanel() {
                         <span className="px-1.5 py-0.5 rounded bg-[var(--glass-base)] border border-[var(--glass-border)]">
                             {nodes.find((n) => n.id === selectedEdge.target)
                                 ? (
-                                      nodes.find(
-                                          (n) =>
-                                              n.id === selectedEdge.target
-                                      )?.data as unknown as StateNodeData
+                                      nodes.find((n) => n.id === selectedEdge.target)
+                                          ?.data as unknown as StateNodeData
                                   ).label
                                 : selectedEdge.target}
                         </span>
@@ -235,10 +231,7 @@ function ListenerEditor({
 
     const addListener = useCallback(() => {
         if (!newEvent.trim() || !newService.trim()) return;
-        onChange([
-            ...listeners,
-            { event: newEvent.trim(), service: newService.trim() },
-        ]);
+        onChange([...listeners, { event: newEvent.trim(), service: newService.trim() }]);
         setNewEvent("");
         setNewService("");
     }, [listeners, newEvent, newService, onChange]);

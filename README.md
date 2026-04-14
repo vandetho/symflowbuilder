@@ -16,17 +16,17 @@ A visual drag-and-drop builder for Symfony Workflow configurations. Design state
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 16 (App Router, RSC) |
-| Language | TypeScript (strict) |
-| Styling | Tailwind CSS v4, dark glassmorphism design system |
-| Graph Editor | React Flow v12 (`@xyflow/react`) |
-| State | Zustand |
-| Auth | Auth.js v5 (GitHub + Google OAuth) |
-| Database | PostgreSQL + Prisma |
-| UI | Custom glass-styled components (CVA + Radix patterns) |
-| Fonts | Sora + JetBrains Mono |
+| Layer        | Technology                                            |
+| ------------ | ----------------------------------------------------- |
+| Framework    | Next.js 16 (App Router, RSC)                          |
+| Language     | TypeScript (strict)                                   |
+| Styling      | Tailwind CSS v4, dark glassmorphism design system     |
+| Graph Editor | React Flow v12 (`@xyflow/react`)                      |
+| State        | Zustand                                               |
+| Auth         | Auth.js v5 (GitHub + Google OAuth)                    |
+| Database     | PostgreSQL + Prisma                                   |
+| UI           | Custom glass-styled components (CVA + Radix patterns) |
+| Fonts        | Sora + JetBrains Mono                                 |
 
 ## Getting Started
 
@@ -64,15 +64,15 @@ Open [http://localhost:3000](http://localhost:3000) to see the app.
 
 ### Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `AUTH_SECRET` | Random secret for Auth.js (`openssl rand -base64 32`) |
-| `AUTH_GITHUB_ID` | GitHub OAuth App client ID |
-| `AUTH_GITHUB_SECRET` | GitHub OAuth App client secret |
-| `AUTH_GOOGLE_ID` | Google OAuth client ID |
-| `AUTH_GOOGLE_SECRET` | Google OAuth client secret |
-| `DATABASE_URL` | PostgreSQL connection string |
-| `NEXT_PUBLIC_APP_URL` | Public URL of the app |
+| Variable              | Description                                           |
+| --------------------- | ----------------------------------------------------- |
+| `AUTH_SECRET`         | Random secret for Auth.js (`openssl rand -base64 32`) |
+| `AUTH_GITHUB_ID`      | GitHub OAuth App client ID                            |
+| `AUTH_GITHUB_SECRET`  | GitHub OAuth App client secret                        |
+| `AUTH_GOOGLE_ID`      | Google OAuth client ID                                |
+| `AUTH_GOOGLE_SECRET`  | Google OAuth client secret                            |
+| `DATABASE_URL`        | PostgreSQL connection string                          |
+| `NEXT_PUBLIC_APP_URL` | Public URL of the app                                 |
 
 ## Scripts
 
@@ -120,6 +120,7 @@ hooks/
 The editor is **public-first**. No account is needed to use the full editor, export YAML, or import files.
 
 Signing in (GitHub or Google) unlocks:
+
 - Cloud save with auto-sync
 - Workflow versioning
 - Shareable read-only links
