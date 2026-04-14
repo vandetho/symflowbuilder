@@ -2,7 +2,8 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { GitBranch, LayoutDashboard, Settings } from "lucide-react";
+import { LayoutDashboard, Settings } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
 
 export default async function DashboardLayout({
@@ -20,8 +21,8 @@ export default async function DashboardLayout({
             {/* Sidebar */}
             <aside className="w-[220px] glass border-r border-[var(--glass-border)] flex flex-col p-4 gap-6">
                 <Link href="/dashboard" className="flex items-center gap-2 px-2 py-1">
-                    <GitBranch className="w-4 h-4 text-[var(--accent)]" />
-                    <span className="text-sm font-semibold text-[var(--text-primary)] font-mono">
+                    <Logo size={24} />
+                    <span className="text-sm font-semibold text-[var(--text-primary)]">
                         SFB
                     </span>
                 </Link>

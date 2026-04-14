@@ -1,8 +1,19 @@
-# SymFlowBuilder
+<p align="center">
+  <img src="public/logo.svg" alt="SymFlowBuilder" width="80" height="80" />
+</p>
 
-A visual drag-and-drop builder for Symfony Workflow configurations. Design state machines graphically, then export production-ready YAML.
+<h1 align="center">SymFlowBuilder</h1>
 
-**Live site:** [symflowbuilder.com](https://symflowbuilder.com)
+<p align="center">
+  A visual drag-and-drop builder for Symfony Workflow configurations.<br/>
+  Design state machines graphically, then export production-ready YAML.
+</p>
+
+<p align="center">
+  <a href="https://symflowbuilder.com">Live Site</a> &middot;
+  <a href="https://github.com/vandetho/symflowbuilder/issues">Issues</a> &middot;
+  <a href="#contributing">Contributing</a>
+</p>
 
 ## Features
 

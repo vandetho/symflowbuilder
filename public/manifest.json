@@ -1,0 +1,27 @@
+{
+    "name": "SymFlowBuilder",
+    "short_name": "SFB",
+    "description": "Visual drag-and-drop builder for Symfony Workflow configurations",
+    "start_url": "/editor",
+    "display": "standalone",
+    "background_color": "#08080f",
+    "theme_color": "#7c6ff7",
+    "icons": [
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}

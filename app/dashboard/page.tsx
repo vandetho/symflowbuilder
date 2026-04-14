@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Plus, GitBranch } from "lucide-react";
+import { Plus } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
@@ -38,7 +39,7 @@ export default async function DashboardPage() {
             {workflows.length === 0 ? (
                 <Card>
                     <CardContent className="flex flex-col items-center justify-center py-12 gap-4">
-                        <GitBranch className="w-10 h-10 text-[var(--text-muted)]" />
+                        <Logo size={40} className="opacity-40" />
                         <p className="text-sm text-[var(--text-secondary)]">
                             No workflows yet. Create your first one.
                         </p>

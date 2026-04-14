@@ -8,9 +8,9 @@ import {
     MousePointerClick,
     Eye,
     Check,
-    Workflow,
 } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/icons";
+import { Logo, LogoWithText } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -90,13 +90,8 @@ export default function LandingPage() {
             {/* ─── Navbar ─── */}
             <nav className="sticky top-0 z-50 glass border-b border-[var(--glass-border)]">
                 <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
-                    <Link href="/" className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-[8px] bg-linear-to-br from-[#7c6ff7] to-[#9d94ff] flex items-center justify-center">
-                            <Workflow className="w-3.5 h-3.5 text-white" />
-                        </div>
-                        <span className="text-sm font-semibold text-[var(--text-primary)] tracking-tight">
-                            SymFlowBuilder
-                        </span>
+                    <Link href="/">
+                        <LogoWithText />
                     </Link>
 
                     <div className="hidden sm:flex items-center gap-6">
@@ -375,9 +370,10 @@ export default function LandingPage() {
                 <div className="max-w-3xl mx-auto">
                     <Card className="p-8 sm:p-12 text-center">
                         <CardContent className="flex flex-col items-center gap-5">
-                            <div className="w-14 h-14 rounded-[16px] bg-linear-to-br from-[#7c6ff7] to-[#9d94ff] flex items-center justify-center shadow-[0_0_40px_var(--accent-glow)]">
-                                <Workflow className="w-6 h-6 text-white" />
-                            </div>
+                            <Logo
+                                size={56}
+                                className="shadow-[0_0_40px_var(--accent-glow)]"
+                            />
                             <h2 className="text-2xl sm:text-3xl font-light text-[var(--text-primary)] tracking-tight">
                                 Free & Open Source
                             </h2>
@@ -413,14 +409,7 @@ export default function LandingPage() {
             <footer className="border-t border-[var(--glass-border)] px-6 py-8">
                 <div className="max-w-5xl mx-auto">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <div className="flex items-center gap-2.5">
-                            <div className="w-6 h-6 rounded-[6px] bg-linear-to-br from-[#7c6ff7] to-[#9d94ff] flex items-center justify-center">
-                                <Workflow className="w-3 h-3 text-white" />
-                            </div>
-                            <span className="text-xs font-medium text-[var(--text-secondary)]">
-                                SymFlowBuilder
-                            </span>
-                        </div>
+                        <LogoWithText size={24} />
 
                         <div className="flex items-center gap-6 text-[11px] text-[var(--text-muted)]">
                             <a

@@ -11,8 +11,9 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import Link from "next/link";
-import { GitBranch, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
+import { Logo } from "@/components/ui/logo";
 import { StateNode } from "@/components/editor/nodes/StateNode";
 import { TransitionEdge } from "@/components/editor/edges/TransitionEdge";
 import { Badge } from "@/components/ui/badge";
@@ -43,8 +44,8 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
             <div className="flex items-center justify-between px-4 py-3 glass border-b border-[var(--glass-border)]">
                 <div className="flex items-center gap-3">
                     <Link href="/" className="flex items-center gap-2">
-                        <GitBranch className="w-4 h-4 text-[var(--accent)]" />
-                        <span className="text-sm font-semibold text-[var(--text-primary)] font-mono">
+                        <Logo size={24} />
+                        <span className="text-sm font-semibold text-[var(--text-primary)]">
                             SFB
                         </span>
                     </Link>

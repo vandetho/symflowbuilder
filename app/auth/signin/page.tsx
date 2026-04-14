@@ -3,9 +3,9 @@
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { GitBranch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { LogoWithText } from "@/components/ui/logo";
 
 function SignInContent() {
     const searchParams = useSearchParams();
@@ -15,12 +15,7 @@ function SignInContent() {
         <div className="min-h-screen flex items-center justify-center px-4">
             <Card className="w-full max-w-sm">
                 <CardContent className="flex flex-col items-center gap-6 py-8">
-                    <div className="flex items-center gap-2">
-                        <GitBranch className="w-6 h-6 text-[var(--accent)]" />
-                        <span className="text-lg font-semibold text-[var(--text-primary)] font-mono">
-                            SymFlowBuilder
-                        </span>
-                    </div>
+                    <LogoWithText size={32} />
 
                     <div className="text-center">
                         <h1 className="text-lg font-medium text-[var(--text-primary)]">
