@@ -136,6 +136,10 @@ Guest drafts are saved to `localStorage` and automatically migrated to the cloud
 
 CI runs ESLint, Prettier, TypeScript checks, and a production build on every PR.
 
+## Sponsor
+
+This project is sponsored by [SupportDock](https://supportdock.io) -- feedback collection and FAQ management for your apps.
+
 ## License
 
 [MIT](LICENSE)
