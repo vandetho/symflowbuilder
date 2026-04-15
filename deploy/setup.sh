@@ -55,6 +55,7 @@ DATABASE_URL=postgresql://symflowbuilder:${DB_PASSWORD}@localhost:5432/symflowbu
 # App
 NEXT_PUBLIC_APP_URL=https://symflowbuilder.com
 AUTH_URL=https://symflowbuilder.com
+AUTH_TRUST_HOST=true
 ENVEOF
     chown www-data:www-data "$APP_DIR/.env.production"
     chmod 600 "$APP_DIR/.env.production"
