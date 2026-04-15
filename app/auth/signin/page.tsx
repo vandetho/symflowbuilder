@@ -3,6 +3,8 @@
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { LogoWithText } from "@/components/ui/logo";
@@ -12,10 +14,12 @@ function SignInContent() {
     const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="min-h-screen flex flex-col items-center justify-center px-4 gap-4">
             <Card className="w-full max-w-sm">
                 <CardContent className="flex flex-col items-center gap-6 py-8">
-                    <LogoWithText size={32} />
+                    <Link href="/">
+                        <LogoWithText size={32} />
+                    </Link>
 
                     <div className="text-center">
                         <h1 className="text-lg font-medium text-[var(--text-primary)]">
@@ -75,6 +79,12 @@ function SignInContent() {
                     </p>
                 </CardContent>
             </Card>
+            <Link href="/">
+                <Button variant="ghost" size="sm" className="gap-1.5">
+                    <ArrowLeft className="w-3.5 h-3.5" />
+                    Back to home
+                </Button>
+            </Link>
         </div>
     );
 }
