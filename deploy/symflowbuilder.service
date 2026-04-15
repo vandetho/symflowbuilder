@@ -7,7 +7,7 @@ Type=simple
 User=www-data
 Group=www-data
 WorkingDirectory=/var/www/symflowbuilder
-ExecStart=/usr/bin/node /var/www/symflowbuilder/node_modules/.bin/next start -p 3000
+ExecStart=/usr/bin/node /var/www/symflowbuilder/node_modules/.bin/next start -p 3003
 Restart=on-failure
 RestartSec=5
 Environment=NODE_ENV=production

@@ -72,11 +72,16 @@ sudo -u www-data npx prisma generate
 sudo -u www-data npx prisma migrate deploy
 sudo -u www-data npm run build
 
-echo "==> Installing systemd service..."
-cp "$APP_DIR/deploy/symflowbuilder.service" /etc/systemd/system/
-systemctl daemon-reload
-systemctl enable symflowbuilder
-systemctl start symflowbuilder
+echo "==> Installing PM2..."
+if ! command -v pm2 &> /dev/null; then
+    npm install -g pm2
+fi
+echo "==> Creating logs directory..."
+sudo -u www-data mkdir -p "$APP_DIR/logs"
+echo "==> Starting app with PM2..."
+sudo -u www-data pm2 start "$APP_DIR/ecosystem.config.cjs"
+sudo -u www-data pm2 save
+pm2 startup systemd -u www-data --hp /var/www
 
 echo "==> Setting up Nginx..."
 cp "$APP_DIR/deploy/nginx.conf" /etc/nginx/sites-available/symflowbuilder.com.conf
@@ -93,4 +98,4 @@ echo ""
 echo "==> Setup complete!"
 echo "    1. Edit /var/www/symflowbuilder/.env.production with your secrets"
 echo "    2. Run: certbot --nginx -d symflowbuilder.com -d www.symflowbuilder.com"
-echo "    3. Run: systemctl restart symflowbuilder"
+echo "    3. Run: sudo -u www-data pm2 restart symflowbuilder"
