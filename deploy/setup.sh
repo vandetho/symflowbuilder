@@ -62,8 +62,8 @@ fi
 
 echo "==> Fixing ownership and cleaning stale node_modules..."
 rm -rf "$APP_DIR/node_modules"
-mkdir -p /var/www/.npm
-chown -R www-data:www-data "$APP_DIR" /var/www/.npm
+mkdir -p /var/www/.npm /var/www/.pm2
+chown -R www-data:www-data "$APP_DIR" /var/www/.npm /var/www/.pm2
 
 echo "==> Installing dependencies and building..."
 cd "$APP_DIR"
@@ -81,7 +81,7 @@ sudo -u www-data mkdir -p "$APP_DIR/logs"
 echo "==> Starting app with PM2..."
 sudo -u www-data pm2 start "$APP_DIR/ecosystem.config.cjs"
 sudo -u www-data pm2 save
-pm2 startup systemd -u www-data --hp /var/www
+env PATH=$PATH:/usr/bin pm2 startup systemd -u www-data --hp /var/www
 
 echo "==> Setting up Nginx..."
 cp "$APP_DIR/deploy/nginx.conf" /etc/nginx/sites-available/symflowbuilder.com.conf
