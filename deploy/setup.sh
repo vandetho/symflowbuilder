@@ -60,9 +60,14 @@ ENVEOF
     echo ">>> IMPORTANT: Edit $APP_DIR/.env.production with your actual secrets!"
 fi
 
+echo "==> Fixing ownership and cleaning stale node_modules..."
+rm -rf "$APP_DIR/node_modules"
+mkdir -p /var/www/.npm
+chown -R www-data:www-data "$APP_DIR" /var/www/.npm
+
 echo "==> Installing dependencies and building..."
 cd "$APP_DIR"
-sudo -u www-data npm ci
+sudo -u www-data npm ci --production=false
 sudo -u www-data npx prisma generate
 sudo -u www-data npx prisma migrate deploy
 sudo -u www-data npm run build
