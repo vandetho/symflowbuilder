@@ -8,8 +8,15 @@ APP_DIR="/var/www/symflowbuilder"
 DB_NAME="symflowbuilder"
 DB_USER="symflowbuilder"
 
+read -sp "Enter PostgreSQL password for user '$DB_USER': " DB_PASSWORD
+echo
+if [ -z "$DB_PASSWORD" ]; then
+    echo "Error: password cannot be empty"
+    exit 1
+fi
+
 echo "==> Creating PostgreSQL database and user..."
-sudo -u postgres psql -c "CREATE USER $DB_USER WITH PASSWORD 'CHANGE_ME_TO_SECURE_PASSWORD';" 2>/dev/null || echo "User already exists"
+sudo -u postgres psql -c "CREATE USER $DB_USER WITH PASSWORD '$DB_PASSWORD';" 2>/dev/null || echo "User already exists"
 sudo -u postgres psql -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;" 2>/dev/null || echo "Database already exists"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;"
 
@@ -43,7 +50,7 @@ AUTH_GOOGLE_ID=
 AUTH_GOOGLE_SECRET=
 
 # Database
-DATABASE_URL=postgresql://symflowbuilder:CHANGE_ME_TO_SECURE_PASSWORD@localhost:5432/symflowbuilder
+DATABASE_URL=postgresql://symflowbuilder:${DB_PASSWORD}@localhost:5432/symflowbuilder
 
 # App
 NEXT_PUBLIC_APP_URL=https://symflowbuilder.com
@@ -67,8 +74,8 @@ systemctl enable symflowbuilder
 systemctl start symflowbuilder
 
 echo "==> Setting up Nginx..."
-cp "$APP_DIR/deploy/nginx.conf" /etc/nginx/sites-available/symflowbuilder.conf
-ln -sf /etc/nginx/sites-available/symflowbuilder.conf /etc/nginx/sites-enabled/
+cp "$APP_DIR/deploy/nginx.conf" /etc/nginx/sites-available/symflowbuilder.com.conf
+ln -sf /etc/nginx/sites-available/symflowbuilder.com.conf /etc/nginx/sites-enabled/
 nginx -t && systemctl reload nginx
 
 echo "==> Setting up SSL with certbot..."

@@ -84,7 +84,10 @@ const SYMFONY_VERSIONS = [
     { version: "8.0", label: "Stable", status: "default" as const },
 ];
 
-export default function LandingPage() {
+import { auth } from "@/auth";
+
+export default async function LandingPage() {
+    const session = await auth();
     return (
         <div className="flex flex-col min-h-screen overflow-x-hidden">
             {/* ─── Navbar ─── */}
@@ -126,11 +129,19 @@ export default function LandingPage() {
                                 <span className="hidden sm:inline">GitHub</span>
                             </Button>
                         </a>
-                        <Link href="/auth/signin">
-                            <Button variant="outline" size="sm">
-                                Sign in
-                            </Button>
-                        </Link>
+                        {session?.user ? (
+                            <Link href="/dashboard">
+                                <Button variant="outline" size="sm">
+                                    Dashboard
+                                </Button>
+                            </Link>
+                        ) : (
+                            <Link href="/auth/signin">
+                                <Button variant="outline" size="sm">
+                                    Sign in
+                                </Button>
+                            </Link>
+                        )}
                         <Link href="/editor">
                             <Button size="sm">Open Editor</Button>
                         </Link>
