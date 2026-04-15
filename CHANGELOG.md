@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/vandetho/symflowbuilder/compare/v1.0.0...v1.1.0) (2026-04-15)
+
+
+### Features
+
+* dashboard overhaul, save/share workflow, settings, and editor fixes ([d47fdd9](https://github.com/vandetho/symflowbuilder/commit/d47fdd9a4fb0c8a8ae7ed82bfef6b38b810c5323))
+* major editor UX overhaul — context menu, auto-layout, custom selects, unique names ([97fe32d](https://github.com/vandetho/symflowbuilder/commit/97fe32d93d32a729b4e3343e6747e6d2e4c704e4))
+
+
+### Bug Fixes
+
+* add back-to-home link on sign-in page ([02b7aea](https://github.com/vandetho/symflowbuilder/commit/02b7aea5b469da29c904c4ff61455cdac6797f5e))
+* hide minimap when properties panel is open ([dfaf69c](https://github.com/vandetho/symflowbuilder/commit/dfaf69c06ecb6f025df24536206ec923d35162a9))
+
 ## 1.0.0 (2026-04-14)
 
 ### Features
