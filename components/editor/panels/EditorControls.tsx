@@ -34,10 +34,12 @@ const SHORTCUTS = [
     { keys: `${mod} + S`, action: "Save" },
     { keys: `${mod} + E`, action: "Export YAML" },
     { keys: `${mod} + Shift + F`, action: "Fit view" },
+    { keys: `${mod} + Shift + L`, action: "Auto layout" },
     { keys: "Backspace / Delete", action: "Delete selected" },
     { keys: `${mod} + A`, action: "Select all" },
     { keys: "Escape", action: "Deselect / close panel" },
-    { keys: "Scroll", action: "Zoom in / out" },
+    { keys: `${mod} + =`, action: "Zoom in" },
+    { keys: `${mod} + -`, action: "Zoom out" },
     { keys: "Space + Drag", action: "Pan canvas" },
 ];
 
@@ -181,6 +183,10 @@ export function EditorControls() {
         (e: KeyboardEvent) => {
             const modKey = e.metaKey || e.ctrlKey;
 
+            if (modKey && e.key === "s") {
+                e.preventDefault();
+                document.dispatchEvent(new CustomEvent("sfb:save"));
+            }
             if (modKey && e.key === "z" && !e.shiftKey) {
                 e.preventDefault();
                 undo();
@@ -193,13 +199,25 @@ export function EditorControls() {
                 e.preventDefault();
                 fitView({ padding: 0.2 });
             }
+            if (modKey && e.shiftKey && e.key === "l") {
+                e.preventDefault();
+                handleRearrange();
+            }
+            if (modKey && (e.key === "=" || e.key === "+")) {
+                e.preventDefault();
+                zoomIn();
+            }
+            if (modKey && e.key === "-") {
+                e.preventDefault();
+                zoomOut();
+            }
             if (e.key === "Backspace" || e.key === "Delete") {
                 const target = e.target as HTMLElement;
                 if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
                 deleteSelected();
             }
         },
-        [undo, redo, fitView, deleteSelected]
+        [undo, redo, fitView, deleteSelected, handleRearrange, zoomIn, zoomOut]
     );
 
     useEffect(() => {
@@ -227,11 +245,19 @@ export function EditorControls() {
                     <Redo2 className="w-3.5 h-3.5" />
                 </ToolbarButton>
                 <div className="w-px h-4 bg-[var(--glass-border)]" />
-                <ToolbarButton tip="Zoom Out" onClick={() => zoomOut()}>
+                <ToolbarButton
+                    tip="Zoom Out"
+                    shortcut={`${mod}+-`}
+                    onClick={() => zoomOut()}
+                >
                     <ZoomOut className="w-3.5 h-3.5" />
                 </ToolbarButton>
                 <ZoomInput />
-                <ToolbarButton tip="Zoom In" onClick={() => zoomIn()}>
+                <ToolbarButton
+                    tip="Zoom In"
+                    shortcut={`${mod}+=`}
+                    onClick={() => zoomIn()}
+                >
                     <ZoomIn className="w-3.5 h-3.5" />
                 </ToolbarButton>
                 <ToolbarButton
@@ -243,6 +269,7 @@ export function EditorControls() {
                 </ToolbarButton>
                 <ToolbarButton
                     tip="Auto Layout"
+                    shortcut={`${mod}+Shift+L`}
                     onClick={handleRearrange}
                     disabled={!hasContent}
                 >

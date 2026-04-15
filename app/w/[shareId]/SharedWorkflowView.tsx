@@ -11,6 +11,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 
 import { Logo } from "@/components/ui/logo";
@@ -35,8 +36,30 @@ interface Props {
 }
 
 export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Props) {
+    const router = useRouter();
     const nodes = (graphJson.nodes as Node[]) ?? [];
     const edges = (graphJson.edges as Edge[]) ?? [];
+
+    const handleOpenInEditor = () => {
+        // Save the shared workflow to localStorage so the editor loads it
+        localStorage.setItem(
+            "sfb_draft_new",
+            JSON.stringify({
+                nodes,
+                edges,
+                meta: graphJson.meta ?? {
+                    name,
+                    symfonyVersion,
+                    type,
+                    marking_store: "method",
+                    initial_marking: [],
+                    supports: "App\\Entity\\MyEntity",
+                    property: "currentState",
+                },
+            })
+        );
+        router.push("/editor");
+    };
 
     return (
         <div className="h-screen w-screen flex flex-col">
@@ -46,7 +69,7 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
                     <Link href="/" className="flex items-center gap-2">
                         <Logo size={24} />
                         <span className="text-sm font-semibold text-[var(--text-primary)]">
-                            SFB
+                            SymFlowBuilder
                         </span>
                     </Link>
                     <div className="w-px h-4 bg-[var(--glass-border)]" />
@@ -60,12 +83,15 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
                     <span className="text-xs text-[var(--text-muted)]">
                         {nodes.length} states
                     </span>
-                    <Link href="/editor">
-                        <Button size="sm" variant="ghost" className="gap-1.5">
-                            Open in Editor
-                            <ArrowRight className="w-3 h-3" />
-                        </Button>
-                    </Link>
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        className="gap-1.5"
+                        onClick={handleOpenInEditor}
+                    >
+                        Open in Editor
+                        <ArrowRight className="w-3 h-3" />
+                    </Button>
                 </div>
             </div>
 

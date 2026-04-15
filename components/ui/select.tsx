@@ -161,7 +161,7 @@ export function SelectItem({ value: itemValue, children }: SelectItemProps) {
             type="button"
             onClick={() => onSelect(itemValue)}
             className={cn(
-                "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-[8px] text-xs font-mono transition-colors cursor-pointer text-left",
+                "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-[8px] text-xs font-mono transition-colors cursor-pointer text-left whitespace-nowrap",
                 isSelected
                     ? "bg-[var(--accent-dim)] text-[var(--accent-bright)]"
                     : "text-[var(--text-secondary)] hover:bg-[rgba(255,255,255,0.06)] hover:text-[var(--text-primary)]"

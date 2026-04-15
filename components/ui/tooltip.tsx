@@ -65,8 +65,8 @@ function TooltipContent({
     return (
         <div
             className={cn(
-                "absolute z-50 px-2.5 py-1.5 text-xs rounded-[8px]",
-                "glass text-[var(--text-primary)] shadow-[0_8px_32px_rgba(0,0,0,0.5)]",
+                "absolute z-50 px-2.5 py-1.5 text-xs rounded-[8px] whitespace-nowrap",
+                "bg-[#14142a] border border-[var(--glass-border-strong)] text-[var(--text-primary)] shadow-[0_8px_32px_rgba(0,0,0,0.5)]",
                 "animate-in fade-in-0 zoom-in-95",
                 positionClass,
                 className

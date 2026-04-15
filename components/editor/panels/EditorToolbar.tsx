@@ -1,8 +1,20 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { Download, Upload, FileDown, Copy, X, Settings2, LogIn } from "lucide-react";
+import { useState, useCallback, useEffect, useRef } from "react";
+import {
+    Download,
+    Upload,
+    FileDown,
+    Copy,
+    X,
+    Settings2,
+    LogIn,
+    Save,
+    Share2,
+    Check,
+} from "lucide-react";
 import Link from "next/link";
+import { useRouter, useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -22,6 +34,140 @@ import { useEditorStore } from "@/stores/editor";
 import type { SymfonyVersion } from "@/types/workflow";
 
 const SYMFONY_VERSIONS: SymfonyVersion[] = ["5.4", "6.4", "7.4", "8.0"];
+
+function SaveButton() {
+    const { data: session } = useSession();
+    const router = useRouter();
+    const params = useParams();
+    const workflowId = params?.id as string | undefined;
+    const { nodes, edges, workflowMeta, exportYaml } = useEditorStore();
+    const [saving, setSaving] = useState(false);
+    const savingRef = useRef(false);
+
+    const handleSave = useCallback(async () => {
+        if (savingRef.current) return;
+        savingRef.current = true;
+        setSaving(true);
+
+        if (!session?.user) {
+            // Guest: save to localStorage
+            try {
+                const data = { nodes, edges, meta: workflowMeta };
+                localStorage.setItem("sfb_draft_new", JSON.stringify(data));
+                toast.success("Saved to browser");
+            } catch {
+                toast.error("Failed to save");
+            }
+            setSaving(false);
+            savingRef.current = false;
+            return;
+        }
+
+        const body = JSON.stringify({
+            name: workflowMeta.name,
+            symfonyVersion: workflowMeta.symfonyVersion,
+            type: workflowMeta.type,
+            graphJson: { nodes, edges, meta: workflowMeta },
+            yamlCache: exportYaml(),
+        });
+
+        try {
+            if (workflowId) {
+                // Update existing workflow
+                const res = await fetch(`/api/workflows/${workflowId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body,
+                });
+                if (!res.ok) throw new Error("Failed to save");
+                toast.success("Workflow saved");
+            } else {
+                // Create new workflow
+                const res = await fetch("/api/workflows", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body,
+                });
+                if (!res.ok) throw new Error("Failed to save");
+                const workflow = await res.json();
+                toast.success("Workflow saved");
+                router.push(`/editor/${workflow.id}`);
+            }
+        } catch {
+            toast.error("Failed to save workflow");
+        } finally {
+            setSaving(false);
+            savingRef.current = false;
+        }
+    }, [session, nodes, edges, workflowMeta, exportYaml, router, workflowId]);
+
+    // Listen for Cmd+S event from EditorControls
+    useEffect(() => {
+        const handler = () => handleSave();
+        document.addEventListener("sfb:save", handler);
+        return () => document.removeEventListener("sfb:save", handler);
+    }, [handleSave]);
+
+    return (
+        <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5"
+            onClick={handleSave}
+            disabled={saving}
+        >
+            <Save className="w-3.5 h-3.5" />
+            {saving ? "Saving..." : "Save"}
+        </Button>
+    );
+}
+
+function ShareButton() {
+    const { data: session } = useSession();
+    const params = useParams();
+    const workflowId = params?.id as string | undefined;
+    const [sharing, setSharing] = useState(false);
+    const [copied, setCopied] = useState(false);
+
+    if (!session?.user || !workflowId) return null;
+
+    const handleShare = async () => {
+        setSharing(true);
+        try {
+            const res = await fetch(`/api/workflows/${workflowId}/share`, {
+                method: "POST",
+            });
+            if (!res.ok) throw new Error("Failed");
+            const data = await res.json();
+            const url = `${window.location.origin}/w/${data.shareId}`;
+            await navigator.clipboard.writeText(url);
+            setCopied(true);
+            toast.success("Share link copied to clipboard");
+            setTimeout(() => setCopied(false), 2000);
+        } catch {
+            toast.error("Failed to share workflow");
+        } finally {
+            setSharing(false);
+        }
+    };
+
+    return (
+        <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5"
+            onClick={handleShare}
+            disabled={sharing}
+        >
+            {copied ? (
+                <Check className="w-3.5 h-3.5 text-[var(--success)]" />
+            ) : (
+                <Share2 className="w-3.5 h-3.5" />
+            )}
+            {sharing ? "Sharing..." : copied ? "Copied!" : "Share"}
+        </Button>
+    );
+}
 
 function SignInButton() {
     const { data: session } = useSession();
@@ -181,6 +327,8 @@ export function EditorToolbar() {
                         Export YAML
                     </Button>
 
+                    <SaveButton />
+                    <ShareButton />
                     <SignInButton />
                 </div>
             </div>

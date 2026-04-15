@@ -6,12 +6,13 @@ import type { GraphJson } from "@/types/workflow";
 
 const STORAGE_PREFIX = "sfb_draft_";
 
-export function useLocalDraft(draftId: string = "new") {
+export function useLocalDraft(draftId?: string) {
     const { nodes, edges, workflowMeta, loadFromJson } = useEditorStore();
-    const key = `${STORAGE_PREFIX}${draftId}`;
+    const key = draftId ? `${STORAGE_PREFIX}${draftId}` : null;
 
-    // Load draft on mount
+    // Load draft on mount (only if draftId is provided)
     useEffect(() => {
+        if (!key) return;
         try {
             const stored = localStorage.getItem(key);
             if (stored) {
@@ -29,6 +30,7 @@ export function useLocalDraft(draftId: string = "new") {
 
     // Save draft (debounced externally)
     const saveDraft = useCallback(() => {
+        if (!key) return;
         try {
             const data: GraphJson = { nodes, edges, meta: workflowMeta };
             localStorage.setItem(key, JSON.stringify(data));
@@ -38,6 +40,7 @@ export function useLocalDraft(draftId: string = "new") {
     }, [key, nodes, edges, workflowMeta]);
 
     const clearDraft = useCallback(() => {
+        if (!key) return;
         try {
             localStorage.removeItem(key);
         } catch {
