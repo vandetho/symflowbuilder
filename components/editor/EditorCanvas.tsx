@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, type DragEvent } from "react";
+import { useCallback, useRef, useState, type DragEvent } from "react";
 import {
     ReactFlow,
     Background,
@@ -8,8 +8,12 @@ import {
     MiniMap,
     ReactFlowProvider,
     useReactFlow,
+    reconnectEdge,
     type NodeMouseHandler,
     type EdgeMouseHandler,
+    type OnReconnect,
+    type Connection,
+    type Edge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
@@ -20,7 +24,9 @@ import { NodePalette } from "./panels/NodePalette";
 import { EditorToolbar } from "./panels/EditorToolbar";
 import { EditorControls } from "./panels/EditorControls";
 import { PropertiesPanel } from "./panels/PropertiesPanel";
-import type { StateNodeData } from "@/types/workflow";
+import { ContextMenu, type ContextMenuState } from "./panels/ContextMenu";
+import type { StateNodeData, TransitionEdgeData } from "@/types/workflow";
+import { uid, uniqueName } from "@/lib/utils";
 
 const nodeTypes = {
     state: StateNode,
@@ -36,17 +42,33 @@ function EditorCanvasInner() {
         edges,
         onNodesChange,
         onEdgesChange,
-        onConnect,
+        onConnect: storeOnConnect,
         addNode,
         setSelectedNode,
         setSelectedEdge,
         selectedNodeId,
         selectedEdgeId,
         snapshot,
+        setEdges,
     } = useEditorStore();
 
     const { screenToFlowPosition } = useReactFlow();
+    const connectingFrom = useRef<{
+        nodeId: string;
+        handleType: string;
+    } | null>(null);
+    const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
 
+    // Wrap onConnect to clear connectingFrom on successful connection
+    const onConnect = useCallback(
+        (connection: Connection) => {
+            connectingFrom.current = null;
+            storeOnConnect(connection);
+        },
+        [storeOnConnect]
+    );
+
+    // --- Drag & drop from palette ---
     const onDragOver = useCallback((e: DragEvent) => {
         e.preventDefault();
         e.dataTransfer.dropEffect = "move";
@@ -63,23 +85,26 @@ function EditorCanvasInner() {
                 y: e.clientY,
             });
 
-            const newNode = {
-                id: `state-${Date.now()}`,
+            const existingLabels = nodes.map(
+                (n) => (n.data as unknown as StateNodeData).label
+            );
+
+            addNode({
+                id: uid("state"),
                 type: "state",
                 position,
                 data: {
-                    label: "new_state",
+                    label: uniqueName("state", existingLabels),
                     isInitial: false,
                     isFinal: false,
                     metadata: {},
                 } satisfies StateNodeData,
-            };
-
-            addNode(newNode);
+            });
         },
-        [screenToFlowPosition, addNode]
+        [screenToFlowPosition, addNode, nodes]
     );
 
+    // --- Selection ---
     const onNodeClick: NodeMouseHandler = useCallback(
         (_event, node) => {
             setSelectedNode(node.id);
@@ -97,11 +122,148 @@ function EditorCanvasInner() {
     const onPaneClick = useCallback(() => {
         setSelectedNode(null);
         setSelectedEdge(null);
+        setContextMenu(null);
     }, [setSelectedNode, setSelectedEdge]);
 
+    // --- Context menu ---
+    const onNodeContextMenu: NodeMouseHandler = useCallback((event, node) => {
+        event.preventDefault();
+        setContextMenu({
+            type: "node",
+            x: event.clientX,
+            y: event.clientY,
+            nodeId: node.id,
+        });
+    }, []);
+
+    const onEdgeContextMenu: EdgeMouseHandler = useCallback((event, edge) => {
+        event.preventDefault();
+        setContextMenu({
+            type: "edge",
+            x: event.clientX,
+            y: event.clientY,
+            edgeId: edge.id,
+        });
+    }, []);
+
+    const onPaneContextMenu = useCallback((event: MouseEvent | React.MouseEvent) => {
+        event.preventDefault();
+        setContextMenu({
+            type: "pane",
+            x: "clientX" in event ? event.clientX : 0,
+            y: "clientY" in event ? event.clientY : 0,
+        });
+    }, []);
+
+    // --- Snap undo history after drag ---
     const onNodeDragStop = useCallback(() => {
         snapshot();
     }, [snapshot]);
+
+    // --- Reconnect: drag edge endpoint to a different state ---
+    const edgeReconnectSuccessful = useRef(true);
+
+    const onReconnectStart = useCallback(() => {
+        edgeReconnectSuccessful.current = false;
+    }, []);
+
+    const onReconnect: OnReconnect = useCallback(
+        (oldEdge: Edge, newConnection: Connection) => {
+            edgeReconnectSuccessful.current = true;
+            setEdges((eds) => reconnectEdge(oldEdge, newConnection, eds));
+            snapshot();
+        },
+        [setEdges, snapshot]
+    );
+
+    const onReconnectEnd = useCallback(
+        (_event: MouseEvent | TouchEvent, edge: Edge) => {
+            if (!edgeReconnectSuccessful.current) {
+                // Edge was dropped on empty space — delete it
+                setEdges((eds) => eds.filter((e) => e.id !== edge.id));
+                snapshot();
+            }
+            edgeReconnectSuccessful.current = true;
+        },
+        [setEdges, snapshot]
+    );
+
+    // --- Connect start/end: drop on empty space creates a new state ---
+    const onConnectStart = useCallback(
+        (
+            _event: MouseEvent | TouchEvent,
+            params: { nodeId: string | null; handleType: string | null }
+        ) => {
+            if (params.nodeId && params.handleType) {
+                connectingFrom.current = {
+                    nodeId: params.nodeId,
+                    handleType: params.handleType,
+                };
+            }
+        },
+        []
+    );
+
+    const onConnectEnd = useCallback(
+        (event: MouseEvent | TouchEvent) => {
+            if (!connectingFrom.current) return;
+
+            const target = (event as MouseEvent).target as HTMLElement;
+            // Only create node if dropped on the pane (not on another node/handle)
+            const isPane = target.closest(".react-flow__pane");
+            if (!isPane) {
+                connectingFrom.current = null;
+                return;
+            }
+
+            const clientX =
+                "clientX" in event ? event.clientX : event.changedTouches[0].clientX;
+            const clientY =
+                "clientY" in event ? event.clientY : event.changedTouches[0].clientY;
+
+            const position = screenToFlowPosition({ x: clientX, y: clientY });
+            const newNodeId = uid("state");
+
+            // Create the new state node
+            const existingStateLabels = nodes.map(
+                (n) => (n.data as unknown as StateNodeData).label
+            );
+            addNode({
+                id: newNodeId,
+                type: "state",
+                position,
+                data: {
+                    label: uniqueName("state", existingStateLabels),
+                    isInitial: false,
+                    isFinal: false,
+                    metadata: {},
+                } satisfies StateNodeData,
+            });
+
+            // Create the transition edge
+            const existingEdgeLabels = edges
+                .map((e) => (e.data as unknown as TransitionEdgeData)?.label)
+                .filter(Boolean) as string[];
+            const isSource = connectingFrom.current.handleType === "source";
+            const newEdge: Edge = {
+                id: uid("edge"),
+                source: isSource ? connectingFrom.current.nodeId : newNodeId,
+                target: isSource ? newNodeId : connectingFrom.current.nodeId,
+                type: "transition",
+                data: {
+                    label: uniqueName("transition", existingEdgeLabels),
+                    guard: undefined,
+                    listeners: [],
+                    metadata: {},
+                } satisfies TransitionEdgeData,
+            };
+            setEdges((eds) => [...eds, newEdge]);
+            snapshot();
+
+            connectingFrom.current = null;
+        },
+        [screenToFlowPosition, addNode, setEdges, snapshot, nodes, edges]
+    );
 
     return (
         <div className="relative w-full h-full">
@@ -115,15 +277,24 @@ function EditorCanvasInner() {
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
+                onConnectStart={onConnectStart}
+                onConnectEnd={onConnectEnd}
+                onReconnect={onReconnect}
+                onReconnectStart={onReconnectStart}
+                onReconnectEnd={onReconnectEnd}
                 onDragOver={onDragOver}
                 onDrop={onDrop}
                 onNodeClick={onNodeClick}
                 onEdgeClick={onEdgeClick}
                 onPaneClick={onPaneClick}
+                onNodeContextMenu={onNodeContextMenu}
+                onEdgeContextMenu={onEdgeContextMenu}
+                onPaneContextMenu={onPaneContextMenu}
                 onNodeDragStop={onNodeDragStop}
                 fitView
                 proOptions={{ hideAttribution: true }}
                 defaultEdgeOptions={{ type: "transition" }}
+                deleteKeyCode={["Backspace", "Delete"]}
             >
                 <Background
                     variant={BackgroundVariant.Dots}
@@ -143,6 +314,9 @@ function EditorCanvasInner() {
             <NodePalette />
             <EditorControls />
             <PropertiesPanel />
+            {contextMenu && (
+                <ContextMenu menu={contextMenu} onClose={() => setContextMenu(null)} />
+            )}
         </div>
     );
 }

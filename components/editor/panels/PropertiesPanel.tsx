@@ -38,7 +38,7 @@ export function PropertiesPanel() {
     if (selectedNode) {
         const data = selectedNode.data as unknown as StateNodeData;
         return (
-            <div className="absolute top-16 right-4 bottom-4 z-20 w-[280px] glass-strong rounded-[18px] flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
+            <div className="absolute top-16 right-4 bottom-4 z-20 w-[280px] bg-[#12121f] border border-[var(--glass-border)] rounded-[18px] flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--glass-border)]">
                     <span className="text-sm font-medium text-[var(--text-primary)]">
                         State (Place)
@@ -119,7 +119,7 @@ export function PropertiesPanel() {
     if (selectedEdge) {
         const data = selectedEdge.data as unknown as TransitionEdgeData;
         return (
-            <div className="absolute top-16 right-4 bottom-4 z-20 w-[300px] glass-strong rounded-[18px] flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
+            <div className="absolute top-16 right-4 bottom-4 z-20 w-[300px] bg-[#12121f] border border-[var(--glass-border)] rounded-[18px] flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--glass-border)]">
                     <span className="text-sm font-medium text-[var(--text-primary)]">
                         Transition

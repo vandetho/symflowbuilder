@@ -95,7 +95,7 @@ function DialogContent({
             <div
                 className={cn(
                     "relative z-50 w-full max-w-lg mx-4",
-                    "glass-strong rounded-[24px] p-6",
+                    "bg-[#14142a] border border-[var(--glass-border-strong)] rounded-[24px] p-6",
                     "shadow-[0_24px_64px_rgba(0,0,0,0.6)]",
                     className
                 )}

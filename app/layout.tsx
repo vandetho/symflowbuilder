@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Sora, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { FeedbackFab } from "@/components/feedback-fab";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const sora = Sora({
@@ -29,6 +30,9 @@ export const metadata: Metadata = {
         ],
         apple: "/apple-icon.png",
     },
+};
+
+export const viewport: Viewport = {
     themeColor: "#7c6ff7",
 };
 
@@ -43,19 +47,21 @@ export default function RootLayout({
             className={`${sora.variable} ${jetbrainsMono.variable} h-full antialiased`}
         >
             <body className="min-h-full flex flex-col">
-                {children}
-                <FeedbackFab />
-                <Toaster
-                    theme="dark"
-                    toastOptions={{
-                        style: {
-                            background: "var(--glass-surface)",
-                            backdropFilter: "var(--blur-md)",
-                            border: "1px solid var(--glass-border)",
-                            color: "var(--text-primary)",
-                        },
-                    }}
-                />
+                <Providers>
+                    {children}
+                    <FeedbackFab />
+                    <Toaster
+                        theme="dark"
+                        toastOptions={{
+                            style: {
+                                background: "var(--glass-surface)",
+                                backdropFilter: "var(--blur-md)",
+                                border: "1px solid var(--glass-border)",
+                                color: "var(--text-primary)",
+                            },
+                        }}
+                    />
+                </Providers>
             </body>
         </html>
     );

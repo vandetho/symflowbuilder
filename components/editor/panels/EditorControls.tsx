@@ -2,8 +2,18 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useReactFlow, useStore } from "@xyflow/react";
-import { Undo2, Redo2, Maximize2, ZoomIn, ZoomOut, Trash2, Keyboard } from "lucide-react";
+import {
+    Undo2,
+    Redo2,
+    Maximize2,
+    ZoomIn,
+    ZoomOut,
+    Trash2,
+    Keyboard,
+    LayoutGrid,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import {
     Dialog,
     DialogContent,
@@ -12,6 +22,7 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 import { useEditorStore } from "@/stores/editor";
+import { autoLayoutNodes } from "@/lib/layout-engine";
 
 const isMac =
     typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.userAgent);
@@ -30,17 +41,126 @@ const SHORTCUTS = [
     { keys: "Space + Drag", action: "Pan canvas" },
 ];
 
+function ToolbarButton({
+    tip,
+    shortcut,
+    onClick,
+    disabled,
+    className,
+    children,
+}: {
+    tip: string;
+    shortcut?: string;
+    onClick: () => void;
+    disabled?: boolean;
+    className?: string;
+    children: React.ReactNode;
+}) {
+    return (
+        <Tooltip>
+            <TooltipTrigger>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={onClick}
+                    disabled={disabled}
+                    className={`h-7 w-7 ${className ?? ""}`}
+                >
+                    {children}
+                </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+                {tip}
+                {shortcut && (
+                    <span className="ml-1.5 text-[var(--text-disabled)]">{shortcut}</span>
+                )}
+            </TooltipContent>
+        </Tooltip>
+    );
+}
+
+function ZoomInput() {
+    const { zoomTo } = useReactFlow();
+    const zoomLevel = useStore((s) => Math.round(s.transform[2] * 100));
+    const [editing, setEditing] = useState(false);
+    const [inputValue, setInputValue] = useState("");
+
+    const handleStartEdit = useCallback(() => {
+        setInputValue(String(zoomLevel));
+        setEditing(true);
+    }, [zoomLevel]);
+
+    const handleSubmit = useCallback(() => {
+        const val = parseInt(inputValue, 10);
+        if (!isNaN(val) && val >= 10 && val <= 400) {
+            zoomTo(val / 100);
+        }
+        setEditing(false);
+    }, [inputValue, zoomTo]);
+
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent) => {
+            if (e.key === "Enter") {
+                handleSubmit();
+            } else if (e.key === "Escape") {
+                setEditing(false);
+            }
+        },
+        [handleSubmit]
+    );
+
+    if (editing) {
+        return (
+            <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onBlur={handleSubmit}
+                onKeyDown={handleKeyDown}
+                autoFocus
+                className="w-12 h-5 text-[10px] font-mono text-center bg-[var(--glass-base)] border border-[var(--accent-border)] rounded-[4px] text-[var(--text-primary)] outline-none"
+            />
+        );
+    }
+
+    return (
+        <button
+            onClick={handleStartEdit}
+            className="text-[10px] font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] w-12 text-center select-none cursor-pointer transition-colors"
+            title="Click to set zoom level"
+        >
+            {zoomLevel}%
+        </button>
+    );
+}
+
 export function EditorControls() {
     const { fitView, zoomIn, zoomOut } = useReactFlow();
-    const { undo, redo, history, deleteSelected, reset, nodes, edges } = useEditorStore();
+    const {
+        undo,
+        redo,
+        history,
+        deleteSelected,
+        reset,
+        nodes,
+        edges,
+        setNodes,
+        snapshot,
+    } = useEditorStore();
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [shortcutsOpen, setShortcutsOpen] = useState(false);
-
-    const zoomLevel = useStore((s) => Math.round(s.transform[2] * 100));
 
     const canUndo = history.past.length > 0;
     const canRedo = history.future.length > 0;
     const hasContent = nodes.length > 0 || edges.length > 0;
+
+    const handleRearrange = useCallback(() => {
+        if (!hasContent) return;
+        const laid = autoLayoutNodes(nodes, edges);
+        setNodes(laid);
+        snapshot();
+        setTimeout(() => fitView({ padding: 0.2 }), 50);
+    }, [nodes, edges, hasContent, setNodes, snapshot, fitView]);
 
     const handleClear = useCallback(() => {
         reset();
@@ -89,79 +209,61 @@ export function EditorControls() {
 
     return (
         <>
-            <div className="absolute bottom-4 left-4 z-10 flex items-center gap-1 glass-sm rounded-[10px] p-1">
-                <Button
-                    variant="ghost"
-                    size="icon"
+            <div className="absolute bottom-4 left-4 z-10 flex items-center gap-1 bg-[#12121f] border border-[var(--glass-border)] rounded-[10px] p-1">
+                <ToolbarButton
+                    tip="Undo"
+                    shortcut={`${mod}+Z`}
                     onClick={undo}
                     disabled={!canUndo}
-                    className="h-7 w-7"
-                    title="Undo (Cmd+Z)"
                 >
                     <Undo2 className="w-3.5 h-3.5" />
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="icon"
+                </ToolbarButton>
+                <ToolbarButton
+                    tip="Redo"
+                    shortcut={`${mod}+Shift+Z`}
                     onClick={redo}
                     disabled={!canRedo}
-                    className="h-7 w-7"
-                    title="Redo (Cmd+Shift+Z)"
                 >
                     <Redo2 className="w-3.5 h-3.5" />
-                </Button>
+                </ToolbarButton>
                 <div className="w-px h-4 bg-[var(--glass-border)]" />
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => zoomOut()}
-                    className="h-7 w-7"
-                    title="Zoom Out"
-                >
+                <ToolbarButton tip="Zoom Out" onClick={() => zoomOut()}>
                     <ZoomOut className="w-3.5 h-3.5" />
-                </Button>
-                <span className="text-[10px] font-mono text-[var(--text-muted)] w-10 text-center select-none">
-                    {zoomLevel}%
-                </span>
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => zoomIn()}
-                    className="h-7 w-7"
-                    title="Zoom In"
-                >
+                </ToolbarButton>
+                <ZoomInput />
+                <ToolbarButton tip="Zoom In" onClick={() => zoomIn()}>
                     <ZoomIn className="w-3.5 h-3.5" />
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="icon"
+                </ToolbarButton>
+                <ToolbarButton
+                    tip="Fit View"
+                    shortcut={`${mod}+Shift+F`}
                     onClick={() => fitView({ padding: 0.2 })}
-                    className="h-7 w-7"
-                    title="Fit View (Cmd+Shift+F)"
                 >
                     <Maximize2 className="w-3.5 h-3.5" />
-                </Button>
+                </ToolbarButton>
+                <ToolbarButton
+                    tip="Auto Layout"
+                    onClick={handleRearrange}
+                    disabled={!hasContent}
+                >
+                    <LayoutGrid className="w-3.5 h-3.5" />
+                </ToolbarButton>
                 <div className="w-px h-4 bg-[var(--glass-border)]" />
-                <Button
-                    variant="ghost"
-                    size="icon"
+                <ToolbarButton
+                    tip="Keyboard Shortcuts"
                     onClick={() => setShortcutsOpen(true)}
-                    className="h-7 w-7"
-                    title="Keyboard Shortcuts"
                 >
                     <Keyboard className="w-3.5 h-3.5" />
-                </Button>
+                </ToolbarButton>
                 <div className="w-px h-4 bg-[var(--glass-border)]" />
-                <Button
-                    variant="ghost"
-                    size="icon"
+                <ToolbarButton
+                    tip="Clear Canvas"
                     onClick={() => setConfirmOpen(true)}
                     disabled={!hasContent}
-                    className="h-7 w-7 hover:!text-[var(--danger)]"
-                    title="Clear Canvas"
+                    className="hover:!text-[var(--danger)]"
                 >
                     <Trash2 className="w-3.5 h-3.5" />
-                </Button>
+                </ToolbarButton>
             </div>
 
             {/* Keyboard shortcuts dialog */}

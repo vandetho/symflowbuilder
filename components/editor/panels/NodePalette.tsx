@@ -19,7 +19,7 @@ function PaletteItem({
         <div
             draggable
             onDragStart={onDragStart}
-            className="glass-sm flex items-center gap-2 px-3 py-2 rounded-[10px] text-[12px] font-mono text-[var(--text-secondary)] cursor-grab active:cursor-grabbing border border-[var(--glass-border)] hover:border-[var(--glass-border-hover)] hover:text-[var(--text-primary)] transition-colors"
+            className="bg-[#12121f] flex items-center gap-2 px-3 py-2 rounded-[10px] text-[12px] font-mono text-[var(--text-secondary)] cursor-grab active:cursor-grabbing border border-[var(--glass-border)] hover:border-[var(--glass-border-hover)] hover:text-[var(--text-primary)] transition-colors"
         >
             <Icon className="w-3.5 h-3.5" />
             {label}

@@ -13,11 +13,10 @@ export const StateNode = memo(
           border transition-all duration-150
           ${
               selected
-                  ? "border-[var(--accent-bright)] shadow-[0_0_0_2px_var(--accent-glow)] bg-[var(--glass-overlay)]"
-                  : "border-[var(--glass-border)] bg-[var(--glass-surface)] hover:border-[var(--glass-border-hover)]"
+                  ? "border-[var(--accent-bright)] shadow-[0_0_0_2px_var(--accent-glow)] bg-[#1a1a2e]"
+                  : "border-[var(--glass-border)] bg-[#12121f] hover:border-[var(--glass-border-hover)]"
           }
         `}
-                style={{ backdropFilter: "var(--blur-md)" }}
             >
                 {data.isInitial && (
                     <div className="absolute top-0 left-4 right-4 h-[2px] rounded-full bg-[var(--accent)]" />
@@ -62,18 +61,6 @@ export const StateNode = memo(
                 <Handle
                     type="source"
                     position={Position.Right}
-                    className="!bg-[var(--accent)] !w-2 !h-2 !border-2 !border-[var(--bg-base)]"
-                />
-                <Handle
-                    type="target"
-                    position={Position.Top}
-                    id="top"
-                    className="!bg-[var(--accent)] !w-2 !h-2 !border-2 !border-[var(--bg-base)]"
-                />
-                <Handle
-                    type="source"
-                    position={Position.Bottom}
-                    id="bottom"
                     className="!bg-[var(--accent)] !w-2 !h-2 !border-2 !border-[var(--bg-base)]"
                 />
             </div>

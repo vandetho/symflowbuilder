@@ -1,19 +1,66 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Download, Upload, FileDown, Copy, X, Save } from "lucide-react";
+import { Download, Upload, FileDown, Copy, X, Settings2, LogIn } from "lucide-react";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { Select, SelectItem } from "@/components/ui/select";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { Logo } from "@/components/ui/logo";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+} from "@/components/ui/dialog";
 import { useEditorStore } from "@/stores/editor";
 import type { SymfonyVersion } from "@/types/workflow";
 
 const SYMFONY_VERSIONS: SymfonyVersion[] = ["5.4", "6.4", "7.4", "8.0"];
 
+function SignInButton() {
+    const { data: session } = useSession();
+    if (session?.user) {
+        return (
+            <Link href="/dashboard">
+                <Button variant="ghost" size="sm" className="gap-1.5">
+                    {session.user.image && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                            src={session.user.image}
+                            alt=""
+                            className="w-4 h-4 rounded-full"
+                        />
+                    )}
+                    <span className="text-xs">{session.user.name ?? "Dashboard"}</span>
+                </Button>
+            </Link>
+        );
+    }
+    return (
+        <Link href="/auth/signin">
+            <Button variant="ghost" size="sm" className="gap-1.5">
+                <LogIn className="w-3.5 h-3.5" />
+                Sign in
+            </Button>
+        </Link>
+    );
+}
+
 export function EditorToolbar() {
-    const { workflowMeta, updateMeta, exportYaml, importYaml } = useEditorStore();
+    const {
+        workflowMeta,
+        updateMeta,
+        exportYaml,
+        importYaml,
+        setSelectedNode,
+        setSelectedEdge,
+    } = useEditorStore();
     const [showYaml, setShowYaml] = useState(false);
     const [showConfig, setShowConfig] = useState(false);
     const [yamlOutput, setYamlOutput] = useState("");
@@ -22,7 +69,10 @@ export function EditorToolbar() {
         const output = exportYaml();
         setYamlOutput(output);
         setShowYaml(true);
-    }, [exportYaml]);
+        // Close properties panel to avoid overlap
+        setSelectedNode(null);
+        setSelectedEdge(null);
+    }, [exportYaml, setSelectedNode, setSelectedEdge]);
 
     const handleCopy = useCallback(() => {
         navigator.clipboard.writeText(yamlOutput);
@@ -66,7 +116,11 @@ export function EditorToolbar() {
     return (
         <>
             <div className="absolute top-0 left-0 right-0 z-20 flex items-center gap-3 px-4 py-3">
-                <div className="glass rounded-[14px] flex items-center gap-3 px-4 py-2 flex-1">
+                <div className="bg-[#12121f] border border-[var(--glass-border)] rounded-[14px] flex items-center gap-3 px-4 py-2 flex-1">
+                    <Link href="/">
+                        <Logo size={24} />
+                    </Link>
+                    <div className="h-4 w-px bg-[var(--glass-border)]" />
                     <Input
                         value={workflowMeta.name}
                         onChange={(e) => updateMeta({ name: e.target.value })}
@@ -76,42 +130,42 @@ export function EditorToolbar() {
 
                     <div className="h-4 w-px bg-[var(--glass-border)]" />
 
-                    <select
+                    <Select
                         value={workflowMeta.type}
                         onChange={(e) =>
                             updateMeta({
                                 type: e.target.value as "workflow" | "state_machine",
                             })
                         }
-                        className="h-7 px-2 rounded-[8px] text-xs font-mono bg-[var(--glass-base)] border border-[var(--glass-border)] text-[var(--text-secondary)] cursor-pointer"
+                        className="h-7 w-auto text-xs"
                     >
-                        <option value="workflow">workflow</option>
-                        <option value="state_machine">state_machine</option>
-                    </select>
+                        <SelectItem value="workflow">workflow</SelectItem>
+                        <SelectItem value="state_machine">state_machine</SelectItem>
+                    </Select>
 
-                    <select
+                    <Select
                         value={workflowMeta.symfonyVersion}
                         onChange={(e) =>
                             updateMeta({
                                 symfonyVersion: e.target.value as SymfonyVersion,
                             })
                         }
-                        className="h-7 px-2 rounded-[8px] text-xs font-mono bg-[var(--glass-base)] border border-[var(--glass-border)] text-[var(--text-secondary)] cursor-pointer"
+                        className="h-7 w-auto text-xs"
                     >
                         {SYMFONY_VERSIONS.map((v) => (
-                            <option key={v} value={v}>
+                            <SelectItem key={v} value={v}>
                                 Symfony {v}
-                            </option>
+                            </SelectItem>
                         ))}
-                    </select>
+                    </Select>
 
                     <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => setShowConfig(!showConfig)}
+                        onClick={() => setShowConfig(true)}
                         className="text-[10px] font-mono"
                     >
-                        <Save className="w-3 h-3" />
+                        <Settings2 className="w-3 h-3" />
                         Config
                     </Button>
 
@@ -126,85 +180,138 @@ export function EditorToolbar() {
                         <Download className="w-3.5 h-3.5" />
                         Export YAML
                     </Button>
+
+                    <SignInButton />
                 </div>
             </div>
 
-            {/* Workflow Config Panel */}
-            {showConfig && (
-                <div className="absolute top-16 left-4 z-20 w-[300px] glass-strong rounded-[14px] p-4 flex flex-col gap-3 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
-                    <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-[var(--text-primary)]">
-                            Workflow Config
-                        </span>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-5 w-5"
-                            onClick={() => setShowConfig(false)}
-                        >
-                            <X className="w-3 h-3" />
-                        </Button>
+            {/* Workflow Config Dialog */}
+            <Dialog open={showConfig} onOpenChange={setShowConfig}>
+                <DialogContent className="max-w-sm">
+                    <DialogHeader>
+                        <DialogTitle>Workflow Config</DialogTitle>
+                        <DialogDescription>
+                            Configure the Symfony workflow settings
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="mt-3 flex flex-col gap-4">
+                        <div className="flex flex-col gap-1.5">
+                            <Label>Type</Label>
+                            <Select
+                                value={workflowMeta.type}
+                                onChange={(e) =>
+                                    updateMeta({
+                                        type: e.target.value as
+                                            | "workflow"
+                                            | "state_machine",
+                                    })
+                                }
+                            >
+                                <SelectItem value="workflow">workflow</SelectItem>
+                                <SelectItem value="state_machine">
+                                    state_machine
+                                </SelectItem>
+                            </Select>
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <Label>Symfony Version</Label>
+                            <Select
+                                value={workflowMeta.symfonyVersion}
+                                onChange={(e) =>
+                                    updateMeta({
+                                        symfonyVersion: e.target.value as SymfonyVersion,
+                                    })
+                                }
+                            >
+                                {SYMFONY_VERSIONS.map((v) => (
+                                    <SelectItem key={v} value={v}>
+                                        Symfony {v}
+                                    </SelectItem>
+                                ))}
+                            </Select>
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <Label>Supports (entity class)</Label>
+                            <Input
+                                value={workflowMeta.supports}
+                                onChange={(e) => updateMeta({ supports: e.target.value })}
+                                placeholder="App\Entity\Order"
+                                className="text-xs"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <Label>Marking Store Property</Label>
+                            <Input
+                                value={workflowMeta.property}
+                                onChange={(e) => updateMeta({ property: e.target.value })}
+                                placeholder="currentState"
+                                className="text-xs"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <Label>Marking Store Type</Label>
+                            <Select
+                                value={workflowMeta.marking_store}
+                                onChange={(e) =>
+                                    updateMeta({
+                                        marking_store: e.target.value as
+                                            | "method"
+                                            | "property",
+                                    })
+                                }
+                            >
+                                <SelectItem value="method">method</SelectItem>
+                                <SelectItem value="property">property</SelectItem>
+                            </Select>
+                        </div>
                     </div>
-                    <Separator />
-                    <div className="flex flex-col gap-1.5">
-                        <Label>Supports (entity class)</Label>
-                        <Input
-                            value={workflowMeta.supports}
-                            onChange={(e) => updateMeta({ supports: e.target.value })}
-                            placeholder="App\Entity\Order"
-                            className="text-xs"
-                        />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        <Label>Marking Store Property</Label>
-                        <Input
-                            value={workflowMeta.property}
-                            onChange={(e) => updateMeta({ property: e.target.value })}
-                            placeholder="currentState"
-                            className="text-xs"
-                        />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        <Label>Marking Store Type</Label>
-                        <select
-                            value={workflowMeta.marking_store}
-                            onChange={(e) =>
-                                updateMeta({
-                                    marking_store: e.target.value as
-                                        | "method"
-                                        | "property",
-                                })
-                            }
-                            className="h-7 px-2 rounded-[8px] text-xs font-mono bg-[var(--glass-base)] border border-[var(--glass-border)] text-[var(--text-secondary)] cursor-pointer w-full"
-                        >
-                            <option value="method">method</option>
-                            <option value="property">property</option>
-                        </select>
-                    </div>
-                </div>
-            )}
+                </DialogContent>
+            </Dialog>
 
             {/* YAML Preview Drawer */}
             {showYaml && (
-                <div className="absolute top-0 right-0 bottom-0 z-30 w-[480px] glass-strong rounded-l-[18px] flex flex-col shadow-[0_0_64px_rgba(0,0,0,0.5)]">
+                <div className="absolute top-0 right-0 bottom-0 z-30 w-[480px] bg-[#12121f] border-l border-[var(--glass-border)] rounded-l-[18px] flex flex-col shadow-[0_0_64px_rgba(0,0,0,0.5)]">
                     <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--glass-border)]">
                         <span className="text-sm font-medium text-[var(--text-primary)]">
                             YAML Output
                         </span>
                         <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="icon" onClick={handleCopy}>
-                                <Copy className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" onClick={handleDownload}>
-                                <FileDown className="w-4 h-4" />
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => setShowYaml(false)}
-                            >
-                                <X className="w-4 h-4" />
-                            </Button>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={handleCopy}
+                                    >
+                                        <Copy className="w-4 h-4" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">Copy</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={handleDownload}
+                                    >
+                                        <FileDown className="w-4 h-4" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">Download</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => setShowYaml(false)}
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">Close</TooltipContent>
+                            </Tooltip>
                         </div>
                     </div>
                     <div className="flex-1 overflow-auto p-4">

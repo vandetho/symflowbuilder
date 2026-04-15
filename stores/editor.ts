@@ -18,6 +18,7 @@ import type {
 import { DEFAULT_WORKFLOW_META } from "@/types/workflow";
 import { exportWorkflowYaml } from "@/lib/yaml-export";
 import { importWorkflowYaml } from "@/lib/yaml-import";
+import { uid, uniqueName } from "@/lib/utils";
 
 interface EditorStore {
     nodes: Node[];
@@ -77,12 +78,15 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
 
     onConnect: (connection) => {
         const { edges, snapshot } = get();
+        const existingLabels = edges
+            .map((e) => (e.data as unknown as TransitionEdgeData)?.label)
+            .filter(Boolean) as string[];
         const newEdge: Edge = {
             ...connection,
-            id: `edge-${Date.now()}`,
+            id: uid("edge"),
             type: "transition",
             data: {
-                label: "new_transition",
+                label: uniqueName("transition", existingLabels),
                 guard: undefined,
                 listeners: [],
                 metadata: {},
