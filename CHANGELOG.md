@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.0](https://github.com/vandetho/symflowbuilder/compare/v1.4.0...v1.5.0) (2026-04-16)
+
+
+### Features
+
+* upgrade Prisma to v7 and default Symfony version to 8.0 ([2c8913d](https://github.com/vandetho/symflowbuilder/commit/2c8913ddbd31154b4b72f0380cd97fcb7b5a220b))
+
+
+### Bug Fixes
+
+* deploy on release only, gate releases behind CI, switch to debian user ([54a3010](https://github.com/vandetho/symflowbuilder/commit/54a3010f5a7540e66238fe948b7d627f30318cfb))
+* set PM2_HOME to debian user home in deploy script ([51684be](https://github.com/vandetho/symflowbuilder/commit/51684be5412d54b7fff3ff64152f9cb4715ee62f))
+
 ## [1.4.0](https://github.com/vandetho/symflowbuilder/compare/v1.3.0...v1.4.0) (2026-04-16)
 
 
