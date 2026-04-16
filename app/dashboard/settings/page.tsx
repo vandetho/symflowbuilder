@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { User, Mail, Calendar, Workflow } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/icons";
 import { DeleteAccountButton } from "@/components/dashboard/delete-account-button";
+import { LinkAccountButton } from "@/components/dashboard/link-account-button";
 import { formatDistanceToNow } from "date-fns";
 
 export default async function SettingsPage() {
@@ -144,7 +145,7 @@ export default async function SettingsPage() {
                         {providers.includes("github") ? (
                             <Badge variant="success">Connected</Badge>
                         ) : (
-                            <Badge variant="outline">Not connected</Badge>
+                            <LinkAccountButton provider="github" />
                         )}
                     </div>
                     <div className="flex items-center justify-between p-3 rounded-[10px] bg-[var(--glass-base)] border border-[var(--glass-border)]">
@@ -174,7 +175,7 @@ export default async function SettingsPage() {
                         {providers.includes("google") ? (
                             <Badge variant="success">Connected</Badge>
                         ) : (
-                            <Badge variant="outline">Not connected</Badge>
+                            <LinkAccountButton provider="google" />
                         )}
                     </div>
                 </CardContent>
