@@ -46,6 +46,7 @@ jobs:
                       chown -R debian:debian /var/www/symflowbuilder/logs
 
                       echo "==> Restarting service..."
+                      export PM2_HOME=/home/debian/.pm2
                       pm2 restart symflowbuilder || pm2 start ecosystem.config.cjs
 
                       echo "==> Deploy complete!"
