@@ -8,6 +8,7 @@ import { DeleteWorkflowButton } from "./delete-workflow-button";
 import { ShareWorkflowButton } from "./share-workflow-button";
 import { WorkflowConfigBadge } from "./workflow-config-badge";
 import { ExportWorkflowButton } from "./export-workflow-button";
+import { CollaboratorsDialog } from "./collaborators-dialog";
 
 interface WorkflowActionsProps {
     workflowId: string;
@@ -56,6 +57,16 @@ export function WorkflowActions({
                     />
                 </TooltipTrigger>
                 <TooltipContent>Config</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+                <TooltipTrigger>
+                    <CollaboratorsDialog
+                        workflowId={workflowId}
+                        workflowName={workflowName}
+                    />
+                </TooltipTrigger>
+                <TooltipContent>Collaborators</TooltipContent>
             </Tooltip>
 
             <Tooltip>

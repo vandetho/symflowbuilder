@@ -15,6 +15,7 @@ import type {
     WorkflowMeta,
     Snapshot,
 } from "@/types/workflow";
+import type { AccessLevel } from "@/types/collaboration";
 import { DEFAULT_WORKFLOW_META } from "@/types/workflow";
 import { exportWorkflowYaml } from "@/lib/yaml-export";
 import { importWorkflowYaml } from "@/lib/yaml-import";
@@ -27,6 +28,8 @@ interface EditorStore {
     workflowMeta: WorkflowMeta;
     selectedNodeId: string | null;
     selectedEdgeId: string | null;
+    accessLevel: AccessLevel | null;
+    setAccessLevel: (level: AccessLevel | null) => void;
 
     // React Flow handlers
     onNodesChange: OnNodesChange;
@@ -67,6 +70,8 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
     workflowMeta: { ...DEFAULT_WORKFLOW_META },
     selectedNodeId: null,
     selectedEdgeId: null,
+    accessLevel: null,
+    setAccessLevel: (level) => set({ accessLevel: level }),
 
     onNodesChange: (changes) => {
         set({ nodes: applyNodeChanges(changes, get().nodes) });

@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { getWorkflowAccess, canView, canEdit, isOwner } from "@/lib/workflow-auth";
 import type { NextRequest } from "next/server";
 
 export async function GET(
@@ -10,17 +11,13 @@ export async function GET(
     const session = await auth();
 
     try {
-        const workflow = await prisma.workflow.findUnique({ where: { id } });
-        if (!workflow) {
+        const { access, workflow } = await getWorkflowAccess(id, session?.user?.id);
+
+        if (!canView(access) || !workflow) {
             return Response.json({ error: "Not found" }, { status: 404 });
         }
 
-        // Allow if owner or if public
-        if (workflow.userId !== session?.user?.id && !workflow.isPublic) {
-            return Response.json({ error: "Not found" }, { status: 404 });
-        }
-
-        return Response.json(workflow);
+        return Response.json({ ...workflow, accessLevel: access });
     } catch {
         return Response.json({ error: "Failed to fetch workflow" }, { status: 500 });
     }
@@ -37,8 +34,9 @@ export async function PUT(
     }
 
     try {
-        const existing = await prisma.workflow.findUnique({ where: { id } });
-        if (!existing || existing.userId !== session.user.id) {
+        const { access } = await getWorkflowAccess(id, session.user.id);
+
+        if (!canEdit(access)) {
             return Response.json({ error: "Not found" }, { status: 404 });
         }
 
@@ -55,7 +53,7 @@ export async function PUT(
             },
         });
 
-        return Response.json(workflow);
+        return Response.json({ ...workflow, accessLevel: access });
     } catch {
         return Response.json({ error: "Failed to update workflow" }, { status: 500 });
     }
@@ -72,8 +70,9 @@ export async function DELETE(
     }
 
     try {
-        const existing = await prisma.workflow.findUnique({ where: { id } });
-        if (!existing || existing.userId !== session.user.id) {
+        const { access } = await getWorkflowAccess(id, session.user.id);
+
+        if (!isOwner(access)) {
             return Response.json({ error: "Not found" }, { status: 404 });
         }
 

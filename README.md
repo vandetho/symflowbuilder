@@ -152,9 +152,11 @@ CI runs ESLint, Prettier, TypeScript checks, and a production build on every PR.
 
 This project is sponsored by:
 
-- [SupportDock](https://supportdock.io) -- feedback collection and FAQ management for your apps
-- [BasilBook](https://basilbook.com) -- recipe sharing and meal planning
-- [DailyBrew](https://dailybrew.work) -- staff attendance and leave tracking for restaurants
+|                                                                        | Sponsor                               | Description                                          |
+| ---------------------------------------------------------------------- | ------------------------------------- | ---------------------------------------------------- |
+| <img src="public/supportdock-logo.png" alt="SupportDock" width="24" /> | [SupportDock](https://supportdock.io) | Feedback collection and FAQ management for your apps |
+| <img src="public/basilbook-logo.png" alt="BasilBook" width="24" />     | [BasilBook](https://basilbook.com)    | Restaurant accounting and inventory control platform |
+| <img src="public/dailybrew-logo.svg" alt="DailyBrew" width="24" />     | [DailyBrew](https://dailybrew.work)   | Staff attendance and leave tracking for restaurants  |
 
 ## License
 

@@ -62,7 +62,7 @@ export const TransitionEdge = memo(
                     className="react-flow__edge-interaction"
                 />
 
-                {/* Visible edge path */}
+                {/* Visible edge path — animated dashes */}
                 <path
                     id={id}
                     className="react-flow__edge-path"
@@ -70,15 +70,16 @@ export const TransitionEdge = memo(
                     strokeWidth={selected ? 2 : 1.5}
                     stroke={selected ? "var(--accent-bright)" : "rgba(255,255,255,0.25)"}
                     fill="none"
-                    strokeDasharray={data?.guard ? "6 3" : undefined}
-                />
-
-                {/* Animated dot */}
-                <circle r="3" fill="var(--accent)" opacity="0.7">
-                    <animateMotion dur="2s" repeatCount="indefinite">
-                        <mpath href={`#${id}`} />
-                    </animateMotion>
-                </circle>
+                    strokeDasharray="6 4"
+                >
+                    <animate
+                        attributeName="stroke-dashoffset"
+                        from="0"
+                        to="-20"
+                        dur="1s"
+                        repeatCount="indefinite"
+                    />
+                </path>
 
                 {/* Label + guard badge */}
                 <EdgeLabelRenderer>

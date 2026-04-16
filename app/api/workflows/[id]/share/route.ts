@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { getWorkflowAccess, isOwner } from "@/lib/workflow-auth";
 import type { NextRequest } from "next/server";
 import { randomBytes } from "crypto";
 
@@ -14,8 +15,9 @@ export async function POST(
     }
 
     try {
-        const existing = await prisma.workflow.findUnique({ where: { id } });
-        if (!existing || existing.userId !== session.user.id) {
+        const { access } = await getWorkflowAccess(id, session.user.id);
+
+        if (!isOwner(access)) {
             return Response.json({ error: "Not found" }, { status: 404 });
         }
 
@@ -42,8 +44,9 @@ export async function DELETE(
     }
 
     try {
-        const existing = await prisma.workflow.findUnique({ where: { id } });
-        if (!existing || existing.userId !== session.user.id) {
+        const { access } = await getWorkflowAccess(id, session.user.id);
+
+        if (!isOwner(access)) {
             return Response.json({ error: "Not found" }, { status: 404 });
         }
 

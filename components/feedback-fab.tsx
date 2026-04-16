@@ -169,7 +169,13 @@ export function FeedbackFab() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed bottom-20 right-6 z-50 w-[340px] glass-strong rounded-[18px] shadow-[0_16px_64px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden max-h-[calc(100vh-120px)]"
+                        className="fixed bottom-20 right-6 z-50 w-[340px] rounded-[18px] shadow-[0_16px_64px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden max-h-[calc(100vh-120px)] border border-[var(--glass-border-strong)]"
+                        style={{
+                            background:
+                                "linear-gradient(135deg, rgba(20, 20, 42, 0.92), rgba(12, 12, 28, 0.95))",
+                            backdropFilter: "var(--blur-xl)",
+                            WebkitBackdropFilter: "var(--blur-xl)",
+                        }}
                     >
                         {/* Header */}
                         <div className="px-4 py-3 border-b border-[var(--glass-border)]">

@@ -13,11 +13,12 @@ export default function EditWorkflowPage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = use(params);
-    const { loadFromJson } = useEditorStore();
+    const { loadFromJson, setAccessLevel, accessLevel } = useEditorStore();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useAutosave({ workflowId: id, enabled: !loading && !error });
+    const canEdit = accessLevel === "owner" || accessLevel === "editor";
+    useAutosave({ workflowId: id, enabled: !loading && !error && canEdit });
 
     useEffect(() => {
         async function load() {
@@ -33,6 +34,7 @@ export default function EditWorkflowPage({
                     edges: Edge[];
                     meta: WorkflowMeta;
                 };
+                setAccessLevel(workflow.accessLevel ?? "owner");
                 loadFromJson({
                     nodes: graphJson.nodes ?? [],
                     edges: graphJson.edges ?? [],
@@ -53,7 +55,7 @@ export default function EditWorkflowPage({
             }
         }
         load();
-    }, [id, loadFromJson]);
+    }, [id, loadFromJson, setAccessLevel]);
 
     if (loading) {
         return (

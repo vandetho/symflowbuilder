@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { getWorkflowAccess, canView, canEdit } from "@/lib/workflow-auth";
 import type { NextRequest } from "next/server";
 
 export async function GET(
@@ -13,8 +14,9 @@ export async function GET(
     }
 
     try {
-        const workflow = await prisma.workflow.findUnique({ where: { id } });
-        if (!workflow || workflow.userId !== session.user.id) {
+        const { access } = await getWorkflowAccess(id, session.user.id);
+
+        if (!canView(access)) {
             return Response.json({ error: "Not found" }, { status: 404 });
         }
 
@@ -45,8 +47,9 @@ export async function POST(
     }
 
     try {
-        const workflow = await prisma.workflow.findUnique({ where: { id } });
-        if (!workflow || workflow.userId !== session.user.id) {
+        const { access, workflow } = await getWorkflowAccess(id, session.user.id);
+
+        if (!canEdit(access) || !workflow) {
             return Response.json({ error: "Not found" }, { status: 404 });
         }
 

@@ -86,6 +86,7 @@ const SYMFONY_VERSIONS = [
 ];
 
 import { auth } from "@/auth";
+import { version } from "@/package.json";
 
 export default async function LandingPage() {
     const session = await auth();
@@ -174,7 +175,7 @@ export default async function LandingPage() {
                             Open Source &middot; MIT
                         </Badge>
                         <Badge variant="outline" className="text-[10px]">
-                            v0.1.0
+                            v{version}
                         </Badge>
                     </div>
 

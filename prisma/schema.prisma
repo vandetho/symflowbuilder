@@ -15,9 +15,10 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  workflows Workflow[]
-  accounts  Account[]
-  sessions  Session[]
+  workflows      Workflow[]
+  accounts       Account[]
+  sessions       Session[]
+  collaborations WorkflowCollaborator[]
 }
 
 model Account {
@@ -70,8 +71,9 @@ model Workflow {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  user     User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  versions WorkflowVersion[]
+  user          User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  versions      WorkflowVersion[]
+  collaborators WorkflowCollaborator[]
 }
 
 model WorkflowVersion {
@@ -83,4 +85,19 @@ model WorkflowVersion {
   createdAt    DateTime @default(now())
 
   workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+}
+
+model WorkflowCollaborator {
+  id         String   @id @default(cuid())
+  workflowId String
+  userId     String
+  role       String   @default("viewer")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workflowId, userId])
+  @@index([userId])
 }
