@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/vandetho/symflowbuilder/compare/v1.2.0...v1.3.0) (2026-04-16)
+
+
+### Features
+
+* add public explore page for browsing shared workflows ([7b56dfa](https://github.com/vandetho/symflowbuilder/commit/7b56dfa1f85f2c85408491284b870f5a671f4128))
+
 ## [1.2.0](https://github.com/vandetho/symflowbuilder/compare/v1.1.0...v1.2.0) (2026-04-15)
 
 
