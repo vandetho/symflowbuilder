@@ -22,7 +22,7 @@ export function ExportWorkflowButton({ name, graphJson }: ExportWorkflowButtonPr
     const edges = (graphJson.edges as Edge[]) ?? [];
     const meta = (graphJson.meta as WorkflowMeta) ?? {
         name,
-        symfonyVersion: "6.4",
+        symfonyVersion: "8.0",
         type: "workflow",
         marking_store: "method",
         initial_marking: [],

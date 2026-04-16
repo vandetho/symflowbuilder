@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
                 userId: session.user.id,
                 name: body.name ?? "Untitled Workflow",
                 description: body.description,
-                symfonyVersion: body.symfonyVersion ?? "6.4",
+                symfonyVersion: body.symfonyVersion ?? "8.0",
                 type: body.type ?? "workflow",
                 graphJson: body.graphJson ?? { nodes: [], edges: [] },
                 yamlCache: body.yamlCache,

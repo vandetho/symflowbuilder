@@ -48,7 +48,7 @@ export const STATE_NAME_REGEX = /^[a-z][a-z0-9_]*$/;
 
 export const DEFAULT_WORKFLOW_META: WorkflowMeta = {
     name: "my_workflow",
-    symfonyVersion: "6.4",
+    symfonyVersion: "8.0",
     type: "workflow",
     marking_store: "method",
     initial_marking: [],

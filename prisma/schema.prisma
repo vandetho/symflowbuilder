@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -62,7 +61,7 @@ model Workflow {
   userId         String
   name           String
   description    String?
-  symfonyVersion String   @default("6.4")
+  symfonyVersion String   @default("8.0")
   type           String   @default("workflow")
   graphJson      Json
   yamlCache      String?
