@@ -139,6 +139,11 @@ Signing in (GitHub or Google) unlocks:
 
 Guest drafts are saved to `localStorage` and automatically migrated to the cloud on sign-in.
 
+## Documentation
+
+- [Entity Relationship Diagram](docs/erm.md) -- Database schema with all models and relationships
+- [Architecture](docs/architecture.md) -- System overview, editor data flow, auth model, and deployment pipeline
+
 ## Contributing
 
 1. Fork the repository
@@ -147,6 +152,32 @@ Guest drafts are saved to `localStorage` and automatically migrated to the cloud
 4. Push and open a Pull Request
 
 CI runs ESLint, Prettier, TypeScript checks, and a production build on every PR.
+
+## Roadmap
+
+- [x] Visual editor with drag-and-drop states and transitions
+- [x] YAML export for Symfony 5.4, 6.4, 7.4, and 8.0
+- [x] YAML import with auto-layout
+- [x] Guards, listeners, and metadata on nodes/edges
+- [x] Undo / redo (50-step history)
+- [x] GitHub + Google OAuth
+- [x] Cloud save with auto-sync
+- [x] Public sharing with read-only links
+- [x] Private sharing with collaborator roles (viewer/editor)
+- [x] Explore page for community workflows
+- [x] FAQ page
+- [x] Keyboard shortcuts via TanStack Hotkeys
+- [x] SEO with OG images, sitemap, and robots.txt
+- [ ] Version history UI with restore
+- [ ] Workflow templates (e-commerce, CMS, approval flows)
+- [ ] Real-time collaboration (multiplayer cursors)
+- [ ] Workflow validation (detect unreachable states, dead transitions)
+- [ ] Symfony bundle generator (download a full bundle scaffold)
+- [ ] Export to Mermaid / PlantUML diagram formats
+- [ ] Email invitations for collaborators
+- [ ] Team workspaces with shared workflow libraries
+- [ ] Workflow diff view (compare two versions side by side)
+- [ ] Dark/light theme toggle
 
 ## Sponsors
 
