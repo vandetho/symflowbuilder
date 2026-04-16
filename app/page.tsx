@@ -98,6 +98,12 @@ export default async function LandingPage() {
                     </Link>
 
                     <div className="hidden sm:flex items-center gap-6">
+                        <Link
+                            href="/explore"
+                            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                        >
+                            Explore
+                        </Link>
                         <a
                             href="#features"
                             className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
@@ -444,6 +450,12 @@ export default async function LandingPage() {
                                 className="hover:text-[var(--text-secondary)] transition-colors"
                             >
                                 Editor
+                            </Link>
+                            <Link
+                                href="/explore"
+                                className="hover:text-[var(--text-secondary)] transition-colors"
+                            >
+                                Explore
                             </Link>
                         </div>
 

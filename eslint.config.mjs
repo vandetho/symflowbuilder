@@ -3,6 +3,7 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import eslintConfigPrettier from "eslint-config-prettier";
 import unusedImports from "eslint-plugin-unused-imports";
+import react from "eslint-plugin-react";
 
 const eslintConfig = defineConfig([
     ...nextVitals,
@@ -12,6 +13,7 @@ const eslintConfig = defineConfig([
     {
         plugins: {
             "unused-imports": unusedImports,
+            react,
         },
         rules: {
             // Unused imports & vars
