@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://symflowbuilder.com";
 
@@ -31,17 +33,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
     ];
 
-    const publicWorkflows = await prisma.workflow.findMany({
-        where: { isPublic: true, shareId: { not: null } },
-        select: { shareId: true, updatedAt: true },
-    });
+    let workflowPages: MetadataRoute.Sitemap = [];
+    try {
+        const publicWorkflows = await prisma.workflow.findMany({
+            where: { isPublic: true, shareId: { not: null } },
+            select: { shareId: true, updatedAt: true },
+        });
 
-    const workflowPages: MetadataRoute.Sitemap = publicWorkflows.map((w) => ({
-        url: `${siteUrl}/w/${w.shareId}`,
-        lastModified: w.updatedAt,
-        changeFrequency: "weekly" as const,
-        priority: 0.6,
-    }));
+        workflowPages = publicWorkflows.map((w) => ({
+            url: `${siteUrl}/w/${w.shareId}`,
+            lastModified: w.updatedAt,
+            changeFrequency: "weekly" as const,
+            priority: 0.6,
+        }));
+    } catch {
+        // DB unavailable at build time (CI) — skip dynamic entries
+    }
 
     return [...staticPages, ...workflowPages];
 }
