@@ -154,7 +154,7 @@ This project is sponsored by:
 
 - [SupportDock](https://supportdock.io) -- feedback collection and FAQ management for your apps
 - [BasilBook](https://basilbook.com) -- recipe sharing and meal planning
-- [DailyBrew](https://dailybrew.com) -- your daily coffee companion
+- [DailyBrew](https://dailybrew.work) -- your daily coffee companion
 
 ## License
 

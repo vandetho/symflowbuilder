@@ -99,7 +99,7 @@ export default async function ExplorePage() {
             {/* ─── Grid ─── */}
             <section className="flex-1 px-6 pb-16">
                 <div className="max-w-5xl mx-auto">
-                    <ExploreGrid />
+                    <ExploreGrid isAuthenticated={!!session?.user} />
                 </div>
             </section>
 
@@ -163,7 +163,7 @@ export default async function ExplorePage() {
                                 BasilBook
                             </a>
                             <a
-                                href="https://dailybrew.com"
+                                href="https://dailybrew.work"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-1.5 font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"

@@ -493,7 +493,7 @@ export default async function LandingPage() {
                                 BasilBook
                             </a>
                             <a
-                                href="https://dailybrew.com"
+                                href="https://dailybrew.work"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-1.5 font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"

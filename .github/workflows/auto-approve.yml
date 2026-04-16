@@ -8,7 +8,9 @@ jobs:
     auto-approve:
         name: Auto Approve Owner PRs
         runs-on: ubuntu-latest
-        if: github.event.pull_request.user.login == 'vandetho'
+        if: >
+            github.event.pull_request.user.login == 'vandetho' ||
+            github.event.pull_request.user.login == 'github-actions[bot]'
         steps:
             - name: Generate GitHub App Token
               id: app-token
@@ -21,3 +23,9 @@ jobs:
               uses: hmarr/auto-approve-action@v4
               with:
                   github-token: ${{ steps.app-token.outputs.token }}
+
+            - name: Auto-merge release PRs
+              if: github.event.pull_request.user.login == 'github-actions[bot]'
+              run: gh pr merge --squash --auto "${{ github.event.pull_request.number }}"
+              env:
+                  GH_TOKEN: ${{ steps.app-token.outputs.token }}

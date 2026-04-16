@@ -50,7 +50,7 @@ interface ExploreResponse {
     totalPages: number;
 }
 
-export function ExploreGrid() {
+export function ExploreGrid({ isAuthenticated }: { isAuthenticated: boolean }) {
     const [search, setSearch] = useState("");
     const [type, setType] = useState("");
     const [version, setVersion] = useState("");
@@ -181,12 +181,20 @@ export function ExploreGrid() {
                                     : "Be the first to share a workflow with the community"}
                             </p>
                         </div>
-                        <Link href="/editor">
-                            <Button size="sm" className="gap-2">
-                                <Workflow className="w-3.5 h-3.5" />
-                                Create a Workflow
-                            </Button>
-                        </Link>
+                        {isAuthenticated ? (
+                            <Link href="/editor">
+                                <Button size="sm" className="gap-2">
+                                    <Workflow className="w-3.5 h-3.5" />
+                                    Create a Workflow
+                                </Button>
+                            </Link>
+                        ) : (
+                            <Link href="/auth/signin">
+                                <Button size="sm" variant="outline">
+                                    Sign in to share workflows
+                                </Button>
+                            </Link>
+                        )}
                     </CardContent>
                 </Card>
             )}
