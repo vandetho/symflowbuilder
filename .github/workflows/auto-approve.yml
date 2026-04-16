@@ -1,0 +1,23 @@
+name: Auto Approve
+
+on:
+    pull_request:
+        types: [opened, synchronize, reopened]
+
+jobs:
+    auto-approve:
+        name: Auto Approve Owner PRs
+        runs-on: ubuntu-latest
+        if: github.event.pull_request.user.login == 'vandetho'
+        steps:
+            - name: Generate GitHub App Token
+              id: app-token
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ secrets.BOT_APP_ID }}
+                  private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+
+            - name: Approve PR
+              uses: hmarr/auto-approve-action@v4
+              with:
+                  github-token: ${{ steps.app-token.outputs.token }}

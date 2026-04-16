@@ -330,14 +330,17 @@ export function FeedbackFab() {
                         </div>
 
                         {/* Footer */}
-                        <div className="px-4 py-2 border-t border-[var(--glass-border)] flex justify-center">
+                        <div className="px-4 py-2 border-t border-[var(--glass-border)] flex justify-center gap-1.5">
+                            <span className="text-[9px] text-[var(--text-disabled)]">
+                                Powered by
+                            </span>
                             <a
                                 href="https://supportdock.io"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-[9px] text-[var(--text-disabled)] hover:text-[var(--text-muted)] transition-colors"
                             >
-                                Powered by SupportDock
+                                SupportDock
                             </a>
                         </div>
                     </motion.div>

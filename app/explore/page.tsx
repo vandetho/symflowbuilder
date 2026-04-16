@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Compass } from "lucide-react";
 import { LogoWithText } from "@/components/ui/logo";
@@ -129,15 +130,52 @@ export default async function ExplorePage() {
                                 Explore
                             </Link>
                         </div>
-                        <div className="flex items-center gap-1.5 text-[10px] text-[var(--text-muted)]">
+                        <div className="flex items-center gap-3 text-[10px] text-[var(--text-muted)]">
                             <span>Sponsored by</span>
                             <a
                                 href="https://supportdock.io"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                                className="flex items-center gap-1.5 font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                             >
+                                <Image
+                                    src="/supportdock-logo.png"
+                                    alt="SupportDock"
+                                    width={14}
+                                    height={14}
+                                    className="rounded-sm"
+                                />
                                 SupportDock
+                            </a>
+                            <a
+                                href="https://basilbook.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1.5 font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                            >
+                                <Image
+                                    src="/basilbook-logo.png"
+                                    alt="BasilBook"
+                                    width={14}
+                                    height={14}
+                                    className="rounded-sm"
+                                />
+                                BasilBook
+                            </a>
+                            <a
+                                href="https://dailybrew.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1.5 font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                            >
+                                <Image
+                                    src="/dailybrew-logo.svg"
+                                    alt="DailyBrew"
+                                    width={14}
+                                    height={14}
+                                    className="rounded-sm"
+                                />
+                                DailyBrew
                             </a>
                         </div>
                     </div>
