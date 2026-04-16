@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/vandetho/symflowbuilder/compare/v1.6.0...v1.6.1) (2026-04-16)
+
+
+### Bug Fixes
+
+* prevent duplicate CI/Release runs and update auto-approve workflow ([6a769e2](https://github.com/vandetho/symflowbuilder/commit/6a769e210ec35a6e5defcc8c4ea8d83fa210cfa2))
+
 ## [1.6.0](https://github.com/vandetho/symflowbuilder/compare/v1.5.0...v1.6.0) (2026-04-16)
 
 
