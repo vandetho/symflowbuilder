@@ -1,24 +1,17 @@
 name: Deploy
 
 on:
-    push:
-        branches: [main]
-        tags-ignore:
-            - "v*"
+    release:
+        types: [published]
 
 concurrency:
     group: deploy-production
     cancel-in-progress: false
 
 jobs:
-    ci:
-        name: CI
-        uses: ./.github/workflows/ci.yml
-
     deploy:
         name: Deploy to Production
         runs-on: ubuntu-latest
-        needs: [ci]
         environment: production
         steps:
             - name: Deploy via SSH
@@ -37,7 +30,7 @@ jobs:
                       git reset --hard origin/main
 
                       echo "==> Installing dependencies..."
-                      npm ci --production=false
+                      npm ci
 
                       echo "==> Generating Prisma client..."
                       npx prisma generate
@@ -48,7 +41,11 @@ jobs:
                       echo "==> Building..."
                       npm run build
 
+                      echo "==> Ensuring logs directory..."
+                      mkdir -p /var/www/symflowbuilder/logs
+                      chown -R debian:debian /var/www/symflowbuilder/logs
+
                       echo "==> Restarting service..."
-                      sudo -u www-data pm2 restart symflowbuilder || sudo -u www-data pm2 start ecosystem.config.cjs
+                      pm2 restart symflowbuilder || pm2 start ecosystem.config.cjs
 
                       echo "==> Deploy complete!"

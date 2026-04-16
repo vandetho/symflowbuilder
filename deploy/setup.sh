@@ -22,7 +22,7 @@ sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;
 
 echo "==> Creating app directory..."
 mkdir -p "$APP_DIR"
-chown www-data:www-data "$APP_DIR"
+chown debian:debian "$APP_DIR"
 
 echo "==> Installing Node.js 20 (if not installed)..."
 if ! command -v node &> /dev/null; then
@@ -32,7 +32,7 @@ fi
 
 echo "==> Cloning repository..."
 if [ ! -d "$APP_DIR/.git" ]; then
-    sudo -u www-data git clone https://github.com/vandetho/symflowbuilder.git "$APP_DIR"
+    sudo -u debian git clone https://github.com/vandetho/symflowbuilder.git "$APP_DIR"
 fi
 
 echo "==> Creating .env.production..."
@@ -57,33 +57,33 @@ NEXT_PUBLIC_APP_URL=https://symflowbuilder.com
 AUTH_URL=https://symflowbuilder.com
 AUTH_TRUST_HOST=true
 ENVEOF
-    chown www-data:www-data "$APP_DIR/.env.production"
+    chown debian:debian "$APP_DIR/.env.production"
     chmod 600 "$APP_DIR/.env.production"
     echo ">>> IMPORTANT: Edit $APP_DIR/.env.production with your actual secrets!"
 fi
 
 echo "==> Fixing ownership and cleaning stale node_modules..."
 rm -rf "$APP_DIR/node_modules"
-mkdir -p /var/www/.npm /var/www/.pm2
-chown -R www-data:www-data "$APP_DIR" /var/www/.npm /var/www/.pm2
+mkdir -p /home/debian/.npm /home/debian/.pm2
+chown -R debian:debian "$APP_DIR" /home/debian/.npm /home/debian/.pm2
 
 echo "==> Installing dependencies and building..."
 cd "$APP_DIR"
-sudo -u www-data npm ci --production=false
-sudo -u www-data npx prisma generate
-sudo -u www-data npx prisma migrate deploy
-sudo -u www-data npm run build
+sudo -u debian npm ci
+sudo -u debian npx prisma generate
+sudo -u debian npx prisma migrate deploy
+sudo -u debian npm run build
 
 echo "==> Installing PM2..."
 if ! command -v pm2 &> /dev/null; then
     npm install -g pm2
 fi
 echo "==> Creating logs directory..."
-sudo -u www-data mkdir -p "$APP_DIR/logs"
+sudo -u debian mkdir -p "$APP_DIR/logs"
 echo "==> Starting app with PM2..."
-sudo -u www-data pm2 start "$APP_DIR/ecosystem.config.cjs"
-sudo -u www-data pm2 save
-env PATH=$PATH:/usr/bin pm2 startup systemd -u www-data --hp /var/www
+sudo -u debian pm2 start "$APP_DIR/ecosystem.config.cjs"
+sudo -u debian pm2 save
+env PATH=$PATH:/usr/bin pm2 startup systemd -u debian --hp /home/debian
 
 echo "==> Setting up Nginx..."
 cp "$APP_DIR/deploy/nginx.conf" /etc/nginx/sites-available/symflowbuilder.com.conf
@@ -100,4 +100,4 @@ echo ""
 echo "==> Setup complete!"
 echo "    1. Edit /var/www/symflowbuilder/.env.production with your secrets"
 echo "    2. Run: certbot --nginx -d symflowbuilder.com -d www.symflowbuilder.com"
-echo "    3. Run: sudo -u www-data pm2 restart symflowbuilder"
+echo "    3. Run: sudo -u debian pm2 restart symflowbuilder"

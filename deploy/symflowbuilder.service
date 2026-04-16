@@ -4,8 +4,8 @@ After=network.target postgresql.service
 
 [Service]
 Type=simple
-User=www-data
-Group=www-data
+User=debian
+Group=debian
 WorkingDirectory=/var/www/symflowbuilder
 ExecStart=/usr/bin/node /var/www/symflowbuilder/node_modules/.bin/next start -p 3003
 Restart=on-failure
