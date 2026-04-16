@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.2](https://github.com/vandetho/symflowbuilder/compare/v1.6.1...v1.6.2) (2026-04-16)
+
+
+### Bug Fixes
+
+* make prisma.config.ts work in CI without DATABASE_URL ([068e8d2](https://github.com/vandetho/symflowbuilder/commit/068e8d2e6a3e76497203cdd3aa7118c267a23de9))
+* restore Prisma 7 and adapter-pg in package.json ([c0e4951](https://github.com/vandetho/symflowbuilder/commit/c0e49510f48c532771c2a3af0278aef805cf3cf3))
+
 ## [1.6.1](https://github.com/vandetho/symflowbuilder/compare/v1.6.0...v1.6.1) (2026-04-16)
 
 
