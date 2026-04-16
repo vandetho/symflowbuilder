@@ -18,7 +18,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectItem } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+} from "@/components/ui/card";
 import { Logo } from "@/components/ui/logo";
 
 interface ExploreWorkflow {
@@ -77,10 +83,12 @@ export function ExploreGrid() {
     }, [fetchWorkflows]);
 
     // Reset to page 1 when filters change
-    const updateFilter = <T,>(setter: (v: T) => void) => (v: T) => {
-        setter(v);
-        setPage(1);
-    };
+    const updateFilter =
+        <T,>(setter: (v: T) => void) =>
+        (v: T) => {
+            setter(v);
+            setPage(1);
+        };
 
     // Debounced search
     const [searchInput, setSearchInput] = useState("");
@@ -193,10 +201,7 @@ export function ExploreGrid() {
                             )?.length ?? 0;
 
                         return (
-                            <Link
-                                key={workflow.id}
-                                href={`/w/${workflow.shareId}`}
-                            >
+                            <Link key={workflow.id} href={`/w/${workflow.shareId}`}>
                                 <Card className="h-full group hover:border-[var(--glass-border-hover)] hover:shadow-[0_0_20px_var(--accent-glow)] transition-all cursor-pointer">
                                     <CardHeader>
                                         <div className="flex items-start justify-between gap-2">
@@ -210,10 +215,7 @@ export function ExploreGrid() {
                                                     </CardDescription>
                                                 )}
                                             </div>
-                                            <Badge
-                                                variant="outline"
-                                                className="shrink-0"
-                                            >
+                                            <Badge variant="outline" className="shrink-0">
                                                 {workflow.type}
                                             </Badge>
                                         </div>
@@ -224,8 +226,7 @@ export function ExploreGrid() {
                                                 variant="default"
                                                 className="text-[9px]"
                                             >
-                                                Symfony{" "}
-                                                {workflow.symfonyVersion}
+                                                Symfony {workflow.symfonyVersion}
                                             </Badge>
                                             <Badge
                                                 variant="outline"
@@ -250,16 +251,13 @@ export function ExploreGrid() {
                                                     <div className="w-4 h-4 rounded-full bg-[var(--glass-overlay)]" />
                                                 )}
                                                 <span className="text-[10px] text-[var(--text-muted)] truncate max-w-[100px]">
-                                                    {workflow.user.name ??
-                                                        "Anonymous"}
+                                                    {workflow.user.name ?? "Anonymous"}
                                                 </span>
                                             </div>
                                             <div className="flex items-center gap-1.5 text-[10px] text-[var(--text-muted)]">
                                                 <Clock className="w-3 h-3" />
                                                 {formatDistanceToNow(
-                                                    new Date(
-                                                        workflow.updatedAt
-                                                    ),
+                                                    new Date(workflow.updatedAt),
                                                     { addSuffix: true }
                                                 )}
                                             </div>

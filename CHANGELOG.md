@@ -2,34 +2,30 @@
 
 ## [1.2.0](https://github.com/vandetho/symflowbuilder/compare/v1.1.0...v1.2.0) (2026-04-15)
 
-
 ### Features
 
-* add PM2 config and switch deployment from systemd to PM2 ([e98e25f](https://github.com/vandetho/symflowbuilder/commit/e98e25f7366bd8492a8bc5e2a5ff2b9b131865ce))
-
+- add PM2 config and switch deployment from systemd to PM2 ([e98e25f](https://github.com/vandetho/symflowbuilder/commit/e98e25f7366bd8492a8bc5e2a5ff2b9b131865ce))
 
 ### Bug Fixes
 
-* add AUTH_TRUST_HOST=true for self-hosted Auth.js ([047e2b8](https://github.com/vandetho/symflowbuilder/commit/047e2b8da33d570c8da1f208ad7e91ce383e8953))
-* add AUTH_URL to .env.production template for Auth.js in production ([5fa89fb](https://github.com/vandetho/symflowbuilder/commit/5fa89fbbaac4deec1b2b0cb774db718276d9d156))
-* clean node_modules and fix ownership in setup script, update nginx for HTTP/3 ([0ec508b](https://github.com/vandetho/symflowbuilder/commit/0ec508be21d00ffad64545ac6ffd139839323450))
-* create .pm2 directory with correct ownership in setup script ([3374e07](https://github.com/vandetho/symflowbuilder/commit/3374e074a374d53dba2b5050100dd3ad0392fe5d))
-* migrate middleware to proxy, prompt for DB password, and show dashboard when signed in ([b5fdff3](https://github.com/vandetho/symflowbuilder/commit/b5fdff3bd15d0aa54d76ed23c0b08e0620e4edab))
-* use fork mode in PM2 config — cluster mode breaks Next.js ([e781388](https://github.com/vandetho/symflowbuilder/commit/e781388faef87af74823d1ed97c170de978121fd))
+- add AUTH_TRUST_HOST=true for self-hosted Auth.js ([047e2b8](https://github.com/vandetho/symflowbuilder/commit/047e2b8da33d570c8da1f208ad7e91ce383e8953))
+- add AUTH_URL to .env.production template for Auth.js in production ([5fa89fb](https://github.com/vandetho/symflowbuilder/commit/5fa89fbbaac4deec1b2b0cb774db718276d9d156))
+- clean node_modules and fix ownership in setup script, update nginx for HTTP/3 ([0ec508b](https://github.com/vandetho/symflowbuilder/commit/0ec508be21d00ffad64545ac6ffd139839323450))
+- create .pm2 directory with correct ownership in setup script ([3374e07](https://github.com/vandetho/symflowbuilder/commit/3374e074a374d53dba2b5050100dd3ad0392fe5d))
+- migrate middleware to proxy, prompt for DB password, and show dashboard when signed in ([b5fdff3](https://github.com/vandetho/symflowbuilder/commit/b5fdff3bd15d0aa54d76ed23c0b08e0620e4edab))
+- use fork mode in PM2 config — cluster mode breaks Next.js ([e781388](https://github.com/vandetho/symflowbuilder/commit/e781388faef87af74823d1ed97c170de978121fd))
 
 ## [1.1.0](https://github.com/vandetho/symflowbuilder/compare/v1.0.0...v1.1.0) (2026-04-15)
 
-
 ### Features
 
-* dashboard overhaul, save/share workflow, settings, and editor fixes ([d47fdd9](https://github.com/vandetho/symflowbuilder/commit/d47fdd9a4fb0c8a8ae7ed82bfef6b38b810c5323))
-* major editor UX overhaul — context menu, auto-layout, custom selects, unique names ([97fe32d](https://github.com/vandetho/symflowbuilder/commit/97fe32d93d32a729b4e3343e6747e6d2e4c704e4))
-
+- dashboard overhaul, save/share workflow, settings, and editor fixes ([d47fdd9](https://github.com/vandetho/symflowbuilder/commit/d47fdd9a4fb0c8a8ae7ed82bfef6b38b810c5323))
+- major editor UX overhaul — context menu, auto-layout, custom selects, unique names ([97fe32d](https://github.com/vandetho/symflowbuilder/commit/97fe32d93d32a729b4e3343e6747e6d2e4c704e4))
 
 ### Bug Fixes
 
-* add back-to-home link on sign-in page ([02b7aea](https://github.com/vandetho/symflowbuilder/commit/02b7aea5b469da29c904c4ff61455cdac6797f5e))
-* hide minimap when properties panel is open ([dfaf69c](https://github.com/vandetho/symflowbuilder/commit/dfaf69c06ecb6f025df24536206ec923d35162a9))
+- add back-to-home link on sign-in page ([02b7aea](https://github.com/vandetho/symflowbuilder/commit/02b7aea5b469da29c904c4ff61455cdac6797f5e))
+- hide minimap when properties panel is open ([dfaf69c](https://github.com/vandetho/symflowbuilder/commit/dfaf69c06ecb6f025df24536206ec923d35162a9))
 
 ## 1.0.0 (2026-04-14)
 

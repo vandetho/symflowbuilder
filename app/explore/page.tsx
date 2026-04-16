@@ -86,8 +86,7 @@ export default async function ExplorePage() {
                         Community
                     </Badge>
                     <h1 className="text-3xl sm:text-4xl font-light text-[var(--text-primary)] tracking-tight">
-                        Explore Public{" "}
-                        <span className="font-medium">Workflows</span>
+                        Explore Public <span className="font-medium">Workflows</span>
                     </h1>
                     <p className="text-sm text-[var(--text-secondary)] max-w-md">
                         Browse Symfony workflow configurations shared by the community.

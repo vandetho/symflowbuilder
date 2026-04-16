@@ -68,9 +68,6 @@ export async function GET(request: NextRequest) {
             totalPages: Math.ceil(total / limit),
         });
     } catch {
-        return Response.json(
-            { error: "Failed to fetch workflows" },
-            { status: 500 }
-        );
+        return Response.json({ error: "Failed to fetch workflows" }, { status: 500 });
     }
 }
