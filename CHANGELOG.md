@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/vandetho/symflowbuilder/compare/v1.3.0...v1.4.0) (2026-04-16)
+
+
+### Features
+
+* add sponsor logos, auto-approve workflow, and align deploy secrets ([32cca22](https://github.com/vandetho/symflowbuilder/commit/32cca22b1dde82f0fa9db73cb7cd768838623310))
+
 ## [1.3.0](https://github.com/vandetho/symflowbuilder/compare/v1.2.0...v1.3.0) (2026-04-16)
 
 
