@@ -4,13 +4,14 @@ import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+const useSecureCookies = process.env.NODE_ENV === "production";
+
+export const { handlers, auth, signOut } = NextAuth({
     adapter: PrismaAdapter(prisma),
     providers: [
         GitHub({
             clientId: process.env.AUTH_GITHUB_ID,
             clientSecret: process.env.AUTH_GITHUB_SECRET,
-            checks: ["state"],
         }),
         Google({
             clientId: process.env.AUTH_GOOGLE_ID,
@@ -20,6 +21,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     pages: {
         signIn: "/auth/signin",
         error: "/auth/error",
+    },
+    cookies: {
+        pkceCodeVerifier: {
+            name: useSecureCookies
+                ? "__Secure-authjs.pkce.code_verifier"
+                : "authjs.pkce.code_verifier",
+            options: {
+                httpOnly: useSecureCookies,
+                sameSite: "lax",
+                path: "/",
+                domain: useSecureCookies ? ".symflowbuilder.com" : undefined,
+                secure: useSecureCookies,
+            },
+        },
     },
     callbacks: {
         session({ session, user }) {
