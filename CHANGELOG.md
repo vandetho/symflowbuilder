@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.7.0](https://github.com/vandetho/symflowbuilder/compare/v1.6.2...v1.7.0) (2026-04-16)
+
+
+### Features
+
+* TanStack Hotkeys, SEO improvements, and fix auto-approve for release-please ([5238160](https://github.com/vandetho/symflowbuilder/commit/52381605c44cbd49e45127be64aae5c0b158bd1f))
+
+
+### Bug Fixes
+
+* make sitemap dynamic and handle missing DB in CI ([f1eb13b](https://github.com/vandetho/symflowbuilder/commit/f1eb13bd538e38cf1f77414ffecb4212d1db216b))
+* set PKCE cookie domain to .symflowbuilder.com for cross-browser support ([2c6176c](https://github.com/vandetho/symflowbuilder/commit/2c6176c6dd015d38a4317aa4991804d1bf86b453))
+
 ## [1.6.2](https://github.com/vandetho/symflowbuilder/compare/v1.6.1...v1.6.2) (2026-04-16)
 
 
