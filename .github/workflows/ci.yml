@@ -1,13 +1,14 @@
 name: CI
 
 on:
-    pull_request:
-        branches: [main]
     push:
         branches: [main]
-        paths-ignore:
-            - "CHANGELOG.md"
-    workflow_call:
+    pull_request:
+        branches: [main]
+
+permissions:
+    contents: write
+    pull-requests: write
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
@@ -74,3 +75,42 @@ jobs:
 
             - name: Build
               run: npm run build
+
+    release-please:
+        name: Release Please
+        needs: [build]
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Generate GitHub App Token
+              id: app-token
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ vars.BOT_APP_ID }}
+                  private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+
+            - name: Run release-please
+              id: release
+              uses: googleapis/release-please-action@v4
+              with:
+                  release-type: node
+                  token: ${{ steps.app-token.outputs.token }}
+                  changelog-types: >
+                      [
+                        {"type":"feat","section":"Features","hidden":false},
+                        {"type":"fix","section":"Bug Fixes","hidden":false},
+                        {"type":"perf","section":"Performance","hidden":false},
+                        {"type":"refactor","section":"Refactoring","hidden":false},
+                        {"type":"docs","section":"Documentation","hidden":false},
+                        {"type":"chore","section":"Miscellaneous","hidden":true},
+                        {"type":"style","section":"Styles","hidden":true},
+                        {"type":"test","section":"Tests","hidden":true},
+                        {"type":"ci","section":"CI/CD","hidden":true}
+                      ]
+
+            - name: Auto-merge release PR
+              if: steps.release.outputs.pr
+              run: echo "$RELEASE_PR" | jq -r '.number' | xargs gh pr merge --auto --squash -R "$GITHUB_REPOSITORY"
+              env:
+                  GH_TOKEN: ${{ steps.app-token.outputs.token }}
+                  RELEASE_PR: ${{ steps.release.outputs.pr }}

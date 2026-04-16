@@ -25,9 +25,11 @@ jobs:
                       set -e
                       cd /var/www/symflowbuilder
 
-                      echo "==> Pulling latest code..."
-                      git fetch origin main
-                      git reset --hard origin/main
+                      echo "==> Fetching tags..."
+                      git fetch --tags origin
+
+                      echo "==> Checking out ${{ github.event.release.tag_name }}..."
+                      git checkout ${{ github.event.release.tag_name }}
 
                       echo "==> Installing dependencies..."
                       npm ci
@@ -49,4 +51,4 @@ jobs:
                       export PM2_HOME=/home/debian/.pm2
                       pm2 restart symflowbuilder || pm2 start ecosystem.config.cjs
 
-                      echo "==> Deploy complete!"
+                      echo "==> Deploy complete! (${{ github.event.release.tag_name }})"
