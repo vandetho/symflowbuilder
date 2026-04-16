@@ -5,6 +5,10 @@ on:
         branches: [main]
     push:
         branches: [main]
+        paths-ignore:
+            - "CHANGELOG.md"
+            - "package.json"
+            - "package-lock.json"
     workflow_call:
 
 concurrency:

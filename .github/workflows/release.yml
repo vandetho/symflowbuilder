@@ -3,6 +3,10 @@ name: Release
 on:
     push:
         branches: [main]
+        paths-ignore:
+            - "CHANGELOG.md"
+            - "package.json"
+            - "package-lock.json"
 
 permissions:
     contents: write
