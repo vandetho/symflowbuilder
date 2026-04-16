@@ -14,7 +14,8 @@ jobs:
         runs-on: ubuntu-latest
         if: >
             github.event.pull_request.user.login == 'vandetho' ||
-            github.event.pull_request.user.login == 'github-actions[bot]'
+            github.event.pull_request.user.login == 'github-actions[bot]' ||
+            github.event.pull_request.user.login == 'release-please[bot]'
         steps:
             - name: Generate GitHub App Token
               id: app-token
@@ -29,7 +30,9 @@ jobs:
                   github-token: ${{ steps.app-token.outputs.token }}
 
             - name: Enable auto-merge for release PRs
-              if: github.event.pull_request.user.login == 'github-actions[bot]'
+              if: >
+                  github.event.pull_request.user.login == 'github-actions[bot]' ||
+                  github.event.pull_request.user.login == 'release-please[bot]'
               run: gh pr merge --squash --auto "${{ github.event.pull_request.number }}"
               env:
                   GH_TOKEN: ${{ github.token }}
