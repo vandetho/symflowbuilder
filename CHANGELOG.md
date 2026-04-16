@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/vandetho/symflowbuilder/compare/v1.5.0...v1.6.0) (2026-04-16)
+
+
+### Features
+
+* private sharing, FAQ page, UI polish, and auth fix ([8c2bc40](https://github.com/vandetho/symflowbuilder/commit/8c2bc401c650110826b17dee79ae7bd035dee9ba))
+
 ## [1.5.0](https://github.com/vandetho/symflowbuilder/compare/v1.4.0...v1.5.0) (2026-04-16)
 
 
