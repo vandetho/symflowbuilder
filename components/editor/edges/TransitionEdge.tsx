@@ -62,30 +62,7 @@ export const TransitionEdge = memo(
                     className="react-flow__edge-interaction"
                 />
 
-                {/* Visible edge path — animated dashes */}
-                <path
-                    id={id}
-                    className="react-flow__edge-path"
-                    d={edgePath}
-                    strokeWidth={selected ? 2 : 1.5}
-                    stroke={
-                        selected
-                            ? "var(--accent-bright)"
-                            : data?.metadata?.arrow_color || "rgba(255,255,255,0.25)"
-                    }
-                    fill="none"
-                    strokeDasharray="6 4"
-                >
-                    <animate
-                        attributeName="stroke-dashoffset"
-                        from="0"
-                        to="-20"
-                        dur="1s"
-                        repeatCount="indefinite"
-                    />
-                </path>
-
-                {/* Arrow marker at target end */}
+                {/* Arrow marker definition */}
                 <defs>
                     <marker
                         id={`arrow-${id}`}
@@ -106,12 +83,29 @@ export const TransitionEdge = memo(
                         />
                     </marker>
                 </defs>
+
+                {/* Visible edge path — animated dashes */}
                 <path
+                    id={id}
                     d={edgePath}
-                    strokeWidth={0}
                     fill="none"
+                    style={{
+                        stroke: selected
+                            ? "var(--accent-bright)"
+                            : data?.metadata?.arrow_color || "rgba(255,255,255,0.25)",
+                        strokeWidth: selected ? 2 : 1.5,
+                        strokeDasharray: "6 4",
+                    }}
                     markerEnd={`url(#arrow-${id})`}
-                />
+                >
+                    <animate
+                        attributeName="stroke-dashoffset"
+                        from="0"
+                        to="-20"
+                        dur="1s"
+                        repeatCount="indefinite"
+                    />
+                </path>
 
                 {/* Label + guard badge */}
                 <EdgeLabelRenderer>

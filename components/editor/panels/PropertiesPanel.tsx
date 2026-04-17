@@ -119,47 +119,27 @@ export function PropertiesPanel() {
                         </span>
                         <div className="flex flex-col gap-1.5">
                             <Label className="text-[10px]">Background Color</Label>
-                            <div className="flex items-center gap-1.5">
-                                <input
-                                    type="color"
-                                    value={
-                                        data.metadata?.bg_color?.startsWith("#")
-                                            ? data.metadata.bg_color
-                                            : "#6366f1"
-                                    }
-                                    onChange={(e) =>
+                            <Input
+                                value={data.metadata?.bg_color ?? ""}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (val) {
                                         updateNodeData(selectedNode.id, {
                                             metadata: {
                                                 ...data.metadata,
-                                                bg_color: e.target.value,
+                                                bg_color: val,
                                             },
-                                        })
+                                        });
+                                    } else {
+                                        const { bg_color: _, ...rest } = data.metadata;
+                                        updateNodeData(selectedNode.id, {
+                                            metadata: rest,
+                                        });
                                     }
-                                    className="w-7 h-7 rounded cursor-pointer bg-transparent border border-[var(--glass-border)]"
-                                />
-                                <Input
-                                    value={data.metadata?.bg_color ?? ""}
-                                    onChange={(e) => {
-                                        const val = e.target.value;
-                                        if (val) {
-                                            updateNodeData(selectedNode.id, {
-                                                metadata: {
-                                                    ...data.metadata,
-                                                    bg_color: val,
-                                                },
-                                            });
-                                        } else {
-                                            const { bg_color: _, ...rest } =
-                                                data.metadata;
-                                            updateNodeData(selectedNode.id, {
-                                                metadata: rest,
-                                            });
-                                        }
-                                    }}
-                                    placeholder="#AABBCC or DeepSkyBlue"
-                                    className="flex-1 h-7 text-xs font-mono"
-                                />
-                            </div>
+                                }}
+                                placeholder="#AABBCC or DeepSkyBlue"
+                                className="h-7 text-xs font-mono"
+                            />
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <Label className="text-[10px]">Description</Label>
@@ -324,90 +304,51 @@ export function PropertiesPanel() {
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <Label className="text-[10px]">Color</Label>
-                            <div className="flex items-center gap-1.5">
-                                <input
-                                    type="color"
-                                    value={
-                                        data.metadata?.color?.startsWith("#")
-                                            ? data.metadata.color
-                                            : "#7c6ff7"
-                                    }
-                                    onChange={(e) =>
+                            <Input
+                                value={data.metadata?.color ?? ""}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (val) {
                                         updateEdgeData(selectedEdge.id, {
                                             metadata: {
                                                 ...data.metadata,
-                                                color: e.target.value,
+                                                color: val,
                                             },
-                                        })
+                                        });
+                                    } else {
+                                        const { color: _, ...rest } = data.metadata;
+                                        updateEdgeData(selectedEdge.id, {
+                                            metadata: rest,
+                                        });
                                     }
-                                    className="w-7 h-7 rounded cursor-pointer bg-transparent border border-[var(--glass-border)]"
-                                />
-                                <Input
-                                    value={data.metadata?.color ?? ""}
-                                    onChange={(e) => {
-                                        const val = e.target.value;
-                                        if (val) {
-                                            updateEdgeData(selectedEdge.id, {
-                                                metadata: {
-                                                    ...data.metadata,
-                                                    color: val,
-                                                },
-                                            });
-                                        } else {
-                                            const { color: _, ...rest } = data.metadata;
-                                            updateEdgeData(selectedEdge.id, {
-                                                metadata: rest,
-                                            });
-                                        }
-                                    }}
-                                    placeholder="#AABBCC or Orange"
-                                    className="flex-1 h-7 text-xs font-mono"
-                                />
-                            </div>
+                                }}
+                                placeholder="#AABBCC or Orange"
+                                className="h-7 text-xs font-mono"
+                            />
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <Label className="text-[10px]">Arrow Color</Label>
-                            <div className="flex items-center gap-1.5">
-                                <input
-                                    type="color"
-                                    value={
-                                        data.metadata?.arrow_color?.startsWith("#")
-                                            ? data.metadata.arrow_color
-                                            : "#7c6ff7"
-                                    }
-                                    onChange={(e) =>
+                            <Input
+                                value={data.metadata?.arrow_color ?? ""}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (val) {
                                         updateEdgeData(selectedEdge.id, {
                                             metadata: {
                                                 ...data.metadata,
-                                                arrow_color: e.target.value,
+                                                arrow_color: val,
                                             },
-                                        })
+                                        });
+                                    } else {
+                                        const { arrow_color: _, ...rest } = data.metadata;
+                                        updateEdgeData(selectedEdge.id, {
+                                            metadata: rest,
+                                        });
                                     }
-                                    className="w-7 h-7 rounded cursor-pointer bg-transparent border border-[var(--glass-border)]"
-                                />
-                                <Input
-                                    value={data.metadata?.arrow_color ?? ""}
-                                    onChange={(e) => {
-                                        const val = e.target.value;
-                                        if (val) {
-                                            updateEdgeData(selectedEdge.id, {
-                                                metadata: {
-                                                    ...data.metadata,
-                                                    arrow_color: val,
-                                                },
-                                            });
-                                        } else {
-                                            const { arrow_color: _, ...rest } =
-                                                data.metadata;
-                                            updateEdgeData(selectedEdge.id, {
-                                                metadata: rest,
-                                            });
-                                        }
-                                    }}
-                                    placeholder="#AABBCC or Turquoise"
-                                    className="flex-1 h-7 text-xs font-mono"
-                                />
-                            </div>
+                                }}
+                                placeholder="#AABBCC or Turquoise"
+                                className="h-7 text-xs font-mono"
+                            />
                         </div>
                     </div>
 
