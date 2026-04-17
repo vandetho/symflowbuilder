@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.12.0](https://github.com/vandetho/symflowbuilder/compare/v1.11.0...v1.12.0) (2026-04-17)
+
+
+### Features
+
+* always show Share button, migrate CI/CD to pnpm ([b98d5ff](https://github.com/vandetho/symflowbuilder/commit/b98d5ff3520b4c8c49e05a61f357a8ac61656ea2))
+
+
+### Bug Fixes
+
+* add packageManager field for pnpm/action-setup ([aea1375](https://github.com/vandetho/symflowbuilder/commit/aea137567cfda12f1ce5d9b3623f9a33ceb37272))
+* resolve react-hooks/set-state-in-effect lint errors ([919d903](https://github.com/vandetho/symflowbuilder/commit/919d903fc4fd668b51430a0c3c406c2beabf6c7d))
+
 ## [1.11.0](https://github.com/vandetho/symflowbuilder/compare/v1.10.4...v1.11.0) (2026-04-17)
 
 
