@@ -71,7 +71,7 @@ export const TransitionEdge = memo(
                     stroke={
                         selected
                             ? "var(--accent-bright)"
-                            : data?.metadata?.color || "rgba(255,255,255,0.25)"
+                            : data?.metadata?.arrow_color || "rgba(255,255,255,0.25)"
                     }
                     fill="none"
                     strokeDasharray="6 4"
@@ -101,7 +101,6 @@ export const TransitionEdge = memo(
                                 selected
                                     ? "var(--accent-bright)"
                                     : data?.metadata?.arrow_color ||
-                                      data?.metadata?.color ||
                                       "rgba(255,255,255,0.25)"
                             }
                         />
@@ -138,6 +137,14 @@ export const TransitionEdge = memo(
                                         : "bg-[rgba(0,0,0,0.5)] border-[var(--glass-border)] text-[var(--text-secondary)] hover:border-[var(--glass-border-hover)] hover:text-[var(--text-primary)]"
                                 }
                             `}
+                            style={
+                                !selected && data?.metadata?.color
+                                    ? {
+                                          color: data.metadata.color,
+                                          borderColor: data.metadata.color,
+                                      }
+                                    : undefined
+                            }
                         >
                             {data?.label}
                         </div>
