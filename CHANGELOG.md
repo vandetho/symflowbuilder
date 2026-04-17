@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.2](https://github.com/vandetho/symflowbuilder/compare/v1.16.1...v1.16.2) (2026-04-17)
+
+
+### Bug Fixes
+
+* add migration for old edge-based workflows and improve share feedback ([50b03ad](https://github.com/vandetho/symflowbuilder/commit/50b03ad3244a01f77a2a33527552747e01d8c09d))
+
 ## [1.16.1](https://github.com/vandetho/symflowbuilder/compare/v1.16.0...v1.16.1) (2026-04-17)
 
 
