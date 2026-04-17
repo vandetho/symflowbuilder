@@ -62,28 +62,6 @@ export const TransitionEdge = memo(
                     className="react-flow__edge-interaction"
                 />
 
-                {/* Arrow marker definition */}
-                <defs>
-                    <marker
-                        id={`arrow-${id}`}
-                        markerWidth="8"
-                        markerHeight="8"
-                        refX="7"
-                        refY="4"
-                        orient="auto"
-                    >
-                        <path
-                            d="M 0 0 L 8 4 L 0 8 z"
-                            fill={
-                                selected
-                                    ? "var(--accent-bright)"
-                                    : data?.metadata?.arrow_color ||
-                                      "rgba(255,255,255,0.25)"
-                            }
-                        />
-                    </marker>
-                </defs>
-
                 {/* Visible edge path — animated dashes */}
                 <path
                     id={id}
@@ -96,7 +74,6 @@ export const TransitionEdge = memo(
                         strokeWidth: selected ? 2 : 1.5,
                         strokeDasharray: "6 4",
                     }}
-                    markerEnd={`url(#arrow-${id})`}
                 >
                     <animate
                         attributeName="stroke-dashoffset"
