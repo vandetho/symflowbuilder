@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.0](https://github.com/vandetho/symflowbuilder/compare/v1.13.3...v1.14.0) (2026-04-17)
+
+
+### Features
+
+* detect AND/OR/XOR workflow patterns in simulator ([274884b](https://github.com/vandetho/symflowbuilder/commit/274884b1fa222f2ab7a5f4bf4f8f91b021d12aa0))
+
 ## [1.13.3](https://github.com/vandetho/symflowbuilder/compare/v1.13.2...v1.13.3) (2026-04-17)
 
 
