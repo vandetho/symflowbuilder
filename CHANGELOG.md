@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.3](https://github.com/vandetho/symflowbuilder/compare/v1.10.2...v1.10.3) (2026-04-17)
+
+
+### Bug Fixes
+
+* apply color to transition label and arrow_color to edge line ([91ba839](https://github.com/vandetho/symflowbuilder/commit/91ba8395c036ecb419dc17e12183eaac7a2731fd))
+
 ## [1.10.2](https://github.com/vandetho/symflowbuilder/compare/v1.10.1...v1.10.2) (2026-04-17)
 
 
