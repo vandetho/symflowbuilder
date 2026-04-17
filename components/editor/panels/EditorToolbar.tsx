@@ -168,6 +168,7 @@ function ShareButton() {
     const [copied, setCopied] = useState(false);
 
     const handleShare = async () => {
+        let url: string;
         if (session?.user && workflowId) {
             try {
                 const res = await fetch(`/api/workflows/${workflowId}/share`, {
@@ -175,17 +176,21 @@ function ShareButton() {
                 });
                 if (!res.ok) throw new Error("Failed");
                 const data = await res.json();
-                const url = `${window.location.origin}/w/${data.shareId}`;
+                url = `${window.location.origin}/w/${data.shareId}`;
                 await navigator.clipboard.writeText(url);
+                toast.success(
+                    "Share link copied — anyone with this link can view your workflow"
+                );
             } catch {
                 toast.error("Failed to generate share link");
                 return;
             }
         } else {
-            await navigator.clipboard.writeText(window.location.href);
+            url = window.location.href;
+            await navigator.clipboard.writeText(url);
+            toast.success("Editor URL copied to clipboard");
         }
         setCopied(true);
-        toast.success("Link copied to clipboard");
         setTimeout(() => setCopied(false), 2000);
     };
 

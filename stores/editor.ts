@@ -20,6 +20,7 @@ import type { AccessLevel } from "@/types/collaboration";
 import { DEFAULT_WORKFLOW_META } from "@/types/workflow";
 import { exportWorkflowYaml } from "@/lib/yaml-export";
 import { importWorkflowYaml } from "@/lib/yaml-import";
+import { migrateGraphData } from "@/lib/migrate-graph";
 import { uid, uniqueName } from "@/lib/utils";
 
 interface EditorStore {
@@ -221,9 +222,11 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
     },
 
     loadFromJson: ({ nodes, edges, meta }) => {
+        // Migrate old edge-based workflows to node-based format
+        const migrated = migrateGraphData({ nodes, edges });
         set({
-            nodes,
-            edges,
+            nodes: migrated.nodes,
+            edges: migrated.edges,
             workflowMeta: meta,
             history: { past: [], future: [] },
             selectedNodeId: null,
