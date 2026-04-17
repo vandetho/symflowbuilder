@@ -11,85 +11,70 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
+const nodeStyle = {
+    borderRadius: "14px",
+    color: "rgba(255,255,255,0.92)",
+    fontSize: "14px",
+    fontFamily: "var(--font-jetbrains-mono), monospace",
+    fontWeight: 500,
+    padding: "12px 24px",
+    backdropFilter: "blur(8px)",
+} as const;
+
 const DEMO_NODES: Node[] = [
     {
         id: "draft",
         type: "default",
-        position: { x: 0, y: 120 },
+        position: { x: 0, y: 200 },
         data: { label: "draft" },
         style: {
+            ...nodeStyle,
             background: "rgba(124, 111, 247, 0.15)",
             border: "1px solid rgba(124, 111, 247, 0.4)",
-            borderRadius: "12px",
-            color: "rgba(255,255,255,0.9)",
-            fontSize: "12px",
-            fontFamily: "var(--font-jetbrains-mono), monospace",
-            padding: "8px 16px",
-            backdropFilter: "blur(8px)",
         },
     },
     {
         id: "review",
         type: "default",
-        position: { x: 220, y: 40 },
+        position: { x: 350, y: 60 },
         data: { label: "review" },
         style: {
+            ...nodeStyle,
             background: "rgba(255, 255, 255, 0.07)",
             border: "1px solid rgba(255,255,255,0.12)",
-            borderRadius: "12px",
-            color: "rgba(255,255,255,0.9)",
-            fontSize: "12px",
-            fontFamily: "var(--font-jetbrains-mono), monospace",
-            padding: "8px 16px",
-            backdropFilter: "blur(8px)",
         },
     },
     {
         id: "approved",
         type: "default",
-        position: { x: 450, y: 40 },
+        position: { x: 720, y: 60 },
         data: { label: "approved" },
         style: {
+            ...nodeStyle,
             background: "rgba(52, 211, 153, 0.12)",
             border: "1px solid rgba(52, 211, 153, 0.35)",
-            borderRadius: "12px",
-            color: "rgba(255,255,255,0.9)",
-            fontSize: "12px",
-            fontFamily: "var(--font-jetbrains-mono), monospace",
-            padding: "8px 16px",
-            backdropFilter: "blur(8px)",
         },
     },
     {
         id: "rejected",
         type: "default",
-        position: { x: 450, y: 200 },
+        position: { x: 720, y: 340 },
         data: { label: "rejected" },
         style: {
+            ...nodeStyle,
             background: "rgba(248, 113, 113, 0.12)",
             border: "1px solid rgba(248, 113, 113, 0.35)",
-            borderRadius: "12px",
-            color: "rgba(255,255,255,0.9)",
-            fontSize: "12px",
-            fontFamily: "var(--font-jetbrains-mono), monospace",
-            padding: "8px 16px",
-            backdropFilter: "blur(8px)",
         },
     },
     {
         id: "published",
         type: "default",
-        position: { x: 680, y: 120 },
+        position: { x: 1100, y: 200 },
         data: { label: "published" },
         style: {
+            ...nodeStyle,
             background: "rgba(52, 211, 153, 0.18)",
             border: "1px solid rgba(52, 211, 153, 0.45)",
-            borderRadius: "12px",
-            color: "rgba(255,255,255,0.9)",
-            fontSize: "12px",
-            fontFamily: "var(--font-jetbrains-mono), monospace",
-            padding: "8px 16px",
-            backdropFilter: "blur(8px)",
         },
     },
 ];
@@ -101,17 +86,17 @@ const DEMO_EDGES: Edge[] = [
         target: "review",
         label: "submit",
         animated: true,
-        style: { stroke: "rgba(124, 111, 247, 0.5)", strokeWidth: 1.5 },
+        style: { stroke: "rgba(124, 111, 247, 0.5)", strokeWidth: 2 },
         labelStyle: {
             fill: "rgba(255,255,255,0.6)",
-            fontSize: 10,
+            fontSize: 12,
             fontFamily: "var(--font-jetbrains-mono), monospace",
         },
         labelBgStyle: {
             fill: "rgba(0,0,0,0.6)",
             fillOpacity: 0.8,
         },
-        labelBgPadding: [6, 3] as [number, number],
+        labelBgPadding: [8, 4] as [number, number],
         labelBgBorderRadius: 6,
     },
     {
@@ -120,14 +105,14 @@ const DEMO_EDGES: Edge[] = [
         target: "approved",
         label: "approve",
         animated: true,
-        style: { stroke: "rgba(52, 211, 153, 0.5)", strokeWidth: 1.5 },
+        style: { stroke: "rgba(52, 211, 153, 0.5)", strokeWidth: 2 },
         labelStyle: {
             fill: "rgba(255,255,255,0.6)",
-            fontSize: 10,
+            fontSize: 12,
             fontFamily: "var(--font-jetbrains-mono), monospace",
         },
         labelBgStyle: { fill: "rgba(0,0,0,0.6)", fillOpacity: 0.8 },
-        labelBgPadding: [6, 3] as [number, number],
+        labelBgPadding: [8, 4] as [number, number],
         labelBgBorderRadius: 6,
     },
     {
@@ -136,14 +121,14 @@ const DEMO_EDGES: Edge[] = [
         target: "rejected",
         label: "reject",
         animated: true,
-        style: { stroke: "rgba(248, 113, 113, 0.4)", strokeWidth: 1.5 },
+        style: { stroke: "rgba(248, 113, 113, 0.4)", strokeWidth: 2 },
         labelStyle: {
             fill: "rgba(255,255,255,0.6)",
-            fontSize: 10,
+            fontSize: 12,
             fontFamily: "var(--font-jetbrains-mono), monospace",
         },
         labelBgStyle: { fill: "rgba(0,0,0,0.6)", fillOpacity: 0.8 },
-        labelBgPadding: [6, 3] as [number, number],
+        labelBgPadding: [8, 4] as [number, number],
         labelBgBorderRadius: 6,
     },
     {
@@ -152,14 +137,14 @@ const DEMO_EDGES: Edge[] = [
         target: "published",
         label: "publish",
         animated: true,
-        style: { stroke: "rgba(52, 211, 153, 0.5)", strokeWidth: 1.5 },
+        style: { stroke: "rgba(52, 211, 153, 0.5)", strokeWidth: 2 },
         labelStyle: {
             fill: "rgba(255,255,255,0.6)",
-            fontSize: 10,
+            fontSize: 12,
             fontFamily: "var(--font-jetbrains-mono), monospace",
         },
         labelBgStyle: { fill: "rgba(0,0,0,0.6)", fillOpacity: 0.8 },
-        labelBgPadding: [6, 3] as [number, number],
+        labelBgPadding: [8, 4] as [number, number],
         labelBgBorderRadius: 6,
     },
     {
@@ -170,16 +155,16 @@ const DEMO_EDGES: Edge[] = [
         animated: true,
         style: {
             stroke: "rgba(251, 191, 36, 0.4)",
-            strokeWidth: 1.5,
+            strokeWidth: 2,
             strokeDasharray: "6 3",
         },
         labelStyle: {
             fill: "rgba(255,255,255,0.6)",
-            fontSize: 10,
+            fontSize: 12,
             fontFamily: "var(--font-jetbrains-mono), monospace",
         },
         labelBgStyle: { fill: "rgba(0,0,0,0.6)", fillOpacity: 0.8 },
-        labelBgPadding: [6, 3] as [number, number],
+        labelBgPadding: [8, 4] as [number, number],
         labelBgBorderRadius: 6,
     },
 ];
@@ -192,11 +177,11 @@ export function HeroGraph() {
     const mounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
     if (!mounted) {
-        return <div className="w-full h-[480px] rounded-[18px] glass animate-pulse" />;
+        return <div className="w-full h-[540px] rounded-[18px] glass animate-pulse" />;
     }
 
     return (
-        <div className="w-full h-[480px] rounded-[18px] glass overflow-hidden shadow-[0_16px_64px_rgba(124,111,247,0.08)]">
+        <div className="w-full h-[540px] rounded-[18px] glass overflow-hidden shadow-[0_16px_64px_rgba(124,111,247,0.08)]">
             <ReactFlowProvider>
                 <ReactFlow
                     nodes={DEMO_NODES}
@@ -210,7 +195,7 @@ export function HeroGraph() {
                     zoomOnDoubleClick={false}
                     preventScrolling={false}
                     fitView
-                    fitViewOptions={{ padding: 0.15 }}
+                    fitViewOptions={{ padding: 0.08 }}
                     proOptions={{ hideAttribution: true }}
                 >
                     <Background

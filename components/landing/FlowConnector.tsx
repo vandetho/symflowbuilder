@@ -70,7 +70,7 @@ export function FlowNode({
     className?: string;
 }) {
     return (
-        <section id={id} className={`relative px-6 ${className ?? ""}`}>
+        <section id={id} className={`relative px-6 w-full ${className ?? ""}`}>
             {/* Node accent bar */}
             {isInitial && (
                 <div className="max-w-5xl mx-auto mb-0">
