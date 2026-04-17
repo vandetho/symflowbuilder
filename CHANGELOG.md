@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.11.0](https://github.com/vandetho/symflowbuilder/compare/v1.10.4...v1.11.0) (2026-04-17)
+
+
+### Features
+
+* add Radix Checkbox and RadioGroup, enforce no-native-HTML rule ([b367d06](https://github.com/vandetho/symflowbuilder/commit/b367d06ac03b633b93af331c4b262a6405d9a9e1))
+* add react-color picker for styling metadata fields ([04711ab](https://github.com/vandetho/symflowbuilder/commit/04711ab85d799b9acebe76bee52044b0bef0f5ee))
+* add version badge with GitHub link to editor toolbar ([3a5f8ae](https://github.com/vandetho/symflowbuilder/commit/3a5f8aec37eef2cfc01c9a52f2a93b546a95b5ab))
+
+
+### Bug Fixes
+
+* remove arrowhead marker from transition edges ([aa9cac6](https://github.com/vandetho/symflowbuilder/commit/aa9cac60b710e3f0d6a26ca897a2047a456602fc))
+* sync package-lock.json with new dependencies ([0add265](https://github.com/vandetho/symflowbuilder/commit/0add265b292f9a1d0046833d6476cf894ea0281b))
+
 ## [1.10.4](https://github.com/vandetho/symflowbuilder/compare/v1.10.3...v1.10.4) (2026-04-17)
 
 
