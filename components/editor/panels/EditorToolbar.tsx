@@ -194,21 +194,31 @@ function ShareButton() {
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const tooltipText =
+        session?.user && workflowId
+            ? "Generate a public read-only link"
+            : "Copy the editor URL to clipboard";
+
     return (
-        <Button
-            variant="ghost"
-            size="sm"
-            className="gap-1.5"
-            onClick={handleShare}
-            disabled={copied}
-        >
-            {copied ? (
-                <Check className="w-3.5 h-3.5 text-[var(--success)]" />
-            ) : (
-                <Share2 className="w-3.5 h-3.5" />
-            )}
-            {copied ? "Copied!" : "Share"}
-        </Button>
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="gap-1.5"
+                    onClick={handleShare}
+                    disabled={copied}
+                >
+                    {copied ? (
+                        <Check className="w-3.5 h-3.5 text-[var(--success)]" />
+                    ) : (
+                        <Share2 className="w-3.5 h-3.5" />
+                    )}
+                    {copied ? "Copied!" : "Share"}
+                </Button>
+            </TooltipTrigger>
+            <TooltipContent>{tooltipText}</TooltipContent>
+        </Tooltip>
     );
 }
 
