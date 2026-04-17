@@ -103,13 +103,19 @@ export function SimulatorPanel() {
                     <div className="flex flex-wrap gap-1.5">
                         {activePlaces.map(({ name, count }) => {
                             const pa = analysis?.places[name];
-                            const isOrSplit = pa?.patterns.includes("or-split");
-                            const isOrJoin = pa?.patterns.includes("or-join");
-                            const patternHint = isOrSplit
-                                ? "OR"
-                                : isOrJoin
-                                  ? "MERGE"
-                                  : null;
+                            const hasXorSplit = pa?.patterns.includes("xor-split");
+                            const hasOrSplit = pa?.patterns.includes("or-split");
+                            const hasXorJoin = pa?.patterns.includes("xor-join");
+                            const hasOrJoin = pa?.patterns.includes("or-join");
+                            const patternHint = hasXorSplit
+                                ? "XOR"
+                                : hasOrSplit
+                                  ? "OR"
+                                  : hasXorJoin
+                                    ? "XOR-JOIN"
+                                    : hasOrJoin
+                                      ? "MERGE"
+                                      : null;
                             return (
                                 <Badge
                                     key={name}

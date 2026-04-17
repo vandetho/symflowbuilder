@@ -34,8 +34,10 @@ export type TransitionPattern =
 /** Detected workflow pattern on a place */
 export type PlacePattern =
     | "simple"
-    | "or-split" // Multiple outgoing transitions (choice — any enabled can fire)
-    | "or-join" // Multiple incoming transitions (merge point)
+    | "or-split" // workflow: multiple outgoing transitions (any can fire)
+    | "xor-split" // state_machine: multiple outgoing transitions (exactly one fires)
+    | "or-join" // workflow: multiple incoming transitions (merge, multiple tokens possible)
+    | "xor-join" // state_machine: multiple incoming transitions (only one path active)
     | "and-split" // Part of a parallel fork (to: [a, b] — simultaneous states)
     | "and-join"; // Part of a synchronization (from: [a, b] — all must be marked)
 
