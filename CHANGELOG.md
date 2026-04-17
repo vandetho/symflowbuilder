@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/vandetho/symflowbuilder/compare/v1.14.2...v1.15.0) (2026-04-17)
+
+
+### Features
+
+* always show AND/FORK badges on edges, not just during simulation ([51b1cef](https://github.com/vandetho/symflowbuilder/commit/51b1cefe7c66c225f087e4d2393a13f849c33298))
+
 ## [1.14.2](https://github.com/vandetho/symflowbuilder/compare/v1.14.1...v1.14.2) (2026-04-17)
 
 
