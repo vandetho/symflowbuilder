@@ -31,22 +31,17 @@ jobs:
                       echo "==> Checking out ${{ github.event.release.tag_name }}..."
                       git checkout ${{ github.event.release.tag_name }}
 
-                      echo "==> Ensuring pnpm is available..."
-                      export COREPACK_ENABLE_STRICT=0
-                      npm install --prefix "$HOME/.local" -g pnpm@10.33.0
-                      export PATH="$HOME/.local/bin:$PATH"
-
                       echo "==> Installing dependencies..."
-                      pnpm install --frozen-lockfile
+                      npm ci
 
                       echo "==> Generating Prisma client..."
-                      pnpm exec prisma generate
+                      npx prisma generate
 
                       echo "==> Running migrations..."
-                      pnpm exec prisma migrate deploy
+                      npx prisma migrate deploy
 
                       echo "==> Building..."
-                      pnpm run build
+                      npm run build
 
                       echo "==> Ensuring logs directory..."
                       mkdir -p /var/www/symflowbuilder/logs
