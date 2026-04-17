@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.1](https://github.com/vandetho/symflowbuilder/compare/symflowbuilder-v1.8.0...symflowbuilder-v1.8.1) (2026-04-17)
+
+
+### Bug Fixes
+
+* use app token to approve and auto-merge release PRs ([02d3392](https://github.com/vandetho/symflowbuilder/commit/02d3392d427a0fb21e78716e9f3d5dea5c8f8716))
+
 ## [1.8.0](https://github.com/vandetho/symflowbuilder/compare/symflowbuilder-v1.7.0...symflowbuilder-v1.8.0) (2026-04-17)
 
 
