@@ -14,6 +14,14 @@ export interface TransitionListener {
     service: string;
 }
 
+export interface TransitionNodeData {
+    label: string;
+    guard?: string;
+    listeners: TransitionListener[];
+    metadata: Record<string, string>;
+}
+
+/** @deprecated Use TransitionNodeData — transitions are now nodes, not edges */
 export interface TransitionEdgeData {
     label: string;
     guard?: string;

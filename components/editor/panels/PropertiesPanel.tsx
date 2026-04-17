@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useEditorStore } from "@/stores/editor";
 import type {
     StateNodeData,
-    TransitionEdgeData,
+    TransitionNodeData,
     TransitionListener,
 } from "@/types/workflow";
 
@@ -38,9 +38,9 @@ export function PropertiesPanel() {
         ? edges.find((e) => e.id === selectedEdgeId)
         : null;
 
-    if (!selectedNode && !selectedEdge) return null;
+    if (!selectedNode) return null;
 
-    if (selectedNode) {
+    if (selectedNode.type === "state") {
         const data = selectedNode.data as unknown as StateNodeData;
         return (
             <div className="absolute top-16 right-4 bottom-4 z-20 w-[280px] bg-[#12121f] border border-[var(--glass-border)] rounded-[18px] flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
@@ -171,8 +171,21 @@ export function PropertiesPanel() {
         );
     }
 
-    if (selectedEdge) {
-        const data = selectedEdge.data as unknown as TransitionEdgeData;
+    if (selectedNode?.type === "transition") {
+        const data = selectedNode.data as unknown as TransitionNodeData;
+
+        // Derive from/to from connected edges
+        const fromLabels = edges
+            .filter((e) => e.target === selectedNode.id)
+            .map((e) => nodes.find((n) => n.id === e.source))
+            .filter(Boolean)
+            .map((n) => (n!.data as unknown as StateNodeData).label);
+        const toLabels = edges
+            .filter((e) => e.source === selectedNode.id)
+            .map((e) => nodes.find((n) => n.id === e.target))
+            .filter(Boolean)
+            .map((n) => (n!.data as unknown as StateNodeData).label);
+
         return (
             <div className="absolute top-16 right-4 bottom-4 z-20 w-[300px] bg-[#12121f] border border-[var(--glass-border)] rounded-[18px] flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--glass-border)]">
@@ -183,20 +196,19 @@ export function PropertiesPanel() {
                         variant="ghost"
                         size="icon"
                         className="h-6 w-6"
-                        onClick={() => setSelectedEdge(null)}
+                        onClick={() => setSelectedNode(null)}
                     >
                         <X className="w-3.5 h-3.5" />
                     </Button>
                 </div>
 
                 <div className="flex-1 overflow-auto p-4 flex flex-col gap-4">
-                    {/* Transition name */}
                     <div className="flex flex-col gap-1.5">
                         <Label>Name</Label>
                         <Input
                             value={data.label}
                             onChange={(e) =>
-                                updateEdgeData(selectedEdge.id, {
+                                updateNodeData(selectedNode.id, {
                                     label: e.target.value,
                                 })
                             }
@@ -208,35 +220,53 @@ export function PropertiesPanel() {
                     </div>
 
                     {/* From / To info */}
-                    <div className="flex items-center gap-2 text-[10px] font-mono text-[var(--text-muted)]">
-                        <span className="px-1.5 py-0.5 rounded bg-[var(--glass-base)] border border-[var(--glass-border)]">
-                            {nodes.find((n) => n.id === selectedEdge.source)
-                                ? (
-                                      nodes.find((n) => n.id === selectedEdge.source)
-                                          ?.data as unknown as StateNodeData
-                                  ).label
-                                : selectedEdge.source}
-                        </span>
-                        <span>-&gt;</span>
-                        <span className="px-1.5 py-0.5 rounded bg-[var(--glass-base)] border border-[var(--glass-border)]">
-                            {nodes.find((n) => n.id === selectedEdge.target)
-                                ? (
-                                      nodes.find((n) => n.id === selectedEdge.target)
-                                          ?.data as unknown as StateNodeData
-                                  ).label
-                                : selectedEdge.target}
-                        </span>
+                    <div className="flex flex-col gap-1 text-[10px] font-mono text-[var(--text-muted)]">
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-[var(--text-disabled)] w-8">from</span>
+                            <div className="flex flex-wrap gap-1">
+                                {fromLabels.map((l) => (
+                                    <span
+                                        key={l}
+                                        className="px-1.5 py-0.5 rounded bg-[var(--glass-base)] border border-[var(--glass-border)]"
+                                    >
+                                        {l}
+                                    </span>
+                                ))}
+                                {fromLabels.length > 1 && (
+                                    <Badge variant="outline" className="text-[8px] px-1">
+                                        AND
+                                    </Badge>
+                                )}
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-[var(--text-disabled)] w-8">to</span>
+                            <div className="flex flex-wrap gap-1">
+                                {toLabels.map((l) => (
+                                    <span
+                                        key={l}
+                                        className="px-1.5 py-0.5 rounded bg-[var(--glass-base)] border border-[var(--glass-border)]"
+                                    >
+                                        {l}
+                                    </span>
+                                ))}
+                                {toLabels.length > 1 && (
+                                    <Badge variant="outline" className="text-[8px] px-1">
+                                        FORK
+                                    </Badge>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
                     <Separator />
 
-                    {/* Guard expression */}
                     <div className="flex flex-col gap-1.5">
                         <Label>Guard Expression</Label>
                         <Input
                             value={data.guard ?? ""}
                             onChange={(e) =>
-                                updateEdgeData(selectedEdge.id, {
+                                updateNodeData(selectedNode.id, {
                                     guard: e.target.value || undefined,
                                 })
                             }
@@ -249,17 +279,15 @@ export function PropertiesPanel() {
 
                     <Separator />
 
-                    {/* Listeners */}
                     <ListenerEditor
                         listeners={data.listeners ?? []}
                         onChange={(listeners) =>
-                            updateEdgeData(selectedEdge.id, { listeners })
+                            updateNodeData(selectedNode.id, { listeners })
                         }
                     />
 
                     <Separator />
 
-                    {/* Symfony styling metadata */}
                     <div className="flex flex-col gap-2">
                         <Label className="flex items-center gap-1.5">
                             <Palette className="w-3 h-3" />
@@ -275,12 +303,12 @@ export function PropertiesPanel() {
                                 onChange={(e) => {
                                     const val = e.target.value;
                                     if (val) {
-                                        updateEdgeData(selectedEdge.id, {
+                                        updateNodeData(selectedNode.id, {
                                             metadata: { ...data.metadata, label: val },
                                         });
                                     } else {
                                         const { label: _, ...rest } = data.metadata;
-                                        updateEdgeData(selectedEdge.id, {
+                                        updateNodeData(selectedNode.id, {
                                             metadata: rest,
                                         });
                                     }
@@ -288,22 +316,19 @@ export function PropertiesPanel() {
                                 placeholder="Accept PR"
                                 className="h-7 text-xs"
                             />
-                            <span className="text-[9px] text-[var(--text-muted)]">
-                                Overrides the transition name in dumps
-                            </span>
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <Label className="text-[10px]">Color</Label>
                             <ColorInput
                                 value={data.metadata?.color ?? ""}
                                 onChange={(val) =>
-                                    updateEdgeData(selectedEdge.id, {
+                                    updateNodeData(selectedNode.id, {
                                         metadata: { ...data.metadata, color: val },
                                     })
                                 }
                                 onClear={() => {
                                     const { color: _, ...rest } = data.metadata;
-                                    updateEdgeData(selectedEdge.id, { metadata: rest });
+                                    updateNodeData(selectedNode.id, { metadata: rest });
                                 }}
                                 placeholder="#AABBCC or Orange"
                             />
@@ -313,13 +338,13 @@ export function PropertiesPanel() {
                             <ColorInput
                                 value={data.metadata?.arrow_color ?? ""}
                                 onChange={(val) =>
-                                    updateEdgeData(selectedEdge.id, {
+                                    updateNodeData(selectedNode.id, {
                                         metadata: { ...data.metadata, arrow_color: val },
                                     })
                                 }
                                 onClear={() => {
                                     const { arrow_color: _, ...rest } = data.metadata;
-                                    updateEdgeData(selectedEdge.id, { metadata: rest });
+                                    updateNodeData(selectedNode.id, { metadata: rest });
                                 }}
                                 placeholder="#AABBCC or Turquoise"
                             />
@@ -328,11 +353,10 @@ export function PropertiesPanel() {
 
                     <Separator />
 
-                    {/* Metadata */}
                     <MetadataEditor
                         metadata={data.metadata}
                         onChange={(metadata) =>
-                            updateEdgeData(selectedEdge.id, { metadata })
+                            updateNodeData(selectedNode.id, { metadata })
                         }
                         excludeKeys={TRANSITION_STYLING_KEYS}
                     />

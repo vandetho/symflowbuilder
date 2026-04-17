@@ -11,6 +11,7 @@ import {
 } from "@xyflow/react";
 import type {
     StateNodeData,
+    TransitionNodeData,
     TransitionEdgeData,
     WorkflowMeta,
     Snapshot,
@@ -39,7 +40,10 @@ interface EditorStore {
     // Node/Edge CRUD
     addNode: (node: Node) => void;
     deleteSelected: () => void;
-    updateNodeData: (id: string, data: Partial<StateNodeData>) => void;
+    updateNodeData: (
+        id: string,
+        data: Partial<StateNodeData> | Partial<TransitionNodeData>
+    ) => void;
     updateEdgeData: (id: string, data: Partial<TransitionEdgeData>) => void;
     setSelectedNode: (id: string | null) => void;
     setSelectedEdge: (id: string | null) => void;

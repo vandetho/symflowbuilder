@@ -2,7 +2,7 @@ import yaml from "js-yaml";
 import type { Node, Edge } from "@xyflow/react";
 import type {
     StateNodeData,
-    TransitionEdgeData,
+    TransitionNodeData,
     WorkflowMeta,
     WorkflowType,
     MarkingStoreType,
@@ -89,20 +89,21 @@ export function importWorkflowYaml(yamlString: string): ImportResult {
     }
 
     // Create state nodes
-    const nodes: Node[] = placeNames.map((name) => ({
+    const stateNodes: Node[] = placeNames.map((name) => ({
         id: `state-${name}`,
         type: "state",
-        position: { x: 0, y: 0 }, // will be auto-laid out
+        position: { x: 0, y: 0 },
         data: {
             label: name,
             isInitial: meta.initial_marking.includes(name),
-            isFinal: false, // will detect below
+            isFinal: false,
             metadata: placeMetadata[name] ?? {},
         } satisfies StateNodeData,
     }));
 
-    // Parse transitions
+    // Parse transitions → create transition nodes + connector edges
     const transitions = config.transitions as Record<string, unknown> | undefined;
+    const transitionNodes: Node[] = [];
     const edges: Edge[] = [];
 
     if (transitions) {
@@ -111,35 +112,57 @@ export function importWorkflowYaml(yamlString: string): ImportResult {
             const froms = Array.isArray(tc.from) ? tc.from : [tc.from as string];
             const tos = Array.isArray(tc.to) ? tc.to : [tc.to as string];
 
+            const transitionId = `transition-${transName}`;
+
+            // Create transition node
+            transitionNodes.push({
+                id: transitionId,
+                type: "transition",
+                position: { x: 0, y: 0 },
+                data: {
+                    label: transName,
+                    guard: tc.guard as string | undefined,
+                    listeners: [],
+                    metadata: (tc.metadata as Record<string, string>) ?? {},
+                } satisfies TransitionNodeData,
+            });
+
+            // Create edges: from states → transition
             for (const from of froms) {
-                for (const to of tos) {
-                    edges.push({
-                        id: `edge-${transName}-${from}-${to}`,
-                        source: `state-${from}`,
-                        target: `state-${to}`,
-                        type: "transition",
-                        data: {
-                            label: transName,
-                            guard: tc.guard as string | undefined,
-                            listeners: [],
-                            metadata: (tc.metadata as Record<string, string>) ?? {},
-                        } satisfies TransitionEdgeData,
-                    });
-                }
+                edges.push({
+                    id: `edge-${transName}-from-${from}`,
+                    source: `state-${from}`,
+                    target: transitionId,
+                    type: "connector",
+                });
+            }
+
+            // Create edges: transition → to states
+            for (const to of tos) {
+                edges.push({
+                    id: `edge-${transName}-to-${to}`,
+                    source: transitionId,
+                    target: `state-${to}`,
+                    type: "connector",
+                });
             }
         }
     }
 
-    // Detect final nodes (no outgoing edges)
-    const sourcesSet = new Set(edges.map((e) => e.source));
-    for (const node of nodes) {
-        if (!sourcesSet.has(node.id)) {
+    const allNodes = [...stateNodes, ...transitionNodes];
+
+    // Detect final state nodes (no outgoing edges through any transition)
+    const statesThatAreSource = new Set(
+        edges.filter((e) => e.target.startsWith("transition-")).map((e) => e.source)
+    );
+    for (const node of stateNodes) {
+        if (!statesThatAreSource.has(node.id)) {
             (node.data as unknown as StateNodeData).isFinal = true;
         }
     }
 
     // Auto-layout
-    const layoutedNodes = autoLayoutNodes(nodes, edges);
+    const layoutedNodes = autoLayoutNodes(allNodes, edges);
 
     return { nodes: layoutedNodes, edges, meta };
 }

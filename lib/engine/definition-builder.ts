@@ -1,10 +1,10 @@
 import type { Node, Edge } from "@xyflow/react";
-import type { StateNodeData, TransitionEdgeData, WorkflowMeta } from "@/types/workflow";
+import type { StateNodeData, TransitionNodeData, WorkflowMeta } from "@/types/workflow";
 import type { WorkflowDefinition, Place, Transition } from "./types";
 
 /**
  * Converts React Flow graph state into a pure WorkflowDefinition
- * for the engine to consume.
+ * for the engine to consume. Reads transition data from transition nodes.
  */
 export function buildDefinition(
     nodes: Node[],
@@ -12,6 +12,7 @@ export function buildDefinition(
     meta: WorkflowMeta
 ): WorkflowDefinition {
     const stateNodes = nodes.filter((n) => n.type === "state");
+    const transitionNodes = nodes.filter((n) => n.type === "transition");
 
     // Build places
     const places: Place[] = stateNodes.map((n) => {
@@ -22,52 +23,30 @@ export function buildDefinition(
         };
     });
 
-    // Build transitions — group edges by label (same label = same Symfony transition)
-    const transitionMap = new Map<
-        string,
-        {
-            froms: Set<string>;
-            tos: Set<string>;
-            guard?: string;
-            metadata?: Record<string, string>;
-        }
-    >();
+    // Build transitions from transition nodes
+    const transitions: Transition[] = transitionNodes.map((tNode) => {
+        const data = tNode.data as unknown as TransitionNodeData;
 
-    for (const edge of edges) {
-        const data = edge.data as unknown as TransitionEdgeData | undefined;
-        if (!data?.label) continue;
+        const froms = edges
+            .filter((e) => e.target === tNode.id)
+            .map((e) => stateNodes.find((n) => n.id === e.source))
+            .filter(Boolean)
+            .map((n) => (n!.data as unknown as StateNodeData).label);
 
-        const sourceNode = stateNodes.find((n) => n.id === edge.source);
-        const targetNode = stateNodes.find((n) => n.id === edge.target);
-        if (!sourceNode || !targetNode) continue;
+        const tos = edges
+            .filter((e) => e.source === tNode.id)
+            .map((e) => stateNodes.find((n) => n.id === e.target))
+            .filter(Boolean)
+            .map((n) => (n!.data as unknown as StateNodeData).label);
 
-        const sourceLabel = (sourceNode.data as unknown as StateNodeData).label;
-        const targetLabel = (targetNode.data as unknown as StateNodeData).label;
-
-        const existing = transitionMap.get(data.label);
-        if (existing) {
-            existing.froms.add(sourceLabel);
-            existing.tos.add(targetLabel);
-        } else {
-            transitionMap.set(data.label, {
-                froms: new Set([sourceLabel]),
-                tos: new Set([targetLabel]),
-                guard: data.guard || undefined,
-                metadata:
-                    Object.keys(data.metadata).length > 0 ? data.metadata : undefined,
-            });
-        }
-    }
-
-    const transitions: Transition[] = Array.from(transitionMap.entries()).map(
-        ([name, { froms, tos, guard, metadata }]) => ({
-            name,
-            froms: Array.from(froms),
-            tos: Array.from(tos),
-            guard,
-            metadata,
-        })
-    );
+        return {
+            name: data.label,
+            froms,
+            tos,
+            guard: data.guard || undefined,
+            metadata: Object.keys(data.metadata).length > 0 ? data.metadata : undefined,
+        };
+    });
 
     // Build initial marking
     const initialMarking =

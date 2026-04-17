@@ -20,22 +20,24 @@ import "@xyflow/react/dist/style.css";
 import { useEditorStore } from "@/stores/editor";
 import { useSimulatorStore } from "@/stores/simulator";
 import { StateNode } from "./nodes/StateNode";
-import { TransitionEdge } from "./edges/TransitionEdge";
+import { TransitionNode } from "./nodes/TransitionNode";
+import { ConnectorEdge } from "./edges/ConnectorEdge";
 import { NodePalette } from "./panels/NodePalette";
 import { EditorToolbar } from "./panels/EditorToolbar";
 import { EditorControls } from "./panels/EditorControls";
 import { PropertiesPanel } from "./panels/PropertiesPanel";
 import { SimulatorPanel } from "./panels/SimulatorPanel";
 import { ContextMenu, type ContextMenuState } from "./panels/ContextMenu";
-import type { StateNodeData, TransitionEdgeData } from "@/types/workflow";
+import type { StateNodeData, TransitionNodeData } from "@/types/workflow";
 import { uid, uniqueName } from "@/lib/utils";
 
 const nodeTypes = {
     state: StateNode,
+    transition: TransitionNode,
 };
 
 const edgeTypes = {
-    transition: TransitionEdge,
+    connector: ConnectorEdge,
 };
 
 function EditorCanvasInner() {
@@ -62,13 +64,72 @@ function EditorCanvasInner() {
     } | null>(null);
     const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
 
-    // Wrap onConnect to clear connectingFrom on successful connection
+    // Handle connections: create transition nodes between state nodes
     const onConnect = useCallback(
         (connection: Connection) => {
             connectingFrom.current = null;
-            storeOnConnect(connection);
+            if (!connection.source || !connection.target) return;
+
+            const sourceNode = nodes.find((n) => n.id === connection.source);
+            const targetNode = nodes.find((n) => n.id === connection.target);
+            if (!sourceNode || !targetNode) return;
+
+            if (sourceNode.type === "state" && targetNode.type === "state") {
+                // State→State: create an intermediate transition node + 2 edges
+                const transitionId = uid("transition");
+                const midX = (sourceNode.position.x + targetNode.position.x) / 2;
+                const midY = (sourceNode.position.y + targetNode.position.y) / 2;
+
+                const existingLabels = nodes
+                    .filter((n) => n.type === "transition")
+                    .map((n) => (n.data as unknown as TransitionNodeData).label);
+
+                addNode({
+                    id: transitionId,
+                    type: "transition",
+                    position: { x: midX, y: midY },
+                    data: {
+                        label: uniqueName("transition", existingLabels),
+                        guard: undefined,
+                        listeners: [],
+                        metadata: {},
+                    } satisfies TransitionNodeData,
+                });
+                setEdges((eds) => [
+                    ...eds,
+                    {
+                        id: uid("edge"),
+                        source: connection.source!,
+                        target: transitionId,
+                        type: "connector",
+                    },
+                    {
+                        id: uid("edge"),
+                        source: transitionId,
+                        target: connection.target!,
+                        type: "connector",
+                    },
+                ]);
+                snapshot();
+            } else if (
+                (sourceNode.type === "state" && targetNode.type === "transition") ||
+                (sourceNode.type === "transition" && targetNode.type === "state")
+            ) {
+                // State→Transition or Transition→State: add a single connector edge
+                setEdges((eds) => [
+                    ...eds,
+                    {
+                        id: uid("edge"),
+                        source: connection.source!,
+                        target: connection.target!,
+                        type: "connector",
+                    },
+                ]);
+                snapshot();
+            }
+            // Block transition→transition connections (do nothing)
         },
-        [storeOnConnect]
+        [nodes, addNode, setEdges, snapshot]
     );
 
     // --- Drag & drop from palette ---
@@ -225,47 +286,94 @@ function EditorCanvasInner() {
                 "clientY" in event ? event.clientY : event.changedTouches[0].clientY;
 
             const position = screenToFlowPosition({ x: clientX, y: clientY });
-            const newNodeId = uid("state");
-
-            // Create the new state node
-            const existingStateLabels = nodes.map(
-                (n) => (n.data as unknown as StateNodeData).label
-            );
-            addNode({
-                id: newNodeId,
-                type: "state",
-                position,
-                data: {
-                    label: uniqueName("state", existingStateLabels),
-                    isInitial: false,
-                    isFinal: false,
-                    metadata: {},
-                } satisfies StateNodeData,
-            });
-
-            // Create the transition edge
-            const existingEdgeLabels = edges
-                .map((e) => (e.data as unknown as TransitionEdgeData)?.label)
-                .filter(Boolean) as string[];
+            const fromNode = nodes.find((n) => n.id === connectingFrom.current!.nodeId);
             const isSource = connectingFrom.current.handleType === "source";
-            const newEdge: Edge = {
-                id: uid("edge"),
-                source: isSource ? connectingFrom.current.nodeId : newNodeId,
-                target: isSource ? newNodeId : connectingFrom.current.nodeId,
-                type: "transition",
-                data: {
-                    label: uniqueName("transition", existingEdgeLabels),
-                    guard: undefined,
-                    listeners: [],
-                    metadata: {},
-                } satisfies TransitionEdgeData,
-            };
-            setEdges((eds) => [...eds, newEdge]);
-            snapshot();
 
+            if (fromNode?.type === "transition") {
+                // Dragging from a transition node → create a new state node + 1 edge
+                const newStateId = uid("state");
+                const existingStateLabels = nodes
+                    .filter((n) => n.type === "state")
+                    .map((n) => (n.data as unknown as StateNodeData).label);
+                addNode({
+                    id: newStateId,
+                    type: "state",
+                    position,
+                    data: {
+                        label: uniqueName("state", existingStateLabels),
+                        isInitial: false,
+                        isFinal: false,
+                        metadata: {},
+                    } satisfies StateNodeData,
+                });
+                setEdges((eds) => [
+                    ...eds,
+                    {
+                        id: uid("edge"),
+                        source: isSource ? fromNode.id : newStateId,
+                        target: isSource ? newStateId : fromNode.id,
+                        type: "connector",
+                    },
+                ]);
+            } else {
+                // Dragging from a state node → create transition node + new state + edges
+                const newStateId = uid("state");
+                const transitionId = uid("transition");
+                const existingStateLabels = nodes
+                    .filter((n) => n.type === "state")
+                    .map((n) => (n.data as unknown as StateNodeData).label);
+                const existingTransitionLabels = nodes
+                    .filter((n) => n.type === "transition")
+                    .map((n) => (n.data as unknown as TransitionNodeData).label);
+
+                const midX = (fromNode!.position.x + position.x) / 2;
+                const midY = (fromNode!.position.y + position.y) / 2;
+
+                addNode({
+                    id: transitionId,
+                    type: "transition",
+                    position: { x: midX, y: midY },
+                    data: {
+                        label: uniqueName("transition", existingTransitionLabels),
+                        guard: undefined,
+                        listeners: [],
+                        metadata: {},
+                    } satisfies TransitionNodeData,
+                });
+                addNode({
+                    id: newStateId,
+                    type: "state",
+                    position,
+                    data: {
+                        label: uniqueName("state", existingStateLabels),
+                        isInitial: false,
+                        isFinal: false,
+                        metadata: {},
+                    } satisfies StateNodeData,
+                });
+
+                const sourceId = isSource ? fromNode!.id : newStateId;
+                const targetId = isSource ? newStateId : fromNode!.id;
+                setEdges((eds) => [
+                    ...eds,
+                    {
+                        id: uid("edge"),
+                        source: sourceId,
+                        target: transitionId,
+                        type: "connector",
+                    },
+                    {
+                        id: uid("edge"),
+                        source: transitionId,
+                        target: targetId,
+                        type: "connector",
+                    },
+                ]);
+            }
+            snapshot();
             connectingFrom.current = null;
         },
-        [screenToFlowPosition, addNode, setEdges, snapshot, nodes, edges]
+        [screenToFlowPosition, addNode, setEdges, snapshot, nodes]
     );
 
     return (
@@ -298,7 +406,7 @@ function EditorCanvasInner() {
                 nodesConnectable={!simActive}
                 fitView
                 proOptions={{ hideAttribution: true }}
-                defaultEdgeOptions={{ type: "transition" }}
+                defaultEdgeOptions={{ type: "connector" }}
                 deleteKeyCode={simActive ? [] : ["Backspace", "Delete"]}
             >
                 <Background

@@ -1,6 +1,6 @@
 import yaml from "js-yaml";
 import type { Node, Edge } from "@xyflow/react";
-import type { StateNodeData, TransitionEdgeData, WorkflowMeta } from "@/types/workflow";
+import type { StateNodeData, TransitionNodeData, WorkflowMeta } from "@/types/workflow";
 
 interface ExportOptions {
     nodes: Node[];
@@ -28,56 +28,42 @@ export function exportWorkflowYaml({ nodes, edges, meta }: ExportOptions): strin
         places = stateNodes.map((n) => (n.data as unknown as StateNodeData).label);
     }
 
-    // Build transitions
+    // Build transitions from transition nodes
+    const transitionNodes = nodes.filter((n) => n.type === "transition");
     const transitions: Record<string, unknown> = {};
-    for (const edge of edges) {
-        const data = edge.data as unknown as TransitionEdgeData | undefined;
-        if (!data?.label) continue;
 
-        const sourceNode = stateNodes.find((n) => n.id === edge.source);
-        const targetNode = stateNodes.find((n) => n.id === edge.target);
-        if (!sourceNode || !targetNode) continue;
+    for (const tNode of transitionNodes) {
+        const data = tNode.data as unknown as TransitionNodeData;
 
-        const sourceLabel = (sourceNode.data as unknown as StateNodeData).label;
-        const targetLabel = (targetNode.data as unknown as StateNodeData).label;
+        // Find connected state nodes via edges
+        const fromLabels = edges
+            .filter((e) => e.target === tNode.id)
+            .map((e) => stateNodes.find((n) => n.id === e.source))
+            .filter(Boolean)
+            .map((n) => (n!.data as unknown as StateNodeData).label);
 
-        const existing = transitions[data.label] as Record<string, unknown> | undefined;
+        const toLabels = edges
+            .filter((e) => e.source === tNode.id)
+            .map((e) => stateNodes.find((n) => n.id === e.target))
+            .filter(Boolean)
+            .map((n) => (n!.data as unknown as StateNodeData).label);
 
-        if (existing) {
-            // Merge multiple froms for same transition name
-            const currentFrom = existing.from;
-            if (Array.isArray(currentFrom)) {
-                if (!currentFrom.includes(sourceLabel)) {
-                    currentFrom.push(sourceLabel);
-                }
-            } else if (currentFrom !== sourceLabel) {
-                existing.from = [currentFrom, sourceLabel];
-            }
-            // Merge multiple tos
-            const currentTo = existing.to;
-            if (Array.isArray(currentTo)) {
-                if (!currentTo.includes(targetLabel)) {
-                    currentTo.push(targetLabel);
-                }
-            } else if (currentTo !== targetLabel) {
-                existing.to = [currentTo, targetLabel];
-            }
-        } else {
-            const transition: Record<string, unknown> = {
-                from: sourceLabel,
-                to: targetLabel,
-            };
+        if (fromLabels.length === 0 || toLabels.length === 0) continue;
 
-            if (data.guard) {
-                transition.guard = data.guard;
-            }
+        const transition: Record<string, unknown> = {
+            from: fromLabels.length === 1 ? fromLabels[0] : fromLabels,
+            to: toLabels.length === 1 ? toLabels[0] : toLabels,
+        };
 
-            if (Object.keys(data.metadata).length > 0) {
-                transition.metadata = data.metadata;
-            }
-
-            transitions[data.label] = transition;
+        if (data.guard) {
+            transition.guard = data.guard;
         }
+
+        if (Object.keys(data.metadata).length > 0) {
+            transition.metadata = data.metadata;
+        }
+
+        transitions[data.label] = transition;
     }
 
     // Build initial_marking — string when single, array when multiple
