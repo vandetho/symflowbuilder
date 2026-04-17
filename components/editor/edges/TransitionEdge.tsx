@@ -90,7 +90,7 @@ export const TransitionEdge = memo(
                     className="react-flow__edge-interaction"
                 />
 
-                {/* Visible edge path — animated dashes */}
+                {/* Visible edge path */}
                 <path
                     id={id}
                     d={edgePath}
@@ -100,21 +100,25 @@ export const TransitionEdge = memo(
                             ? isEnabled
                                 ? "var(--success)"
                                 : "rgba(255,255,255,0.08)"
-                            : selected
-                              ? "var(--accent-bright)"
-                              : data?.metadata?.arrow_color || "rgba(255,255,255,0.25)",
-                        strokeWidth: selected ? 2 : isEnabled ? 2 : 1.5,
-                        strokeDasharray: "6 4",
+                            : edgePattern
+                              ? "var(--accent)"
+                              : selected
+                                ? "var(--accent-bright)"
+                                : data?.metadata?.arrow_color || "rgba(255,255,255,0.25)",
+                        strokeWidth: edgePattern ? 2 : selected ? 2 : isEnabled ? 2 : 1.5,
+                        strokeDasharray: edgePattern ? undefined : "6 4",
                         opacity: simDimmed ? 0.3 : 1,
                     }}
                 >
-                    <animate
-                        attributeName="stroke-dashoffset"
-                        from="0"
-                        to="-20"
-                        dur="1s"
-                        repeatCount="indefinite"
-                    />
+                    {!edgePattern && (
+                        <animate
+                            attributeName="stroke-dashoffset"
+                            from="0"
+                            to="-20"
+                            dur="1s"
+                            repeatCount="indefinite"
+                        />
+                    )}
                 </path>
 
                 {/* Label + guard badge */}
