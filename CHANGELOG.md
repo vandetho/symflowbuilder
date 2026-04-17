@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.3](https://github.com/vandetho/symflowbuilder/compare/v1.16.2...v1.16.3) (2026-04-17)
+
+
+### Bug Fixes
+
+* add tooltip to Share button explaining its action ([ee98e9d](https://github.com/vandetho/symflowbuilder/commit/ee98e9d52c80f4249290d42fbe7df835b32ef105))
+
 ## [1.16.2](https://github.com/vandetho/symflowbuilder/compare/v1.16.1...v1.16.2) (2026-04-17)
 
 
