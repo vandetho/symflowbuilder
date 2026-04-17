@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.2](https://github.com/vandetho/symflowbuilder/compare/v1.13.1...v1.13.2) (2026-04-17)
+
+
+### Bug Fixes
+
+* remove deprecated align attribute from README header ([944a9b4](https://github.com/vandetho/symflowbuilder/commit/944a9b4c8b54a4bafeef827a0b96f536e6bfb688))
+
 ## [1.13.1](https://github.com/vandetho/symflowbuilder/compare/v1.13.0...v1.13.1) (2026-04-17)
 
 
