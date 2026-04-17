@@ -106,7 +106,7 @@ export function SimulatorPanel() {
                             const isOrSplit = pa?.patterns.includes("or-split");
                             const isOrJoin = pa?.patterns.includes("or-join");
                             const patternHint = isOrSplit
-                                ? "XOR"
+                                ? "OR"
                                 : isOrJoin
                                   ? "MERGE"
                                   : null;

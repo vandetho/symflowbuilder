@@ -25,19 +25,19 @@ export interface WorkflowDefinition {
 /** Detected workflow pattern on a transition */
 export type TransitionPattern =
     | "simple" // 1 from → 1 to
-    | "and-split" // 1 from → N to (fork: all targets get tokens)
+    | "and-split" // 1 from → N to (fork: all targets get tokens simultaneously)
     | "and-join" // N from → 1 to (synchronization: all sources must be marked)
-    | "and-split-join" // N from → M to
-    | "or-split" // Place has multiple outgoing transitions (choice)
+    | "and-split-join" // N from → M to (sync + fork)
+    | "or-split" // Place has multiple outgoing transitions (any can fire)
     | "or-join"; // Place has multiple incoming transitions (merge)
 
 /** Detected workflow pattern on a place */
 export type PlacePattern =
     | "simple"
-    | "or-split" // Multiple outgoing transitions (choice point)
+    | "or-split" // Multiple outgoing transitions (choice — any enabled can fire)
     | "or-join" // Multiple incoming transitions (merge point)
-    | "and-split" // Single transition leads to multiple places including this one
-    | "and-join"; // This place is one of multiple inputs to a transition
+    | "and-split" // Part of a parallel fork (to: [a, b] — simultaneous states)
+    | "and-join"; // Part of a synchronization (from: [a, b] — all must be marked)
 
 export interface PlaceAnalysis {
     name: string;
