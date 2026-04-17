@@ -107,5 +107,5 @@ jobs:
               if: steps.release.outputs.pr
               run: echo "$RELEASE_PR" | jq -r '.number' | xargs -I {} gh pr merge {} --auto --squash -R "$GITHUB_REPOSITORY"
               env:
-                  GH_TOKEN: ${{ steps.app-token.outputs.token }}
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   RELEASE_PR: ${{ steps.release.outputs.pr }}
