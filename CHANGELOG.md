@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.13.3](https://github.com/vandetho/symflowbuilder/compare/v1.13.2...v1.13.3) (2026-04-17)
+
+
+### Bug Fixes
+
+* auto-detect dropdown direction in Select to avoid bottom overlap ([b0a57f5](https://github.com/vandetho/symflowbuilder/commit/b0a57f50fc73ade07a0f661c3e908ee77ffc7034))
+* constrain logo size in README ([6d23f36](https://github.com/vandetho/symflowbuilder/commit/6d23f36840a81c689d38f226f39716bde8858053))
+
 ## [1.13.2](https://github.com/vandetho/symflowbuilder/compare/v1.13.1...v1.13.2) (2026-04-17)
 
 
