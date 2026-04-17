@@ -94,7 +94,7 @@ jobs:
               id: release
               uses: googleapis/release-please-action@v4
               with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
+                  token: ${{ steps.app-token.outputs.token }}
 
             - name: Approve release PR
               if: steps.release.outputs.pr
