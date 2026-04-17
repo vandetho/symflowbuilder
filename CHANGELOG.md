@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/vandetho/symflowbuilder/compare/v1.9.1...v1.10.0) (2026-04-17)
+
+
+### Features
+
+* add Symfony styling metadata support and enlarge landing preview ([35af59c](https://github.com/vandetho/symflowbuilder/commit/35af59c035881f63055236a287d9f25a1f54ceba))
+
 ## [1.9.1](https://github.com/vandetho/symflowbuilder/compare/v1.9.0...v1.9.1) (2026-04-17)
 
 
