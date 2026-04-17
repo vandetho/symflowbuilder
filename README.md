@@ -1,32 +1,24 @@
-<p align="center">
-  <img src="public/logo.svg" alt="SymFlowBuilder" width="80" height="80" />
-</p>
+![SymFlowBuilder](public/logo.svg)
 
-<h1 align="center">SymFlowBuilder</h1>
+# SymFlowBuilder
 
-<p align="center">
-  A visual drag-and-drop builder for Symfony Workflow configurations.<br/>
-  Design state machines graphically, then export production-ready YAML.
-</p>
+A visual drag-and-drop builder for Symfony Workflow configurations.
+Design state machines graphically, then export production-ready YAML.
 
-<p align="center">
-  <a href="https://symflowbuilder.com">Live Site</a> &middot;
-  <a href="https://github.com/vandetho/symflowbuilder/issues">Issues</a> &middot;
-  <a href="#contributing">Contributing</a>
-</p>
+[Live Site](https://symflowbuilder.com) · [Issues](https://github.com/vandetho/symflowbuilder/issues) · [Contributing](#contributing)
 
 ## Features
 
 - **Visual Editor** -- Drag-and-drop states and transitions on a React Flow canvas
 - **YAML Export** -- Production-ready Symfony workflow YAML for versions 5.4, 6.4, 7.4, and 8.0
-- **YAML Import** -- Drop in existing YAML files to visualize and edit them with auto-layout
-- **Guards & Metadata** -- Configure guard expressions, transition listeners, and metadata visually
+- **YAML Import** – Drop in existing YAML files to visualize and edit them with auto-layout
+- **Guards & Metadata** – Configure guard expressions, transition listeners, and metadata visually
 - **Styling Metadata** -- Set `bg_color`, `description`, `color`, `arrow_color` per Symfony's workflow dump styling
 - **Undo / Redo** -- 50-step history with Cmd+Z / Cmd+Shift+Z
-- **No Account Required** -- The editor is fully public. Sign in to unlock cloud save, versioning, and sharing
-- **Workflow Simulator** -- Step through transitions visually, see active states glow, auto-play mode
-- **Workflow Validation** -- Detect unreachable places, dead transitions, and orphan states
-- **Shareable Links** -- Generate read-only public links to share workflow designs
+- **No Account Required** – The editor is fully public. Sign in to unlock cloud save, versioning, and sharing
+- **Workflow Simulator** – Step through transitions visually, see active states glow, auto-play mode
+- **Workflow Validation** – Detect unreachable places, dead transitions, and orphan states
+- **Shareable Links** – Generate read-only public links to share workflow designs
 
 ## Tech Stack
 
