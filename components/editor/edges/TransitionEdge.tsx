@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback } from "react";
+import { memo, useCallback, useMemo } from "react";
 import {
     getBezierPath,
     EdgeLabelRenderer,
@@ -24,15 +24,34 @@ export const TransitionEdge = memo(
         selected,
     }: EdgeProps & { data?: TransitionEdgeData }) => {
         const setSelectedEdge = useEditorStore((s) => s.setSelectedEdge);
+        const edges = useEditorStore((s) => s.edges);
         const { setEdges } = useReactFlow();
         const simActive = useSimulatorStore((s) => s.active);
         const isEnabled = useSimulatorStore((s) =>
             s.active ? s.enabledTransitions.some((t) => t.name === data?.label) : false
         );
-        const transitionPattern = useSimulatorStore((s) =>
-            s.active && data?.label ? s.analysis?.transitions[data.label]?.pattern : null
-        );
         const simDimmed = simActive && !isEnabled;
+
+        // Detect AND pattern: multiple edges share the same transition name
+        const edgePattern = useMemo(() => {
+            if (!data?.label) return null;
+            const siblings = edges.filter(
+                (e) =>
+                    (e.data as unknown as TransitionEdgeData | undefined)?.label ===
+                    data.label
+            );
+            if (siblings.length <= 1) return null;
+
+            const sources = new Set(siblings.map((e) => e.source));
+            const targets = new Set(siblings.map((e) => e.target));
+            const multiFrom = sources.size > 1;
+            const multiTo = targets.size > 1;
+
+            if (multiFrom && multiTo) return "AND+FORK";
+            if (multiFrom) return "AND";
+            if (multiTo) return "FORK";
+            return null;
+        }, [data?.label, edges]);
 
         const handleLabelClick = useCallback(
             (e: React.MouseEvent) => {
@@ -152,16 +171,10 @@ export const TransitionEdge = memo(
                             </div>
                         )}
 
-                        {transitionPattern && transitionPattern !== "simple" && (
+                        {edgePattern && (
                             <div className="mt-1 flex justify-center">
                                 <span className="px-1.5 py-0.5 rounded-[5px] text-[8px] font-mono bg-[var(--accent-dim)] border border-[var(--accent-border)] text-[var(--accent-bright)] uppercase tracking-wider">
-                                    {transitionPattern === "and-join"
-                                        ? "AND"
-                                        : transitionPattern === "and-split"
-                                          ? "FORK"
-                                          : transitionPattern === "and-split-join"
-                                            ? "AND+FORK"
-                                            : transitionPattern}
+                                    {edgePattern}
                                 </span>
                             </div>
                         )}
