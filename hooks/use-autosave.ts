@@ -65,6 +65,8 @@ export function useAutosave({
         // Don't save empty state
         if (nodes.length === 0 && edges.length === 0) return;
 
+        // Status update is intentional — shows saving indicator while debounced save runs
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setStatus("saving");
         debouncedSave();
     }, [nodes, edges, workflowMeta, enabled, debouncedSave]);

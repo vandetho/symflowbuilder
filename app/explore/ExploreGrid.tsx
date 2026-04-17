@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -59,28 +59,31 @@ export function ExploreGrid({ isAuthenticated }: { isAuthenticated: boolean }) {
     const [data, setData] = useState<ExploreResponse | null>(null);
     const [loading, setLoading] = useState(true);
 
-    const fetchWorkflows = useCallback(async () => {
-        setLoading(true);
-        const params = new URLSearchParams();
-        if (search) params.set("search", search);
-        if (type) params.set("type", type);
-        if (version) params.set("version", version);
-        if (sort) params.set("sort", sort);
-        params.set("page", String(page));
-
-        try {
-            const res = await fetch(`/api/explore?${params}`);
-            if (res.ok) {
-                setData(await res.json());
-            }
-        } finally {
-            setLoading(false);
-        }
-    }, [search, type, version, sort, page]);
-
     useEffect(() => {
+        let cancelled = false;
+        async function fetchWorkflows() {
+            setLoading(true);
+            const params = new URLSearchParams();
+            if (search) params.set("search", search);
+            if (type) params.set("type", type);
+            if (version) params.set("version", version);
+            if (sort) params.set("sort", sort);
+            params.set("page", String(page));
+
+            try {
+                const res = await fetch(`/api/explore?${params}`);
+                if (res.ok && !cancelled) {
+                    setData(await res.json());
+                }
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        }
         fetchWorkflows();
-    }, [fetchWorkflows]);
+        return () => {
+            cancelled = true;
+        };
+    }, [search, type, version, sort, page]);
 
     // Reset to page 1 when filters change
     const updateFilter =

@@ -45,7 +45,10 @@ export function CollaboratorsDialog({
     }, [workflowId]);
 
     useEffect(() => {
-        if (open) fetchCollaborators();
+        if (open) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            void fetchCollaborators();
+        }
     }, [open, fetchCollaborators]);
 
     const handleAdd = async () => {
