@@ -174,17 +174,25 @@ export function PropertiesPanel() {
     if (selectedNode?.type === "transition") {
         const data = selectedNode.data as unknown as TransitionNodeData;
 
-        // Derive from/to from connected edges
-        const fromLabels = edges
-            .filter((e) => e.target === selectedNode.id)
-            .map((e) => nodes.find((n) => n.id === e.source))
-            .filter(Boolean)
-            .map((n) => (n!.data as unknown as StateNodeData).label);
-        const toLabels = edges
-            .filter((e) => e.source === selectedNode.id)
-            .map((e) => nodes.find((n) => n.id === e.target))
-            .filter(Boolean)
-            .map((n) => (n!.data as unknown as StateNodeData).label);
+        // Derive from/to from connected edges (deduplicated)
+        const fromLabels = [
+            ...new Set(
+                edges
+                    .filter((e) => e.target === selectedNode.id)
+                    .map((e) => nodes.find((n) => n.id === e.source))
+                    .filter(Boolean)
+                    .map((n) => (n!.data as unknown as StateNodeData).label)
+            ),
+        ];
+        const toLabels = [
+            ...new Set(
+                edges
+                    .filter((e) => e.source === selectedNode.id)
+                    .map((e) => nodes.find((n) => n.id === e.target))
+                    .filter(Boolean)
+                    .map((n) => (n!.data as unknown as StateNodeData).label)
+            ),
+        ];
 
         return (
             <div className="absolute top-16 right-4 bottom-4 z-20 w-[300px] bg-[#12121f] border border-[var(--glass-border)] rounded-[18px] flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
