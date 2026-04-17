@@ -42,7 +42,16 @@ export function Select({
     placeholder,
 }: SelectProps) {
     const [open, setOpen] = useState(false);
+    const [dropUp, setDropUp] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
+
+    // Detect if dropdown should open upward
+    useEffect(() => {
+        if (!open || !ref.current) return;
+        const rect = ref.current.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - rect.bottom;
+        setDropUp(spaceBelow < 200);
+    }, [open]);
 
     const onSelect = useCallback(
         (val: string) => {
@@ -138,7 +147,12 @@ export function Select({
                     />
                 </button>
                 {open && (
-                    <div className="absolute top-full left-0 mt-1 min-w-full z-50 bg-[#14142a] border border-[var(--glass-border-strong)] rounded-[10px] p-1 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+                    <div
+                        className={cn(
+                            "absolute left-0 min-w-full z-50 bg-[#14142a] border border-[var(--glass-border-strong)] rounded-[10px] p-1 shadow-[0_8px_32px_rgba(0,0,0,0.5)]",
+                            dropUp ? "bottom-full mb-1" : "top-full mt-1"
+                        )}
+                    >
                         {children}
                     </div>
                 )}
