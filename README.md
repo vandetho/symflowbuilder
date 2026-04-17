@@ -180,7 +180,7 @@ CI runs ESLint, Prettier, TypeScript checks, and a production build on every PR.
 - [ ] Team workspaces with shared workflow libraries
 - [ ] Workflow diff view (compare two versions side by side)
 - [ ] Dark/light theme toggle
-- [ ] Color picker component for styling metadata
+- [x] Color picker component for styling metadata (react-color)
 
 ## Sponsors
 
