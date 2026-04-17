@@ -205,7 +205,7 @@ export default async function LandingPage() {
 
                 {/* ─── Node: Preview ─── */}
                 <FlowNode label="preview" className="pb-12">
-                    <div className="max-w-4xl mx-auto">
+                    <div className="max-w-5xl mx-auto">
                         <HeroGraph />
                         <p className="text-center text-[10px] text-[var(--text-muted)] mt-3 font-mono">
                             Live workflow preview &mdash; this is what you build in the

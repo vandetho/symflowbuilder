@@ -6,6 +6,13 @@ import type { StateNodeData } from "@/types/workflow";
 
 export const StateNode = memo(
     ({ data, selected }: NodeProps & { data: StateNodeData }) => {
+        const bgColor = data.metadata?.bg_color;
+        const description = data.metadata?.description;
+        // Count metadata excluding Symfony styling keys
+        const extraMetaCount = Object.keys(data.metadata).filter(
+            (k) => k !== "bg_color" && k !== "description"
+        ).length;
+
         return (
             <div
                 className={`
@@ -13,10 +20,19 @@ export const StateNode = memo(
           border transition-all duration-150
           ${
               selected
-                  ? "border-[var(--accent-bright)] shadow-[0_0_0_2px_var(--accent-glow)] bg-[#1a1a2e]"
-                  : "border-[var(--glass-border)] bg-[#12121f] hover:border-[var(--glass-border-hover)]"
+                  ? "border-[var(--accent-bright)] shadow-[0_0_0_2px_var(--accent-glow)]"
+                  : "border-[var(--glass-border)] hover:border-[var(--glass-border-hover)]"
           }
         `}
+                style={{
+                    backgroundColor: bgColor
+                        ? `color-mix(in srgb, ${bgColor} 25%, #12121f)`
+                        : selected
+                          ? "#1a1a2e"
+                          : "#12121f",
+                    borderLeftColor: bgColor || undefined,
+                    borderLeftWidth: bgColor ? 3 : undefined,
+                }}
             >
                 {data.isInitial && (
                     <div className="absolute top-0 left-4 right-4 h-[2px] rounded-full bg-[var(--accent)]" />
@@ -24,10 +40,14 @@ export const StateNode = memo(
 
                 <div className="flex items-center gap-2 px-3 pt-3 pb-2">
                     <span
-                        className={`
-              w-2 h-2 rounded-full shrink-0
-              ${data.isInitial ? "bg-[var(--accent)]" : "bg-[rgba(255,255,255,0.25)]"}
-            `}
+                        className="w-2 h-2 rounded-full shrink-0"
+                        style={{
+                            backgroundColor:
+                                bgColor ||
+                                (data.isInitial
+                                    ? "var(--accent)"
+                                    : "rgba(255,255,255,0.25)"),
+                        }}
                     />
                     <span className="text-[13px] font-medium text-[var(--text-primary)] font-mono leading-none flex-1 truncate">
                         {data.label}
@@ -39,12 +59,20 @@ export const StateNode = memo(
                     )}
                 </div>
 
+                {description && (
+                    <div className="px-3 pb-1">
+                        <span className="text-[10px] text-[var(--text-secondary)] leading-tight line-clamp-2">
+                            {description}
+                        </span>
+                    </div>
+                )}
+
                 <div className="mx-3 h-px bg-[rgba(255,255,255,0.07)]" />
 
                 <div className="px-3 py-2">
-                    {Object.keys(data.metadata).length > 0 ? (
+                    {extraMetaCount > 0 ? (
                         <span className="text-[10px] text-[var(--text-muted)] font-mono">
-                            {Object.keys(data.metadata).length} metadata
+                            {extraMetaCount} metadata
                         </span>
                     ) : (
                         <span className="text-[10px] text-[var(--text-disabled)] font-mono">

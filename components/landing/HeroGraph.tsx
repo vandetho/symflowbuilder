@@ -192,11 +192,11 @@ export function HeroGraph() {
     const mounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
     if (!mounted) {
-        return <div className="w-full h-[320px] rounded-[18px] glass animate-pulse" />;
+        return <div className="w-full h-[480px] rounded-[18px] glass animate-pulse" />;
     }
 
     return (
-        <div className="w-full h-[320px] rounded-[18px] glass overflow-hidden shadow-[0_16px_64px_rgba(124,111,247,0.08)]">
+        <div className="w-full h-[480px] rounded-[18px] glass overflow-hidden shadow-[0_16px_64px_rgba(124,111,247,0.08)]">
             <ReactFlowProvider>
                 <ReactFlow
                     nodes={DEMO_NODES}
@@ -210,7 +210,7 @@ export function HeroGraph() {
                     zoomOnDoubleClick={false}
                     preventScrolling={false}
                     fitView
-                    fitViewOptions={{ padding: 0.3 }}
+                    fitViewOptions={{ padding: 0.15 }}
                     proOptions={{ hideAttribution: true }}
                 >
                     <Background

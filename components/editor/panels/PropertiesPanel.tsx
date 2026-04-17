@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { X, Plus, Trash2 } from "lucide-react";
+import { useCallback, useState, useMemo } from "react";
+import { X, Plus, Trash2, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,9 @@ import type {
     TransitionEdgeData,
     TransitionListener,
 } from "@/types/workflow";
+
+const PLACE_STYLING_KEYS = ["bg_color", "description"];
+const TRANSITION_STYLING_KEYS = ["label", "color", "arrow_color"];
 
 export function PropertiesPanel() {
     const {
@@ -105,11 +108,93 @@ export function PropertiesPanel() {
 
                     <Separator />
 
+                    {/* Symfony styling metadata */}
+                    <div className="flex flex-col gap-2">
+                        <Label className="flex items-center gap-1.5">
+                            <Palette className="w-3 h-3" />
+                            Styling
+                        </Label>
+                        <span className="text-[9px] text-[var(--text-muted)]">
+                            Symfony workflow dump styling
+                        </span>
+                        <div className="flex flex-col gap-1.5">
+                            <Label className="text-[10px]">Background Color</Label>
+                            <div className="flex items-center gap-1.5">
+                                <input
+                                    type="color"
+                                    value={
+                                        data.metadata?.bg_color?.startsWith("#")
+                                            ? data.metadata.bg_color
+                                            : "#6366f1"
+                                    }
+                                    onChange={(e) =>
+                                        updateNodeData(selectedNode.id, {
+                                            metadata: {
+                                                ...data.metadata,
+                                                bg_color: e.target.value,
+                                            },
+                                        })
+                                    }
+                                    className="w-7 h-7 rounded cursor-pointer bg-transparent border border-[var(--glass-border)]"
+                                />
+                                <Input
+                                    value={data.metadata?.bg_color ?? ""}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (val) {
+                                            updateNodeData(selectedNode.id, {
+                                                metadata: {
+                                                    ...data.metadata,
+                                                    bg_color: val,
+                                                },
+                                            });
+                                        } else {
+                                            const { bg_color: _, ...rest } =
+                                                data.metadata;
+                                            updateNodeData(selectedNode.id, {
+                                                metadata: rest,
+                                            });
+                                        }
+                                    }}
+                                    placeholder="#AABBCC or DeepSkyBlue"
+                                    className="flex-1 h-7 text-xs font-mono"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <Label className="text-[10px]">Description</Label>
+                            <Input
+                                value={data.metadata?.description ?? ""}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (val) {
+                                        updateNodeData(selectedNode.id, {
+                                            metadata: {
+                                                ...data.metadata,
+                                                description: val,
+                                            },
+                                        });
+                                    } else {
+                                        const { description: _, ...rest } = data.metadata;
+                                        updateNodeData(selectedNode.id, {
+                                            metadata: rest,
+                                        });
+                                    }
+                                }}
+                                placeholder="Human review"
+                                className="h-7 text-xs"
+                            />
+                        </div>
+                    </div>
+
+                    <Separator />
+
                     <MetadataEditor
                         metadata={data.metadata}
                         onChange={(metadata) =>
                             updateNodeData(selectedNode.id, { metadata })
                         }
+                        excludeKeys={PLACE_STYLING_KEYS}
                     />
                 </div>
             </div>
@@ -204,12 +289,137 @@ export function PropertiesPanel() {
 
                     <Separator />
 
+                    {/* Symfony styling metadata */}
+                    <div className="flex flex-col gap-2">
+                        <Label className="flex items-center gap-1.5">
+                            <Palette className="w-3 h-3" />
+                            Styling
+                        </Label>
+                        <span className="text-[9px] text-[var(--text-muted)]">
+                            Symfony workflow dump styling
+                        </span>
+                        <div className="flex flex-col gap-1.5">
+                            <Label className="text-[10px]">Display Label</Label>
+                            <Input
+                                value={data.metadata?.label ?? ""}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (val) {
+                                        updateEdgeData(selectedEdge.id, {
+                                            metadata: { ...data.metadata, label: val },
+                                        });
+                                    } else {
+                                        const { label: _, ...rest } = data.metadata;
+                                        updateEdgeData(selectedEdge.id, {
+                                            metadata: rest,
+                                        });
+                                    }
+                                }}
+                                placeholder="Accept PR"
+                                className="h-7 text-xs"
+                            />
+                            <span className="text-[9px] text-[var(--text-muted)]">
+                                Overrides the transition name in dumps
+                            </span>
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <Label className="text-[10px]">Color</Label>
+                            <div className="flex items-center gap-1.5">
+                                <input
+                                    type="color"
+                                    value={
+                                        data.metadata?.color?.startsWith("#")
+                                            ? data.metadata.color
+                                            : "#7c6ff7"
+                                    }
+                                    onChange={(e) =>
+                                        updateEdgeData(selectedEdge.id, {
+                                            metadata: {
+                                                ...data.metadata,
+                                                color: e.target.value,
+                                            },
+                                        })
+                                    }
+                                    className="w-7 h-7 rounded cursor-pointer bg-transparent border border-[var(--glass-border)]"
+                                />
+                                <Input
+                                    value={data.metadata?.color ?? ""}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (val) {
+                                            updateEdgeData(selectedEdge.id, {
+                                                metadata: {
+                                                    ...data.metadata,
+                                                    color: val,
+                                                },
+                                            });
+                                        } else {
+                                            const { color: _, ...rest } = data.metadata;
+                                            updateEdgeData(selectedEdge.id, {
+                                                metadata: rest,
+                                            });
+                                        }
+                                    }}
+                                    placeholder="#AABBCC or Orange"
+                                    className="flex-1 h-7 text-xs font-mono"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <Label className="text-[10px]">Arrow Color</Label>
+                            <div className="flex items-center gap-1.5">
+                                <input
+                                    type="color"
+                                    value={
+                                        data.metadata?.arrow_color?.startsWith("#")
+                                            ? data.metadata.arrow_color
+                                            : "#7c6ff7"
+                                    }
+                                    onChange={(e) =>
+                                        updateEdgeData(selectedEdge.id, {
+                                            metadata: {
+                                                ...data.metadata,
+                                                arrow_color: e.target.value,
+                                            },
+                                        })
+                                    }
+                                    className="w-7 h-7 rounded cursor-pointer bg-transparent border border-[var(--glass-border)]"
+                                />
+                                <Input
+                                    value={data.metadata?.arrow_color ?? ""}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (val) {
+                                            updateEdgeData(selectedEdge.id, {
+                                                metadata: {
+                                                    ...data.metadata,
+                                                    arrow_color: val,
+                                                },
+                                            });
+                                        } else {
+                                            const { arrow_color: _, ...rest } =
+                                                data.metadata;
+                                            updateEdgeData(selectedEdge.id, {
+                                                metadata: rest,
+                                            });
+                                        }
+                                    }}
+                                    placeholder="#AABBCC or Turquoise"
+                                    className="flex-1 h-7 text-xs font-mono"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <Separator />
+
                     {/* Metadata */}
                     <MetadataEditor
                         metadata={data.metadata}
                         onChange={(metadata) =>
                             updateEdgeData(selectedEdge.id, { metadata })
                         }
+                        excludeKeys={TRANSITION_STYLING_KEYS}
                     />
                 </div>
             </div>
@@ -309,12 +519,19 @@ function ListenerEditor({
 function MetadataEditor({
     metadata,
     onChange,
+    excludeKeys = [],
 }: {
     metadata: Record<string, string>;
     onChange: (metadata: Record<string, string>) => void;
+    excludeKeys?: string[];
 }) {
     const [newKey, setNewKey] = useState("");
     const [newValue, setNewValue] = useState("");
+
+    const filteredEntries = useMemo(
+        () => Object.entries(metadata).filter(([key]) => !excludeKeys.includes(key)),
+        [metadata, excludeKeys]
+    );
 
     const addEntry = useCallback(() => {
         if (!newKey.trim()) return;
@@ -335,7 +552,7 @@ function MetadataEditor({
     return (
         <div className="flex flex-col gap-2">
             <Label>Metadata</Label>
-            {Object.entries(metadata).map(([key, value]) => (
+            {filteredEntries.map(([key, value]) => (
                 <div key={key} className="flex items-center gap-1.5">
                     <Badge variant="outline" className="flex-1 truncate">
                         {key}: {value}

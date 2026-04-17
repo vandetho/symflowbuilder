@@ -68,7 +68,11 @@ export const TransitionEdge = memo(
                     className="react-flow__edge-path"
                     d={edgePath}
                     strokeWidth={selected ? 2 : 1.5}
-                    stroke={selected ? "var(--accent-bright)" : "rgba(255,255,255,0.25)"}
+                    stroke={
+                        selected
+                            ? "var(--accent-bright)"
+                            : data?.metadata?.color || "rgba(255,255,255,0.25)"
+                    }
                     fill="none"
                     strokeDasharray="6 4"
                 >
@@ -80,6 +84,35 @@ export const TransitionEdge = memo(
                         repeatCount="indefinite"
                     />
                 </path>
+
+                {/* Arrow marker at target end */}
+                <defs>
+                    <marker
+                        id={`arrow-${id}`}
+                        markerWidth="8"
+                        markerHeight="8"
+                        refX="7"
+                        refY="4"
+                        orient="auto"
+                    >
+                        <path
+                            d="M 0 0 L 8 4 L 0 8 z"
+                            fill={
+                                selected
+                                    ? "var(--accent-bright)"
+                                    : data?.metadata?.arrow_color ||
+                                      data?.metadata?.color ||
+                                      "rgba(255,255,255,0.25)"
+                            }
+                        />
+                    </marker>
+                </defs>
+                <path
+                    d={edgePath}
+                    strokeWidth={0}
+                    fill="none"
+                    markerEnd={`url(#arrow-${id})`}
+                />
 
                 {/* Label + guard badge */}
                 <EdgeLabelRenderer>
