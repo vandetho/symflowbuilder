@@ -24,6 +24,8 @@
 - **Styling Metadata** -- Set `bg_color`, `description`, `color`, `arrow_color` per Symfony's workflow dump styling
 - **Undo / Redo** -- 50-step history with Cmd+Z / Cmd+Shift+Z
 - **No Account Required** -- The editor is fully public. Sign in to unlock cloud save, versioning, and sharing
+- **Workflow Simulator** -- Step through transitions visually, see active states glow, auto-play mode
+- **Workflow Validation** -- Detect unreachable places, dead transitions, and orphan states
 - **Shareable Links** -- Generate read-only public links to share workflow designs
 
 ## Tech Stack
@@ -116,8 +118,14 @@ components/
   landing/                     # Hero graph, YAML preview
   ui/                          # Glass-styled UI primitives
 
-stores/editor.ts               # Zustand store (nodes, edges, undo/redo)
+stores/
+  editor.ts                    # Zustand store (nodes, edges, undo/redo)
+  simulator.ts                 # Simulator state (marking, history, auto-play)
 lib/
+  engine/                      # Workflow runtime engine
+    workflow-engine.ts         # Marking, transitions, guards, events
+    definition-builder.ts      # React Flow graph -> WorkflowDefinition
+    validator.ts               # Unreachable places, dead transitions
   yaml-export.ts               # Graph -> Symfony YAML
   yaml-import.ts               # Symfony YAML -> graph
   layout-engine.ts             # Topological auto-layout
@@ -144,6 +152,8 @@ Guest drafts are saved to `localStorage` and automatically migrated to the cloud
 
 - [Entity Relationship Diagram](docs/erm.md) -- Database schema with all models and relationships
 - [Architecture](docs/architecture.md) -- System overview, editor data flow, auth model, and deployment pipeline
+- [Design System](docs/design-system.md) -- Dark glassmorphism theme, color tokens, glass utilities
+- [Editor Architecture](docs/editor.md) -- Canvas, workflow engine, simulator, YAML export/import
 
 ## Contributing
 
@@ -173,7 +183,8 @@ CI runs ESLint, Prettier, TypeScript checks, and a production build on every PR.
 - [ ] Version history UI with restore
 - [ ] Workflow templates (e-commerce, CMS, approval flows)
 - [ ] Real-time collaboration (multiplayer cursors)
-- [ ] Workflow validation (detect unreachable states, dead transitions)
+- [x] Workflow simulator with step-through, auto-play, and history
+- [x] Workflow validation (detect unreachable states, dead transitions)
 - [ ] Symfony bundle generator (download a full bundle scaffold)
 - [ ] Export to Mermaid / PlantUML diagram formats
 - [ ] Email invitations for collaborators
