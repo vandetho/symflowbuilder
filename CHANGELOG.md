@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/vandetho/symflowbuilder/compare/v1.12.4...v1.13.0) (2026-04-17)
+
+
+### Features
+
+* add workflow engine and visual simulator ([ed4b2d2](https://github.com/vandetho/symflowbuilder/commit/ed4b2d2c0f372765db986fdbd51ce685d104844b))
+
 ## [1.12.4](https://github.com/vandetho/symflowbuilder/compare/v1.12.3...v1.12.4) (2026-04-17)
 
 
