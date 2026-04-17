@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.4](https://github.com/vandetho/symflowbuilder/compare/v1.16.3...v1.16.4) (2026-04-17)
+
+
+### Documentation
+
+* update landing page and README with new features ([09b0ac1](https://github.com/vandetho/symflowbuilder/commit/09b0ac11189d2902a78ccf42ddb2cd737314ed38))
+
 ## [1.16.3](https://github.com/vandetho/symflowbuilder/compare/v1.16.2...v1.16.3) (2026-04-17)
 
 
