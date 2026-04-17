@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.2](https://github.com/vandetho/symflowbuilder/compare/v1.10.1...v1.10.2) (2026-04-17)
+
+
+### Bug Fixes
+
+* enlarge landing page workflow preview and fix width collapse ([638a64a](https://github.com/vandetho/symflowbuilder/commit/638a64ae85a036f1117f804a4b96df7fea5c1a5c))
+
 ## [1.10.1](https://github.com/vandetho/symflowbuilder/compare/v1.10.0...v1.10.1) (2026-04-17)
 
 
