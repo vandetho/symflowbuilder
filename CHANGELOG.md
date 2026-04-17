@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.4](https://github.com/vandetho/symflowbuilder/compare/v1.12.3...v1.12.4) (2026-04-17)
+
+
+### Bug Fixes
+
+* revert deploy to npm — server lacks pnpm permissions ([16e3c74](https://github.com/vandetho/symflowbuilder/commit/16e3c74898ebfcfb9e7160e9f4fb80df8cfceafe))
+
 ## [1.12.3](https://github.com/vandetho/symflowbuilder/compare/v1.12.2...v1.12.3) (2026-04-17)
 
 
