@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.2](https://github.com/vandetho/symflowbuilder/compare/v1.14.1...v1.14.2) (2026-04-17)
+
+
+### Bug Fixes
+
+* distinguish XOR vs OR patterns based on workflow type ([b135fd1](https://github.com/vandetho/symflowbuilder/commit/b135fd1b404f8ac86f7de591446d1691fd2dcf10))
+
 ## [1.14.1](https://github.com/vandetho/symflowbuilder/compare/v1.14.0...v1.14.1) (2026-04-17)
 
 
