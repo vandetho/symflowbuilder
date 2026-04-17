@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.4](https://github.com/vandetho/symflowbuilder/compare/v1.10.3...v1.10.4) (2026-04-17)
+
+
+### Bug Fixes
+
+* use inline styles for edge colors and remove native color pickers ([439e2c5](https://github.com/vandetho/symflowbuilder/commit/439e2c5a4dfbc31a3cfee8a29f373f692690b88b))
+
 ## [1.10.3](https://github.com/vandetho/symflowbuilder/compare/v1.10.2...v1.10.3) (2026-04-17)
 
 
