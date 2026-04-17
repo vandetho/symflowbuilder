@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/vandetho/symflowbuilder/compare/v1.10.0...v1.10.1) (2026-04-17)
+
+
+### Bug Fixes
+
+* match Symfony YAML conventions — tilde nulls, flow arrays, scalar initial_marking ([5121db6](https://github.com/vandetho/symflowbuilder/commit/5121db6cf854ddd0138ebfc377c0c96de6e802e1))
+
 ## [1.10.0](https://github.com/vandetho/symflowbuilder/compare/v1.9.1...v1.10.0) (2026-04-17)
 
 
