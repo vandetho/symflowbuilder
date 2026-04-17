@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.1](https://github.com/vandetho/symflowbuilder/compare/v1.14.0...v1.14.1) (2026-04-17)
+
+
+### Bug Fixes
+
+* correct pattern labels — OR not XOR for multi-transition places ([68bb02a](https://github.com/vandetho/symflowbuilder/commit/68bb02a754b94027b7e596b9d646e552eb84de2b))
+
 ## [1.14.0](https://github.com/vandetho/symflowbuilder/compare/v1.13.3...v1.14.0) (2026-04-17)
 
 
