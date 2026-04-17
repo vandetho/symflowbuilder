@@ -32,8 +32,9 @@ jobs:
                       git checkout ${{ github.event.release.tag_name }}
 
                       echo "==> Ensuring pnpm is available..."
-                      corepack disable 2>/dev/null || true
-                      npm install -g pnpm@10.33.0
+                      export COREPACK_ENABLE_STRICT=0
+                      npm install --prefix "$HOME/.local" -g pnpm@10.33.0
+                      export PATH="$HOME/.local/bin:$PATH"
 
                       echo "==> Installing dependencies..."
                       pnpm install --frozen-lockfile
