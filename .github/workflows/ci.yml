@@ -81,24 +81,16 @@ jobs:
         needs: [build]
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         runs-on: ubuntu-latest
-        environment: Production
         steps:
-            - name: Generate GitHub App Token
-              id: app-token
-              uses: actions/create-github-app-token@v1
-              with:
-                  app-id: ${{ secrets.BOT_APP_ID }}
-                  private-key: ${{ secrets.BOT_PRIVATE_KEY }}
-
             - name: Run release-please
               id: release
               uses: googleapis/release-please-action@v4
               with:
-                  token: ${{ steps.app-token.outputs.token }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Auto-merge release PR
               if: steps.release.outputs.pr
               run: echo "$RELEASE_PR" | jq -r '.number' | xargs gh pr merge --auto --squash -R "$GITHUB_REPOSITORY"
               env:
-                  GH_TOKEN: ${{ steps.app-token.outputs.token }}
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   RELEASE_PR: ${{ steps.release.outputs.pr }}
