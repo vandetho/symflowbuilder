@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://github.com/vandetho/symflowbuilder/compare/v1.15.1...v1.16.0) (2026-04-17)
+
+
+### Features
+
+* refactor transitions from edges to nodes (Petri-net model) ([46c9fbd](https://github.com/vandetho/symflowbuilder/commit/46c9fbd2582ddabd6acecdaa3af954c099f81a84))
+
 ## [1.15.1](https://github.com/vandetho/symflowbuilder/compare/v1.15.0...v1.15.1) (2026-04-17)
 
 
