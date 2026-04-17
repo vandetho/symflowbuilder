@@ -5,9 +5,11 @@ import {
     WorkflowEngine,
     buildDefinition,
     validateDefinition,
+    analyzeWorkflow,
     type Marking,
     type Transition,
     type ValidationResult,
+    type WorkflowAnalysis,
 } from "@/lib/engine";
 
 export interface SimulationStep {
@@ -29,6 +31,7 @@ interface SimulatorStore {
     enabledTransitions: Transition[];
     history: SimulationStep[];
     validation: ValidationResult | null;
+    analysis: WorkflowAnalysis | null;
 
     // Auto-play
     autoPlaying: boolean;
@@ -52,12 +55,14 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => ({
     enabledTransitions: [],
     history: [],
     validation: null,
+    analysis: null,
     autoPlaying: false,
     autoPlaySpeed: 1000,
 
     initialize: (nodes, edges, meta) => {
         const definition = buildDefinition(nodes, edges, meta);
         const validation = validateDefinition(definition);
+        const analysis = analyzeWorkflow(definition);
         const engine = new WorkflowEngine(definition);
 
         set({
@@ -66,6 +71,7 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => ({
             enabledTransitions: engine.getEnabledTransitions(),
             history: [],
             validation,
+            analysis,
         });
     },
 
@@ -79,6 +85,7 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => ({
             enabledTransitions: [],
             history: [],
             validation: null,
+            analysis: null,
             autoPlaying: false,
         }),
 

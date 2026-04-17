@@ -29,6 +29,9 @@ export const TransitionEdge = memo(
         const isEnabled = useSimulatorStore((s) =>
             s.active ? s.enabledTransitions.some((t) => t.name === data?.label) : false
         );
+        const transitionPattern = useSimulatorStore((s) =>
+            s.active && data?.label ? s.analysis?.transitions[data.label]?.pattern : null
+        );
         const simDimmed = simActive && !isEnabled;
 
         const handleLabelClick = useCallback(
@@ -145,6 +148,20 @@ export const TransitionEdge = memo(
                                 <span className="px-1.5 py-0.5 rounded-[5px] text-[9px] font-mono bg-[rgba(124,111,247,0.15)] border border-[var(--accent-border)] text-[var(--accent-bright)]">
                                     {data.listeners.length} listener
                                     {data.listeners.length > 1 ? "s" : ""}
+                                </span>
+                            </div>
+                        )}
+
+                        {transitionPattern && transitionPattern !== "simple" && (
+                            <div className="mt-1 flex justify-center">
+                                <span className="px-1.5 py-0.5 rounded-[5px] text-[8px] font-mono bg-[var(--accent-dim)] border border-[var(--accent-border)] text-[var(--accent-bright)] uppercase tracking-wider">
+                                    {transitionPattern === "and-join"
+                                        ? "AND"
+                                        : transitionPattern === "and-split"
+                                          ? "FORK"
+                                          : transitionPattern === "and-split-join"
+                                            ? "AND+FORK"
+                                            : transitionPattern}
                                 </span>
                             </div>
                         )}

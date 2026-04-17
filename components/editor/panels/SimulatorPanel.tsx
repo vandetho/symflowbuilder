@@ -14,6 +14,7 @@ export function SimulatorPanel() {
         marking,
         enabledTransitions,
         history,
+        analysis,
         autoPlaying,
         autoPlaySpeed,
         applyTransition,
@@ -100,16 +101,31 @@ export function SimulatorPanel() {
                         Current State
                     </span>
                     <div className="flex flex-wrap gap-1.5">
-                        {activePlaces.map(({ name, count }) => (
-                            <Badge
-                                key={name}
-                                variant="default"
-                                className="text-[11px] font-mono bg-[var(--success-dim)] text-[var(--success)] border-[var(--success)]"
-                            >
-                                {name}
-                                {count > 1 && ` ×${count}`}
-                            </Badge>
-                        ))}
+                        {activePlaces.map(({ name, count }) => {
+                            const pa = analysis?.places[name];
+                            const isOrSplit = pa?.patterns.includes("or-split");
+                            const isOrJoin = pa?.patterns.includes("or-join");
+                            const patternHint = isOrSplit
+                                ? "XOR"
+                                : isOrJoin
+                                  ? "MERGE"
+                                  : null;
+                            return (
+                                <Badge
+                                    key={name}
+                                    variant="default"
+                                    className="text-[11px] font-mono bg-[var(--success-dim)] text-[var(--success)] border-[var(--success)] gap-1"
+                                >
+                                    {name}
+                                    {count > 1 && ` ×${count}`}
+                                    {patternHint && (
+                                        <span className="text-[8px] px-1 py-px rounded bg-[var(--warning-dim)] text-[var(--warning)] border border-[rgba(251,191,36,0.2)]">
+                                            {patternHint}
+                                        </span>
+                                    )}
+                                </Badge>
+                            );
+                        })}
                         {activePlaces.length === 0 && (
                             <span className="text-[11px] text-[var(--text-disabled)] font-mono">
                                 no active places
@@ -131,18 +147,34 @@ export function SimulatorPanel() {
                         </span>
                     ) : (
                         <div className="flex flex-wrap gap-1.5">
-                            {enabledTransitions.map((t) => (
-                                <Button
-                                    key={t.name}
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-7 text-[11px] font-mono border border-[var(--success-dim)] text-[var(--success)] hover:bg-[var(--success-dim)]"
-                                    onClick={() => applyTransition(t.name)}
-                                    disabled={autoPlaying}
-                                >
-                                    {t.name}
-                                </Button>
-                            ))}
+                            {enabledTransitions.map((t) => {
+                                const ta = analysis?.transitions[t.name];
+                                const patternLabel =
+                                    ta?.pattern === "and-join"
+                                        ? "AND"
+                                        : ta?.pattern === "and-split"
+                                          ? "FORK"
+                                          : ta?.pattern === "and-split-join"
+                                            ? "AND+FORK"
+                                            : null;
+                                return (
+                                    <Button
+                                        key={t.name}
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-7 text-[11px] font-mono border border-[var(--success-dim)] text-[var(--success)] hover:bg-[var(--success-dim)] gap-1"
+                                        onClick={() => applyTransition(t.name)}
+                                        disabled={autoPlaying}
+                                    >
+                                        {t.name}
+                                        {patternLabel && (
+                                            <span className="text-[8px] px-1 py-px rounded bg-[var(--accent-dim)] text-[var(--accent-bright)] border border-[var(--accent-border)]">
+                                                {patternLabel}
+                                            </span>
+                                        )}
+                                    </Button>
+                                );
+                            })}
                         </div>
                     )}
                 </div>
