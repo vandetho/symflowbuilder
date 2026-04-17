@@ -129,29 +129,28 @@ function ShareButton() {
     const { data: session } = useSession();
     const params = useParams();
     const workflowId = params?.id as string | undefined;
-    const [sharing, setSharing] = useState(false);
     const [copied, setCopied] = useState(false);
 
-    if (!session?.user || !workflowId) return null;
-
     const handleShare = async () => {
-        setSharing(true);
-        try {
-            const res = await fetch(`/api/workflows/${workflowId}/share`, {
-                method: "POST",
-            });
-            if (!res.ok) throw new Error("Failed");
-            const data = await res.json();
-            const url = `${window.location.origin}/w/${data.shareId}`;
-            await navigator.clipboard.writeText(url);
-            setCopied(true);
-            toast.success("Share link copied to clipboard");
-            setTimeout(() => setCopied(false), 2000);
-        } catch {
-            toast.error("Failed to share workflow");
-        } finally {
-            setSharing(false);
+        if (session?.user && workflowId) {
+            try {
+                const res = await fetch(`/api/workflows/${workflowId}/share`, {
+                    method: "POST",
+                });
+                if (!res.ok) throw new Error("Failed");
+                const data = await res.json();
+                const url = `${window.location.origin}/w/${data.shareId}`;
+                await navigator.clipboard.writeText(url);
+            } catch {
+                toast.error("Failed to generate share link");
+                return;
+            }
+        } else {
+            await navigator.clipboard.writeText(window.location.href);
         }
+        setCopied(true);
+        toast.success("Link copied to clipboard");
+        setTimeout(() => setCopied(false), 2000);
     };
 
     return (
@@ -160,14 +159,14 @@ function ShareButton() {
             size="sm"
             className="gap-1.5"
             onClick={handleShare}
-            disabled={sharing}
+            disabled={copied}
         >
             {copied ? (
                 <Check className="w-3.5 h-3.5 text-[var(--success)]" />
             ) : (
                 <Share2 className="w-3.5 h-3.5" />
             )}
-            {sharing ? "Sharing..." : copied ? "Copied!" : "Share"}
+            {copied ? "Copied!" : "Share"}
         </Button>
     );
 }

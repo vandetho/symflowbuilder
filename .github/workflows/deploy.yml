@@ -32,16 +32,16 @@ jobs:
                       git checkout ${{ github.event.release.tag_name }}
 
                       echo "==> Installing dependencies..."
-                      npm ci
+                      pnpm install --frozen-lockfile
 
                       echo "==> Generating Prisma client..."
-                      npx prisma generate
+                      pnpm exec prisma generate
 
                       echo "==> Running migrations..."
-                      npx prisma migrate deploy
+                      pnpm exec prisma migrate deploy
 
                       echo "==> Building..."
-                      npm run build
+                      pnpm run build
 
                       echo "==> Ensuring logs directory..."
                       mkdir -p /var/www/symflowbuilder/logs
