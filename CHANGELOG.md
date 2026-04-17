@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.1](https://github.com/vandetho/symflowbuilder/compare/v1.16.0...v1.16.1) (2026-04-17)
+
+
+### Bug Fixes
+
+* deduplicate from/to labels in transition properties panel ([4d39901](https://github.com/vandetho/symflowbuilder/commit/4d39901701e134c8d0398ddc3fe74a88974b8be9))
+
 ## [1.16.0](https://github.com/vandetho/symflowbuilder/compare/v1.15.1...v1.16.0) (2026-04-17)
 
 
