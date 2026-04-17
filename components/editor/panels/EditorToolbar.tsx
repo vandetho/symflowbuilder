@@ -31,6 +31,9 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 import { useEditorStore } from "@/stores/editor";
+import { GitHubIcon } from "@/components/ui/icons";
+import { Badge } from "@/components/ui/badge";
+import { version } from "@/package.json";
 import type { SymfonyVersion } from "@/types/workflow";
 
 const SYMFONY_VERSIONS: SymfonyVersion[] = ["5.4", "6.4", "7.4", "8.0"];
@@ -330,6 +333,21 @@ export function EditorToolbar() {
                     <SaveButton />
                     <ShareButton />
                     <SignInButton />
+
+                    <div className="h-4 w-px bg-[var(--glass-border)]" />
+
+                    <a
+                        href="https://github.com/vandetho/symflowbuilder"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <Badge
+                            variant="outline"
+                            className="gap-1 text-[10px] cursor-pointer hover:border-[var(--glass-border-hover)]"
+                        >
+                            <GitHubIcon className="w-3 h-3" />v{version}
+                        </Badge>
+                    </a>
                 </div>
             </div>
 
