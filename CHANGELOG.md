@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.1](https://github.com/vandetho/symflowbuilder/compare/v1.13.0...v1.13.1) (2026-04-17)
+
+
+### Documentation
+
+* simplify CLAUDE.md, split reference docs into docs/ ([6c7ca83](https://github.com/vandetho/symflowbuilder/commit/6c7ca833ddf0d5b997300bacb951ada309402e4c))
+
 ## [1.13.0](https://github.com/vandetho/symflowbuilder/compare/v1.12.4...v1.13.0) (2026-04-17)
 
 
