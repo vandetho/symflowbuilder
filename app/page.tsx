@@ -9,6 +9,10 @@ import {
     MousePointerClick,
     Eye,
     Check,
+    Play,
+    AlertTriangle,
+    GitFork,
+    Palette,
 } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/icons";
 import { Logo, LogoWithText } from "@/components/ui/logo";
@@ -41,10 +45,34 @@ const FEATURES = [
             "Drop in your existing YAML files. SymFlowBuilder parses and renders them instantly with auto-layout.",
     },
     {
+        icon: GitFork,
+        title: "AND / OR Patterns",
+        description:
+            "Transition nodes properly model AND-split, AND-join, and OR patterns. See the difference between parallel forks and exclusive choices.",
+    },
+    {
+        icon: Play,
+        title: "Workflow Simulator",
+        description:
+            "Step through your workflow visually. Active states glow, available transitions highlight. Auto-play mode with history and step-back.",
+    },
+    {
+        icon: AlertTriangle,
+        title: "Validation",
+        description:
+            "Detect unreachable states, dead transitions, and orphan places before exporting. Catch errors visually, not in production.",
+    },
+    {
         icon: Shield,
         title: "Guards & Metadata",
         description:
             "Configure guard expressions, transition listeners, and metadata on states and transitions visually.",
+    },
+    {
+        icon: Palette,
+        title: "Styling Metadata",
+        description:
+            "Set bg_color, description, color, and arrow_color per Symfony's workflow dump styling. Pick colors with a built-in color picker.",
     },
     {
         icon: Zap,

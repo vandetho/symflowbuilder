@@ -10,15 +10,16 @@ Design state machines graphically, then export production-ready YAML.
 ## Features
 
 - **Visual Editor** -- Drag-and-drop states and transitions on a React Flow canvas
+- **Transition Nodes** -- Petri-net model with AND-split, AND-join, and OR patterns clearly visualized
 - **YAML Export** -- Production-ready Symfony workflow YAML for versions 5.4, 6.4, 7.4, and 8.0
-- **YAML Import** – Drop in existing YAML files to visualize and edit them with auto-layout
-- **Guards & Metadata** – Configure guard expressions, transition listeners, and metadata visually
-- **Styling Metadata** -- Set `bg_color`, `description`, `color`, `arrow_color` per Symfony's workflow dump styling
+- **YAML Import** -- Drop in existing YAML files to visualize and edit them with auto-layout
+- **Workflow Simulator** -- Step through transitions visually with active state glow, auto-play, history, and step-back
+- **Workflow Validation** -- Detect unreachable states, dead transitions, and orphan places before exporting
+- **Guards & Metadata** -- Configure guard expressions, transition listeners, and metadata visually
+- **Styling Metadata** -- Set `bg_color`, `description`, `color`, `arrow_color` with a built-in color picker
 - **Undo / Redo** -- 50-step history with Cmd+Z / Cmd+Shift+Z
-- **No Account Required** – The editor is fully public. Sign in to unlock cloud save, versioning, and sharing
-- **Workflow Simulator** – Step through transitions visually, see active states glow, auto-play mode
-- **Workflow Validation** – Detect unreachable places, dead transitions, and orphan states
-- **Shareable Links** – Generate read-only public links to share workflow designs
+- **Shareable Links** -- Generate read-only public links to share workflow designs
+- **No Account Required** -- The editor is fully public. Sign in to unlock cloud save, versioning, and sharing
 
 ## Tech Stack
 
