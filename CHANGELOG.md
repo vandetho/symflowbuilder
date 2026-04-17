@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.1](https://github.com/vandetho/symflowbuilder/compare/v1.12.0...v1.12.1) (2026-04-17)
+
+
+### Bug Fixes
+
+* install pnpm in deploy script to avoid corepack signature error ([388aaaf](https://github.com/vandetho/symflowbuilder/commit/388aaafc46515e8c12cb2ed00c85c69d18fcd526))
+
 ## [1.12.0](https://github.com/vandetho/symflowbuilder/compare/v1.11.0...v1.12.0) (2026-04-17)
 
 
