@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.1](https://github.com/vandetho/symflowbuilder/compare/v1.9.0...v1.9.1) (2026-04-17)
+
+
+### Bug Fixes
+
+* swap tokens — app creates PR, GITHUB_TOKEN approves, app merges ([c92997a](https://github.com/vandetho/symflowbuilder/commit/c92997a4203675a69cc2a705bd884d121a6f79fa))
+
 ## [1.9.0](https://github.com/vandetho/symflowbuilder/compare/v1.8.1...v1.9.0) (2026-04-17)
 
 
