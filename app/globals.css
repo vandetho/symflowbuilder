@@ -115,3 +115,17 @@ body {
         border: 1px solid var(--glass-border-strong);
     }
 }
+
+@keyframes pulse-glow {
+    0%,
+    100% {
+        box-shadow:
+            0 0 16px var(--success),
+            0 0 32px rgba(52, 211, 153, 0.1);
+    }
+    50% {
+        box-shadow:
+            0 0 24px var(--success),
+            0 0 48px rgba(52, 211, 153, 0.2);
+    }
+}

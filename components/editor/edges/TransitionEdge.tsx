@@ -9,6 +9,7 @@ import {
 } from "@xyflow/react";
 import type { TransitionEdgeData } from "@/types/workflow";
 import { useEditorStore } from "@/stores/editor";
+import { useSimulatorStore } from "@/stores/simulator";
 
 export const TransitionEdge = memo(
     ({
@@ -24,6 +25,11 @@ export const TransitionEdge = memo(
     }: EdgeProps & { data?: TransitionEdgeData }) => {
         const setSelectedEdge = useEditorStore((s) => s.setSelectedEdge);
         const { setEdges } = useReactFlow();
+        const simActive = useSimulatorStore((s) => s.active);
+        const isEnabled = useSimulatorStore((s) =>
+            s.active ? s.enabledTransitions.some((t) => t.name === data?.label) : false
+        );
+        const simDimmed = simActive && !isEnabled;
 
         const handleLabelClick = useCallback(
             (e: React.MouseEvent) => {
@@ -68,11 +74,16 @@ export const TransitionEdge = memo(
                     d={edgePath}
                     fill="none"
                     style={{
-                        stroke: selected
-                            ? "var(--accent-bright)"
-                            : data?.metadata?.arrow_color || "rgba(255,255,255,0.25)",
-                        strokeWidth: selected ? 2 : 1.5,
+                        stroke: simActive
+                            ? isEnabled
+                                ? "var(--success)"
+                                : "rgba(255,255,255,0.08)"
+                            : selected
+                              ? "var(--accent-bright)"
+                              : data?.metadata?.arrow_color || "rgba(255,255,255,0.25)",
+                        strokeWidth: selected ? 2 : isEnabled ? 2 : 1.5,
                         strokeDasharray: "6 4",
+                        opacity: simDimmed ? 0.3 : 1,
                     }}
                 >
                     <animate

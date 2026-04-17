@@ -3,9 +3,17 @@
 import { memo } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 import type { StateNodeData } from "@/types/workflow";
+import { useSimulatorStore } from "@/stores/simulator";
 
 export const StateNode = memo(
     ({ data, selected }: NodeProps & { data: StateNodeData }) => {
+        const simActive = useSimulatorStore((s) => s.active);
+        const tokenCount = useSimulatorStore((s) =>
+            s.active ? (s.marking[data.label] ?? 0) : 0
+        );
+        const isMarked = simActive && tokenCount > 0;
+        const isDimmed = simActive && tokenCount === 0;
+
         const bgColor = data.metadata?.bg_color;
         const description = data.metadata?.description;
         // Count metadata excluding Symfony styling keys
@@ -19,9 +27,11 @@ export const StateNode = memo(
           relative min-w-[140px] rounded-[14px]
           border transition-all duration-150
           ${
-              selected
-                  ? "border-[var(--accent-bright)] shadow-[0_0_0_2px_var(--accent-glow)]"
-                  : "border-[var(--glass-border)] hover:border-[var(--glass-border-hover)]"
+              isMarked
+                  ? "border-[var(--success)]"
+                  : selected
+                    ? "border-[var(--accent-bright)] shadow-[0_0_0_2px_var(--accent-glow)]"
+                    : "border-[var(--glass-border)] hover:border-[var(--glass-border-hover)]"
           }
         `}
                 style={{
@@ -32,6 +42,10 @@ export const StateNode = memo(
                           : "#12121f",
                     borderLeftColor: bgColor || undefined,
                     borderLeftWidth: bgColor ? 3 : undefined,
+                    opacity: isDimmed ? 0.35 : 1,
+                    animation: isMarked
+                        ? "pulse-glow 2s ease-in-out infinite"
+                        : undefined,
                 }}
             >
                 {data.isInitial && (

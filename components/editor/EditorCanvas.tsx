@@ -18,12 +18,14 @@ import {
 import "@xyflow/react/dist/style.css";
 
 import { useEditorStore } from "@/stores/editor";
+import { useSimulatorStore } from "@/stores/simulator";
 import { StateNode } from "./nodes/StateNode";
 import { TransitionEdge } from "./edges/TransitionEdge";
 import { NodePalette } from "./panels/NodePalette";
 import { EditorToolbar } from "./panels/EditorToolbar";
 import { EditorControls } from "./panels/EditorControls";
 import { PropertiesPanel } from "./panels/PropertiesPanel";
+import { SimulatorPanel } from "./panels/SimulatorPanel";
 import { ContextMenu, type ContextMenuState } from "./panels/ContextMenu";
 import type { StateNodeData, TransitionEdgeData } from "@/types/workflow";
 import { uid, uniqueName } from "@/lib/utils";
@@ -52,6 +54,7 @@ function EditorCanvasInner() {
         setEdges,
     } = useEditorStore();
 
+    const simActive = useSimulatorStore((s) => s.active);
     const { screenToFlowPosition } = useReactFlow();
     const connectingFrom = useRef<{
         nodeId: string;
@@ -274,27 +277,29 @@ function EditorCanvasInner() {
                 edges={edges}
                 nodeTypes={nodeTypes}
                 edgeTypes={edgeTypes}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onConnect={onConnect}
-                onConnectStart={onConnectStart}
-                onConnectEnd={onConnectEnd}
-                onReconnect={onReconnect}
-                onReconnectStart={onReconnectStart}
-                onReconnectEnd={onReconnectEnd}
-                onDragOver={onDragOver}
-                onDrop={onDrop}
+                onNodesChange={simActive ? undefined : onNodesChange}
+                onEdgesChange={simActive ? undefined : onEdgesChange}
+                onConnect={simActive ? undefined : onConnect}
+                onConnectStart={simActive ? undefined : onConnectStart}
+                onConnectEnd={simActive ? undefined : onConnectEnd}
+                onReconnect={simActive ? undefined : onReconnect}
+                onReconnectStart={simActive ? undefined : onReconnectStart}
+                onReconnectEnd={simActive ? undefined : onReconnectEnd}
+                onDragOver={simActive ? undefined : onDragOver}
+                onDrop={simActive ? undefined : onDrop}
                 onNodeClick={onNodeClick}
                 onEdgeClick={onEdgeClick}
                 onPaneClick={onPaneClick}
-                onNodeContextMenu={onNodeContextMenu}
-                onEdgeContextMenu={onEdgeContextMenu}
-                onPaneContextMenu={onPaneContextMenu}
-                onNodeDragStop={onNodeDragStop}
+                onNodeContextMenu={simActive ? undefined : onNodeContextMenu}
+                onEdgeContextMenu={simActive ? undefined : onEdgeContextMenu}
+                onPaneContextMenu={simActive ? undefined : onPaneContextMenu}
+                onNodeDragStop={simActive ? undefined : onNodeDragStop}
+                nodesDraggable={!simActive}
+                nodesConnectable={!simActive}
                 fitView
                 proOptions={{ hideAttribution: true }}
                 defaultEdgeOptions={{ type: "transition" }}
-                deleteKeyCode={["Backspace", "Delete"]}
+                deleteKeyCode={simActive ? [] : ["Backspace", "Delete"]}
             >
                 <Background
                     variant={BackgroundVariant.Dots}
@@ -311,9 +316,10 @@ function EditorCanvasInner() {
                 )}
             </ReactFlow>
 
-            <NodePalette />
+            {!simActive && <NodePalette />}
             <EditorControls />
-            <PropertiesPanel />
+            {!simActive && <PropertiesPanel />}
+            <SimulatorPanel />
             {contextMenu && (
                 <ContextMenu menu={contextMenu} onClose={() => setContextMenu(null)} />
             )}

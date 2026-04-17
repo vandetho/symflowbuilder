@@ -12,6 +12,8 @@ import {
     Save,
     Share2,
     Check,
+    Play,
+    Square,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
@@ -31,12 +33,46 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 import { useEditorStore } from "@/stores/editor";
+import { useSimulatorStore } from "@/stores/simulator";
 import { GitHubIcon } from "@/components/ui/icons";
 import { Badge } from "@/components/ui/badge";
 import { version } from "@/package.json";
 import type { SymfonyVersion } from "@/types/workflow";
 
 const SYMFONY_VERSIONS: SymfonyVersion[] = ["5.4", "6.4", "7.4", "8.0"];
+
+function SimulateButton() {
+    const simActive = useSimulatorStore((s) => s.active);
+    const initialize = useSimulatorStore((s) => s.initialize);
+    const activate = useSimulatorStore((s) => s.activate);
+    const deactivate = useSimulatorStore((s) => s.deactivate);
+    const { nodes, edges, workflowMeta } = useEditorStore();
+
+    const handleToggle = () => {
+        if (simActive) {
+            deactivate();
+        } else {
+            initialize(nodes, edges, workflowMeta);
+            activate();
+        }
+    };
+
+    return (
+        <Button
+            variant="ghost"
+            size="sm"
+            className={`gap-1.5 ${simActive ? "text-[var(--success)] bg-[var(--success-dim)]" : ""}`}
+            onClick={handleToggle}
+        >
+            {simActive ? (
+                <Square className="w-3.5 h-3.5" />
+            ) : (
+                <Play className="w-3.5 h-3.5" />
+            )}
+            {simActive ? "Stop" : "Simulate"}
+        </Button>
+    );
+}
 
 function SaveButton() {
     const { data: session } = useSession();
@@ -329,6 +365,7 @@ export function EditorToolbar() {
                         Export YAML
                     </Button>
 
+                    <SimulateButton />
                     <SaveButton />
                     <ShareButton />
                     <SignInButton />
