@@ -81,12 +81,13 @@ jobs:
         needs: [build]
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         runs-on: ubuntu-latest
+        environment: Production
         steps:
             - name: Generate GitHub App Token
               id: app-token
               uses: actions/create-github-app-token@v1
               with:
-                  app-id: 847873
+                  app-id: ${{ secrets.BOT_APP_ID }}
                   private-key: ${{ secrets.BOT_PRIVATE_KEY }}
 
             - name: Run release-please
