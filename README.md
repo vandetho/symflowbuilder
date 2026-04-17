@@ -21,6 +21,7 @@
 - **YAML Export** -- Production-ready Symfony workflow YAML for versions 5.4, 6.4, 7.4, and 8.0
 - **YAML Import** -- Drop in existing YAML files to visualize and edit them with auto-layout
 - **Guards & Metadata** -- Configure guard expressions, transition listeners, and metadata visually
+- **Styling Metadata** -- Set `bg_color`, `description`, `color`, `arrow_color` per Symfony's workflow dump styling
 - **Undo / Redo** -- 50-step history with Cmd+Z / Cmd+Shift+Z
 - **No Account Required** -- The editor is fully public. Sign in to unlock cloud save, versioning, and sharing
 - **Shareable Links** -- Generate read-only public links to share workflow designs
@@ -54,7 +55,7 @@ git clone https://github.com/vandetho/symflowbuilder.git
 cd symflowbuilder
 
 # Install dependencies
-npm install
+pnpm install
 
 # Copy environment variables
 cp .env.example .env.local
@@ -159,6 +160,7 @@ CI runs ESLint, Prettier, TypeScript checks, and a production build on every PR.
 - [x] YAML export for Symfony 5.4, 6.4, 7.4, and 8.0
 - [x] YAML import with auto-layout
 - [x] Guards, listeners, and metadata on nodes/edges
+- [x] Symfony styling metadata (bg_color, description, color, arrow_color)
 - [x] Undo / redo (50-step history)
 - [x] GitHub + Google OAuth
 - [x] Cloud save with auto-sync
@@ -178,6 +180,7 @@ CI runs ESLint, Prettier, TypeScript checks, and a production build on every PR.
 - [ ] Team workspaces with shared workflow libraries
 - [ ] Workflow diff view (compare two versions side by side)
 - [ ] Dark/light theme toggle
+- [ ] Color picker component for styling metadata
 
 ## Sponsors
 

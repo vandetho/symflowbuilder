@@ -1157,7 +1157,7 @@ Work in this sequence to ship incrementally:
 
 ### UI Components — NEVER use native HTML elements directly
 
-Every interactive or visual element must use a shadcn/ui component or a custom component built on Radix UI primitives. Native HTML tags are only acceptable inside component implementation files themselves, never in page or feature code.
+Every interactive or visual element must use a shadcn/ui component or a custom component built on Radix UI primitives. **This includes specialized inputs** — never use native `<input type="color">`, `<input type="range">`, `<input type="date">`, etc. If shadcn/ui doesn't provide a variant, build a custom component in `/components/ui/`. Native HTML tags are only acceptable inside component implementation files themselves (`/components/ui/*`), never in page or feature code.
 
 ```
 ❌ <button onClick={…}>Save</button>
@@ -1165,6 +1165,12 @@ Every interactive or visual element must use a shadcn/ui component or a custom c
 
 ❌ <input type="text" value={…} onChange={…} />
 ✅ <Input value={…} onChange={…} />
+
+❌ <input type="color" value={…} onChange={…} />
+✅ Use a text <Input> with hex/named color values, or build a custom ColorPicker component
+
+❌ <input type="checkbox" checked={…} onChange={…} />
+✅ <Checkbox checked={…} onCheckedChange={…} />   {/* shadcn/ui Checkbox */}
 
 ❌ <select>…</select>
 ✅ <Select>…</Select>
@@ -1179,7 +1185,7 @@ Every interactive or visual element must use a shadcn/ui component or a custom c
 ✅ <Dialog>…</Dialog>   {/* shadcn/ui Dialog */}
 ```
 
-Available shadcn/ui components to install as needed: `button`, `input`, `textarea`, `select`, `checkbox`, `switch`, `label`, `badge`, `card`, `dialog`, `drawer`, `dropdown-menu`, `popover`, `tooltip`, `tabs`, `separator`, `scroll-area`, `avatar`, `toast` (via Sonner), `skeleton`.
+Available components in `/components/ui/`: `badge`, `button`, `card`, `checkbox` (Radix), `dialog`, `input`, `label`, `radio-group` (Radix), `select`, `separator`, `tooltip`. Install from shadcn/ui or build on Radix primitives as needed: `textarea`, `switch`, `drawer`, `dropdown-menu`, `popover`, `tabs`, `scroll-area`, `avatar`, `toast` (via Sonner), `skeleton`.
 
 If a required component does not exist in shadcn/ui, build a custom component in `/components/ui/` using Radix UI primitives directly — never fall back to a bare HTML element.
 

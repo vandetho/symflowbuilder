@@ -3,6 +3,7 @@
 import { useCallback, useState, useMemo } from "react";
 import { X, Plus, Trash2, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -75,30 +76,26 @@ export function PropertiesPanel() {
 
                     <div className="flex items-center gap-4">
                         <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="checkbox"
+                            <Checkbox
                                 checked={data.isInitial}
-                                onChange={(e) =>
+                                onCheckedChange={(checked) =>
                                     updateNodeData(selectedNode.id, {
-                                        isInitial: e.target.checked,
+                                        isInitial: checked === true,
                                     })
                                 }
-                                className="accent-[var(--accent)]"
                             />
                             <span className="text-xs text-[var(--text-secondary)]">
                                 Initial place
                             </span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="checkbox"
+                            <Checkbox
                                 checked={data.isFinal}
-                                onChange={(e) =>
+                                onCheckedChange={(checked) =>
                                     updateNodeData(selectedNode.id, {
-                                        isFinal: e.target.checked,
+                                        isFinal: checked === true,
                                     })
                                 }
-                                className="accent-[var(--accent)]"
                             />
                             <span className="text-xs text-[var(--text-secondary)]">
                                 Final place
