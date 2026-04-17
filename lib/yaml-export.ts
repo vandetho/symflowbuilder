@@ -11,12 +11,21 @@ interface ExportOptions {
 export function exportWorkflowYaml({ nodes, edges, meta }: ExportOptions): string {
     const stateNodes = nodes.filter((n) => n.type === "state");
 
-    // Build places
-    const places: Record<string, unknown> = {};
-    for (const node of stateNodes) {
-        const data = node.data as unknown as StateNodeData;
-        const hasMetadata = Object.keys(data.metadata).length > 0;
-        places[data.label] = hasMetadata ? { metadata: data.metadata } : null;
+    // Build places — string[] when none have metadata, object otherwise
+    const anyPlaceHasMetadata = stateNodes.some(
+        (n) => Object.keys((n.data as unknown as StateNodeData).metadata).length > 0
+    );
+    let places: unknown;
+    if (anyPlaceHasMetadata) {
+        const placesObj: Record<string, unknown> = {};
+        for (const node of stateNodes) {
+            const data = node.data as unknown as StateNodeData;
+            const hasMetadata = Object.keys(data.metadata).length > 0;
+            placesObj[data.label] = hasMetadata ? { metadata: data.metadata } : null;
+        }
+        places = placesObj;
+    } else {
+        places = stateNodes.map((n) => (n.data as unknown as StateNodeData).label);
     }
 
     // Build transitions
@@ -71,13 +80,15 @@ export function exportWorkflowYaml({ nodes, edges, meta }: ExportOptions): strin
         }
     }
 
-    // Build initial_marking
-    const initialMarking =
+    // Build initial_marking — string when single, array when multiple
+    const initialMarkingArr =
         meta.initial_marking.length > 0
             ? meta.initial_marking
             : stateNodes
                   .filter((n) => (n.data as unknown as StateNodeData).isInitial)
                   .map((n) => (n.data as unknown as StateNodeData).label);
+    const initialMarking =
+        initialMarkingArr.length === 1 ? initialMarkingArr[0] : initialMarkingArr;
 
     const workflowConfig: Record<string, unknown> = {
         type: meta.type,
@@ -99,11 +110,24 @@ export function exportWorkflowYaml({ nodes, edges, meta }: ExportOptions): strin
         },
     };
 
-    return yaml.dump(output, {
+    const raw = yaml.dump(output, {
         indent: 4,
         lineWidth: 120,
         noRefs: true,
         quotingType: "'",
         forceQuotes: false,
+        styles: { "!!null": "canonical" },
     });
+
+    // Convert block-style arrays to Symfony-style flow arrays: [a, b, c]
+    return raw.replace(
+        /^( +)([\w][\w.]*):[ ]*\n((?:\1 {4}- .+\n)+)/gm,
+        (_match, indent: string, key: string, items: string) => {
+            const values = items
+                .split("\n")
+                .filter((l) => l.trim().startsWith("- "))
+                .map((l) => l.trim().replace(/^- /, ""));
+            return `${indent}${key}: [${values.join(", ")}]\n`;
+        }
+    );
 }
