@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.3](https://github.com/vandetho/symflowbuilder/compare/v1.12.2...v1.12.3) (2026-04-17)
+
+
+### Bug Fixes
+
+* install pnpm to user prefix to avoid permission errors ([de2706d](https://github.com/vandetho/symflowbuilder/commit/de2706da9965bc1896ede5b95c98490a5ae924ca))
+
 ## [1.12.2](https://github.com/vandetho/symflowbuilder/compare/v1.12.1...v1.12.2) (2026-04-17)
 
 
