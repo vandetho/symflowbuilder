@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.2](https://github.com/vandetho/symflowbuilder/compare/v1.12.1...v1.12.2) (2026-04-17)
+
+
+### Bug Fixes
+
+* disable corepack and force direct pnpm install in deploy ([1e41d98](https://github.com/vandetho/symflowbuilder/commit/1e41d983e22ca99ae0d20dc30c00a654a1832168))
+
 ## [1.12.1](https://github.com/vandetho/symflowbuilder/compare/v1.12.0...v1.12.1) (2026-04-17)
 
 
