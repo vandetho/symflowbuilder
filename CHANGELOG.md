@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.1](https://github.com/vandetho/symflowbuilder/compare/v1.15.0...v1.15.1) (2026-04-17)
+
+
+### Bug Fixes
+
+* visually distinguish AND edges with solid accent lines ([9255a22](https://github.com/vandetho/symflowbuilder/commit/9255a22ff494ee11ff0d00436bd8b6153ed410ae))
+
 ## [1.15.0](https://github.com/vandetho/symflowbuilder/compare/v1.14.2...v1.15.0) (2026-04-17)
 
 
