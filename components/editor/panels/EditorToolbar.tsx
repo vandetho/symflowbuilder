@@ -217,7 +217,7 @@ function ShareButton() {
                     {copied ? "Copied!" : "Share"}
                 </Button>
             </TooltipTrigger>
-            <TooltipContent>{tooltipText}</TooltipContent>
+            <TooltipContent side="bottom">{tooltipText}</TooltipContent>
         </Tooltip>
     );
 }
