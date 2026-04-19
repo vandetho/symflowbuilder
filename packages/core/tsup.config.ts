@@ -5,6 +5,8 @@ export default defineConfig({
         index: "src/index.ts",
         engine: "src/engine/index.ts",
         yaml: "src/yaml/index.ts",
+        json: "src/json/index.ts",
+        typescript: "src/typescript/index.ts",
         types: "src/types/index.ts",
         "react-flow": "src/adapters/react-flow/index.ts",
     },

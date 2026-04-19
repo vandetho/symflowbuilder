@@ -9,6 +9,8 @@
         ".": "./src/index.ts",
         "./engine": "./src/engine/index.ts",
         "./yaml": "./src/yaml/index.ts",
+        "./json": "./src/json/index.ts",
+        "./typescript": "./src/typescript/index.ts",
         "./types": "./src/types/index.ts",
         "./react-flow": "./src/adapters/react-flow/index.ts"
     },
@@ -37,6 +39,16 @@
                 "types": "./dist/yaml.d.ts",
                 "import": "./dist/yaml.js",
                 "require": "./dist/yaml.cjs"
+            },
+            "./json": {
+                "types": "./dist/json.d.ts",
+                "import": "./dist/json.js",
+                "require": "./dist/json.cjs"
+            },
+            "./typescript": {
+                "types": "./dist/typescript.d.ts",
+                "import": "./dist/typescript.js",
+                "require": "./dist/typescript.cjs"
             },
             "./types": {
                 "types": "./dist/types.d.ts",
