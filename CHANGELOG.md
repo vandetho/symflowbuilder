@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.0](https://github.com/vandetho/symflowbuilder/compare/v1.21.2...v1.22.0) (2026-04-19)
+
+
+### Features
+
+* add Config dialog to shared workflow view ([e5e66ff](https://github.com/vandetho/symflowbuilder/commit/e5e66ff21d0db83ff3a21e9fde63692f8d897ea9))
+
 ## [1.21.2](https://github.com/vandetho/symflowbuilder/compare/v1.21.1...v1.21.2) (2026-04-19)
 
 
