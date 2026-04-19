@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.19.1](https://github.com/vandetho/symflowbuilder/compare/v1.19.0...v1.19.1) (2026-04-19)
+
+
+### Documentation
+
+* update landing, features, how-it-works, and blog with guard/event features ([7734bf2](https://github.com/vandetho/symflowbuilder/commit/7734bf22eaabf58144020f47785a99bfae865960))
+* update README with workflow engine and guard toggle features ([0484aa9](https://github.com/vandetho/symflowbuilder/commit/0484aa98c0a26822e508871265edb9017f7d590a))
+
 ## [1.19.0](https://github.com/vandetho/symflowbuilder/compare/v1.18.0...v1.19.0) (2026-04-19)
 
 
