@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.0](https://github.com/vandetho/symflowbuilder/compare/v1.20.2...v1.21.0) (2026-04-19)
+
+
+### Features
+
+* add mobile hamburger menu with glass slide-over panel ([3f82db7](https://github.com/vandetho/symflowbuilder/commit/3f82db7c1ebd9a9d7f39e959628672c04e349b8a))
+
 ## [1.20.2](https://github.com/vandetho/symflowbuilder/compare/v1.20.1...v1.20.2) (2026-04-19)
 
 
