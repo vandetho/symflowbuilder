@@ -37,7 +37,7 @@ import { useSimulatorStore } from "@/stores/simulator";
 import { GitHubIcon } from "@/components/ui/icons";
 import { Badge } from "@/components/ui/badge";
 import { version } from "@/package.json";
-import type { SymfonyVersion } from "@symflowbuilder/core";
+import type { SymfonyVersion } from "@symflow/core";
 
 const SYMFONY_VERSIONS: SymfonyVersion[] = ["5.4", "6.4", "7.4", "8.0"];
 

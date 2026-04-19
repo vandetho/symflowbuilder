@@ -14,7 +14,7 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-import type { Collaborator, CollaboratorRole } from "@symflowbuilder/core";
+import type { Collaborator, CollaboratorRole } from "@/types/collaboration";
 
 interface CollaboratorsDialogProps {
     workflowId: string;

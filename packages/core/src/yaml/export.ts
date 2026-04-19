@@ -1,78 +1,47 @@
 import yaml from "js-yaml";
-import type { Node, Edge } from "@xyflow/react";
-import type { StateNodeData, TransitionNodeData, WorkflowMeta } from "../types/workflow";
+import type { WorkflowMeta } from "../types/workflow";
+import type { WorkflowDefinition } from "../engine/types";
 
 interface ExportOptions {
-    nodes: Node[];
-    edges: Edge[];
+    definition: WorkflowDefinition;
     meta: WorkflowMeta;
 }
 
-export function exportWorkflowYaml({ nodes, edges, meta }: ExportOptions): string {
-    const stateNodes = nodes.filter((n) => n.type === "state");
-
-    // Build places — string[] when none have metadata, object otherwise
-    const anyPlaceHasMetadata = stateNodes.some(
-        (n) => Object.keys((n.data as unknown as StateNodeData).metadata).length > 0
+export function exportWorkflowYaml({ definition, meta }: ExportOptions): string {
+    const anyPlaceHasMetadata = definition.places.some(
+        (p) => p.metadata && Object.keys(p.metadata).length > 0
     );
+
     let places: unknown;
     if (anyPlaceHasMetadata) {
         const placesObj: Record<string, unknown> = {};
-        for (const node of stateNodes) {
-            const data = node.data as unknown as StateNodeData;
-            const hasMetadata = Object.keys(data.metadata).length > 0;
-            placesObj[data.label] = hasMetadata ? { metadata: data.metadata } : null;
+        for (const place of definition.places) {
+            const hasMetadata = place.metadata && Object.keys(place.metadata).length > 0;
+            placesObj[place.name] = hasMetadata ? { metadata: place.metadata } : null;
         }
         places = placesObj;
     } else {
-        places = stateNodes.map((n) => (n.data as unknown as StateNodeData).label);
+        places = definition.places.map((p) => p.name);
     }
 
-    // Build transitions from transition nodes
-    const transitionNodes = nodes.filter((n) => n.type === "transition");
     const transitions: Record<string, unknown> = {};
-
-    for (const tNode of transitionNodes) {
-        const data = tNode.data as unknown as TransitionNodeData;
-
-        // Find connected state nodes via edges
-        const fromLabels = edges
-            .filter((e) => e.target === tNode.id)
-            .map((e) => stateNodes.find((n) => n.id === e.source))
-            .filter(Boolean)
-            .map((n) => (n!.data as unknown as StateNodeData).label);
-
-        const toLabels = edges
-            .filter((e) => e.source === tNode.id)
-            .map((e) => stateNodes.find((n) => n.id === e.target))
-            .filter(Boolean)
-            .map((n) => (n!.data as unknown as StateNodeData).label);
-
-        if (fromLabels.length === 0 || toLabels.length === 0) continue;
-
+    for (const t of definition.transitions) {
+        if (t.froms.length === 0 || t.tos.length === 0) continue;
         const transition: Record<string, unknown> = {
-            from: fromLabels.length === 1 ? fromLabels[0] : fromLabels,
-            to: toLabels.length === 1 ? toLabels[0] : toLabels,
+            from: t.froms.length === 1 ? t.froms[0] : t.froms,
+            to: t.tos.length === 1 ? t.tos[0] : t.tos,
         };
-
-        if (data.guard) {
-            transition.guard = data.guard;
+        if (t.guard) transition.guard = t.guard;
+        if (t.metadata && Object.keys(t.metadata).length > 0) {
+            transition.metadata = t.metadata;
         }
-
-        if (Object.keys(data.metadata).length > 0) {
-            transition.metadata = data.metadata;
-        }
-
-        transitions[data.label] = transition;
+        transitions[t.name] = transition;
     }
 
-    // Build initial_marking — string when single, array when multiple
     const initialMarkingArr =
         meta.initial_marking.length > 0
             ? meta.initial_marking
-            : stateNodes
-                  .filter((n) => (n.data as unknown as StateNodeData).isInitial)
-                  .map((n) => (n.data as unknown as StateNodeData).label);
+            : definition.initialMarking;
     const initialMarking =
         initialMarkingArr.length === 1 ? initialMarkingArr[0] : initialMarkingArr;
 
@@ -105,7 +74,6 @@ export function exportWorkflowYaml({ nodes, edges, meta }: ExportOptions): strin
         styles: { "!!null": "canonical" },
     });
 
-    // Convert block-style arrays to Symfony-style flow arrays: [a, b, c]
     return raw.replace(
         /^( +)([\w][\w.]*):[ ]*\n((?:\1 {4}- .+\n)+)/gm,
         (_match, indent: string, key: string, items: string) => {

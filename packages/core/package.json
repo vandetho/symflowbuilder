@@ -1,5 +1,5 @@
 {
-    "name": "@symflowbuilder/core",
+    "name": "@symflow/core",
     "version": "0.0.0",
     "private": true,
     "type": "module",
@@ -9,10 +9,8 @@
         ".": "./src/index.ts",
         "./engine": "./src/engine/index.ts",
         "./yaml": "./src/yaml/index.ts",
-        "./layout": "./src/layout/index.ts",
-        "./migrations": "./src/migrations/index.ts",
         "./types": "./src/types/index.ts",
-        "./adapters/react-flow": "./src/adapters/react-flow/index.ts"
+        "./react-flow": "./src/adapters/react-flow/index.ts"
     },
     "files": [
         "dist",
@@ -40,25 +38,15 @@
                 "import": "./dist/yaml.js",
                 "require": "./dist/yaml.cjs"
             },
-            "./layout": {
-                "types": "./dist/layout.d.ts",
-                "import": "./dist/layout.js",
-                "require": "./dist/layout.cjs"
-            },
-            "./migrations": {
-                "types": "./dist/migrations.d.ts",
-                "import": "./dist/migrations.js",
-                "require": "./dist/migrations.cjs"
-            },
             "./types": {
                 "types": "./dist/types.d.ts",
                 "import": "./dist/types.js",
                 "require": "./dist/types.cjs"
             },
-            "./adapters/react-flow": {
-                "types": "./dist/adapters/react-flow.d.ts",
-                "import": "./dist/adapters/react-flow.js",
-                "require": "./dist/adapters/react-flow.cjs"
+            "./react-flow": {
+                "types": "./dist/react-flow.d.ts",
+                "import": "./dist/react-flow.js",
+                "require": "./dist/react-flow.cjs"
             }
         }
     },

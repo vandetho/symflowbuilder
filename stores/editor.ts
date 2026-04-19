@@ -9,19 +9,21 @@ import {
     applyEdgeChanges,
     addEdge,
 } from "@xyflow/react";
+import type { WorkflowMeta } from "@symflow/core";
+import { DEFAULT_WORKFLOW_META } from "@symflow/core";
 import type {
     StateNodeData,
     TransitionNodeData,
     TransitionEdgeData,
-    WorkflowMeta,
     Snapshot,
-} from "@symflowbuilder/core";
-import type { AccessLevel } from "@symflowbuilder/core";
-import { DEFAULT_WORKFLOW_META } from "@symflowbuilder/core";
-import { exportWorkflowYaml } from "@symflowbuilder/core";
-import { importWorkflowYaml } from "@symflowbuilder/core";
-import { migrateGraphData } from "@symflowbuilder/core";
-import { uid, uniqueName } from "@symflowbuilder/core";
+} from "@symflow/core/react-flow";
+import {
+    exportGraphToYaml,
+    importWorkflowYamlToGraph,
+    migrateGraphData,
+} from "@symflow/core/react-flow";
+import type { AccessLevel } from "@/types/collaboration";
+import { uid, uniqueName } from "@/lib/utils";
 
 interface EditorStore {
     nodes: Node[];
@@ -206,11 +208,11 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
 
     exportYaml: () => {
         const { nodes, edges, workflowMeta } = get();
-        return exportWorkflowYaml({ nodes, edges, meta: workflowMeta });
+        return exportGraphToYaml({ nodes, edges, meta: workflowMeta });
     },
 
     importYaml: (yamlString) => {
-        const result = importWorkflowYaml(yamlString);
+        const result = importWorkflowYamlToGraph(yamlString);
         set({
             nodes: result.nodes,
             edges: result.edges,

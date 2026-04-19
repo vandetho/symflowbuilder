@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import type { StateNodeData } from "@symflowbuilder/core";
+import type { StateNodeData } from "@symflow/core/react-flow";
 import { useSimulatorStore } from "@/stores/simulator";
 
 export const StateNode = memo(

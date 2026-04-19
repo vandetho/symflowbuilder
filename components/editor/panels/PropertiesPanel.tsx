@@ -10,11 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useEditorStore } from "@/stores/editor";
-import type {
-    StateNodeData,
-    TransitionNodeData,
-    TransitionListener,
-} from "@symflowbuilder/core";
+import type { TransitionListener } from "@symflow/core";
+import type { StateNodeData, TransitionNodeData } from "@symflow/core/react-flow";
 
 const PLACE_STYLING_KEYS = ["bg_color", "description"];
 const TRANSITION_STYLING_KEYS = ["label", "color", "arrow_color"];

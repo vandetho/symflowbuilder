@@ -1,25 +1,16 @@
 import yaml from "js-yaml";
-import type { Node, Edge } from "@xyflow/react";
-import type {
-    StateNodeData,
-    TransitionNodeData,
-    WorkflowMeta,
-    WorkflowType,
-    MarkingStoreType,
-} from "../types/workflow";
+import type { WorkflowMeta, WorkflowType, MarkingStoreType } from "../types/workflow";
 import { DEFAULT_WORKFLOW_META } from "../types/workflow";
-import { autoLayoutNodes } from "../layout/auto-layout";
+import type { WorkflowDefinition, Place, Transition } from "../engine/types";
 
-interface ImportResult {
-    nodes: Node[];
-    edges: Edge[];
+export interface ImportResult {
+    definition: WorkflowDefinition;
     meta: WorkflowMeta;
 }
 
 export function importWorkflowYaml(yamlString: string): ImportResult {
     const parsed = yaml.load(yamlString) as Record<string, unknown>;
 
-    // Support both full framework.workflows.{name} and bare workflow object
     let workflowName: string;
     let config: Record<string, unknown>;
 
@@ -34,7 +25,6 @@ export function importWorkflowYaml(yamlString: string): ImportResult {
         workflowName = "imported_workflow";
         config = parsed;
     } else {
-        // Try treating keys as workflow names
         const keys = Object.keys(parsed);
         if (keys.length > 0 && typeof parsed[keys[0]] === "object") {
             const inner = parsed[keys[0]] as Record<string, unknown>;
@@ -49,120 +39,73 @@ export function importWorkflowYaml(yamlString: string): ImportResult {
         }
     }
 
-    // Extract metadata
     const markingStore = config.marking_store as Record<string, string> | undefined;
+    const initialMarking: string[] = Array.isArray(config.initial_marking)
+        ? (config.initial_marking as string[])
+        : config.initial_marking
+          ? [config.initial_marking as string]
+          : [];
+
     const meta: WorkflowMeta = {
         name: workflowName,
         symfonyVersion: DEFAULT_WORKFLOW_META.symfonyVersion,
         type: (config.type as WorkflowType) ?? "workflow",
         marking_store: (markingStore?.type as MarkingStoreType) ?? "method",
         property: markingStore?.property ?? "currentState",
-        initial_marking: Array.isArray(config.initial_marking)
-            ? config.initial_marking
-            : config.initial_marking
-              ? [config.initial_marking as string]
-              : [],
+        initial_marking: initialMarking,
         supports: Array.isArray(config.supports)
             ? (config.supports[0] as string)
             : ((config.supports as string) ?? DEFAULT_WORKFLOW_META.supports),
     };
 
-    // Parse places
-    const places = config.places as Record<string, unknown> | string[] | undefined;
-    const placeNames: string[] = [];
-    const placeMetadata: Record<string, Record<string, string>> = {};
-
-    if (Array.isArray(places)) {
-        placeNames.push(...places);
-    } else if (places && typeof places === "object") {
-        for (const [name, value] of Object.entries(places)) {
-            placeNames.push(name);
+    const placesRaw = config.places as Record<string, unknown> | string[] | undefined;
+    const places: Place[] = [];
+    if (Array.isArray(placesRaw)) {
+        for (const name of placesRaw) places.push({ name });
+    } else if (placesRaw && typeof placesRaw === "object") {
+        for (const [name, value] of Object.entries(placesRaw)) {
+            const place: Place = { name };
             if (
                 value &&
                 typeof value === "object" &&
                 "metadata" in (value as Record<string, unknown>)
             ) {
-                placeMetadata[name] = (value as Record<string, unknown>)
-                    .metadata as Record<string, string>;
+                place.metadata = (value as Record<string, unknown>).metadata as Record<
+                    string,
+                    string
+                >;
             }
+            places.push(place);
         }
     }
 
-    // Create state nodes
-    const stateNodes: Node[] = placeNames.map((name) => ({
-        id: `state-${name}`,
-        type: "state",
-        position: { x: 0, y: 0 },
-        data: {
-            label: name,
-            isInitial: meta.initial_marking.includes(name),
-            isFinal: false,
-            metadata: placeMetadata[name] ?? {},
-        } satisfies StateNodeData,
-    }));
-
-    // Parse transitions → create transition nodes + connector edges
-    const transitions = config.transitions as Record<string, unknown> | undefined;
-    const transitionNodes: Node[] = [];
-    const edges: Edge[] = [];
-
-    if (transitions) {
-        for (const [transName, transConfig] of Object.entries(transitions)) {
-            const tc = transConfig as Record<string, unknown>;
-            const froms = Array.isArray(tc.from) ? tc.from : [tc.from as string];
-            const tos = Array.isArray(tc.to) ? tc.to : [tc.to as string];
-
-            const transitionId = `transition-${transName}`;
-
-            // Create transition node
-            transitionNodes.push({
-                id: transitionId,
-                type: "transition",
-                position: { x: 0, y: 0 },
-                data: {
-                    label: transName,
-                    guard: tc.guard as string | undefined,
-                    listeners: [],
-                    metadata: (tc.metadata as Record<string, string>) ?? {},
-                } satisfies TransitionNodeData,
-            });
-
-            // Create edges: from states → transition
-            for (const from of froms) {
-                edges.push({
-                    id: `edge-${transName}-from-${from}`,
-                    source: `state-${from}`,
-                    target: transitionId,
-                    type: "connector",
-                });
+    const transitionsRaw = config.transitions as Record<string, unknown> | undefined;
+    const transitions: Transition[] = [];
+    if (transitionsRaw) {
+        for (const [name, tc] of Object.entries(transitionsRaw)) {
+            const tcObj = tc as Record<string, unknown>;
+            const froms = Array.isArray(tcObj.from)
+                ? (tcObj.from as string[])
+                : [tcObj.from as string];
+            const tos = Array.isArray(tcObj.to)
+                ? (tcObj.to as string[])
+                : [tcObj.to as string];
+            const transition: Transition = { name, froms, tos };
+            if (tcObj.guard) transition.guard = tcObj.guard as string;
+            if (tcObj.metadata) {
+                transition.metadata = tcObj.metadata as Record<string, string>;
             }
-
-            // Create edges: transition → to states
-            for (const to of tos) {
-                edges.push({
-                    id: `edge-${transName}-to-${to}`,
-                    source: transitionId,
-                    target: `state-${to}`,
-                    type: "connector",
-                });
-            }
+            transitions.push(transition);
         }
     }
 
-    const allNodes = [...stateNodes, ...transitionNodes];
+    const definition: WorkflowDefinition = {
+        name: workflowName,
+        type: meta.type,
+        places,
+        transitions,
+        initialMarking,
+    };
 
-    // Detect final state nodes (no outgoing edges through any transition)
-    const statesThatAreSource = new Set(
-        edges.filter((e) => e.target.startsWith("transition-")).map((e) => e.source)
-    );
-    for (const node of stateNodes) {
-        if (!statesThatAreSource.has(node.id)) {
-            (node.data as unknown as StateNodeData).isFinal = true;
-        }
-    }
-
-    // Auto-layout
-    const layoutedNodes = autoLayoutNodes(allNodes, edges);
-
-    return { nodes: layoutedNodes, edges, meta };
+    return { definition, meta };
 }
