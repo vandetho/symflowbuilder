@@ -16,16 +16,19 @@ import { ArrowRight } from "lucide-react";
 
 import { Logo } from "@/components/ui/logo";
 import { StateNode } from "@/components/editor/nodes/StateNode";
-import { TransitionEdge } from "@/components/editor/edges/TransitionEdge";
+import { TransitionNode } from "@/components/editor/nodes/TransitionNode";
+import { ConnectorEdge } from "@/components/editor/edges/ConnectorEdge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { migrateGraphData } from "@/lib/migrate-graph";
 
 const nodeTypes = {
     state: StateNode,
+    transition: TransitionNode,
 };
 
 const edgeTypes = {
-    transition: TransitionEdge,
+    connector: ConnectorEdge,
 };
 
 interface Props {
@@ -37,11 +40,15 @@ interface Props {
 
 export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Props) {
     const router = useRouter();
-    const nodes = (graphJson.nodes as Node[]) ?? [];
-    const edges = (graphJson.edges as Edge[]) ?? [];
+    const rawNodes = (graphJson.nodes as Node[]) ?? [];
+    const rawEdges = (graphJson.edges as Edge[]) ?? [];
+
+    // Migrate old edge-based format to node-based
+    const { nodes, edges } = migrateGraphData({ nodes: rawNodes, edges: rawEdges });
+
+    const stateCount = nodes.filter((n) => n.type === "state").length;
 
     const handleOpenInEditor = () => {
-        // Save the shared workflow to localStorage so the editor loads it
         localStorage.setItem(
             "sfb_draft_new",
             JSON.stringify({
@@ -63,8 +70,7 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
 
     return (
         <div className="h-screen w-screen flex flex-col">
-            {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 glass border-b border-[var(--glass-border)]">
+            <div className="flex items-center justify-between px-4 py-3 glass-strong border-b border-[var(--glass-border)]">
                 <div className="flex items-center gap-3">
                     <Link href="/" className="flex items-center gap-2">
                         <Logo size={24} />
@@ -81,7 +87,7 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="text-xs text-[var(--text-muted)]">
-                        {nodes.length} states
+                        {stateCount} states
                     </span>
                     <Button
                         size="sm"
@@ -95,7 +101,6 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
                 </div>
             </div>
 
-            {/* Canvas */}
             <div className="flex-1">
                 <ReactFlowProvider>
                     <ReactFlow
