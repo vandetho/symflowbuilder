@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.23.0](https://github.com/vandetho/symflowbuilder/compare/v1.22.1...v1.23.0) (2026-04-19)
+
+
+### Features
+
+* add YAML export and simulator to shared workflow view ([26a9eab](https://github.com/vandetho/symflowbuilder/commit/26a9eab642669878d12b0da48bbf9eae1b4d71e9))
+
+
+### Bug Fixes
+
+* add Play/Square icons to simulate button in shared view ([49dd91d](https://github.com/vandetho/symflowbuilder/commit/49dd91d7e4cd2da75010cec5b08cde7efccd634f))
+
 ## [1.22.1](https://github.com/vandetho/symflowbuilder/compare/v1.22.0...v1.22.1) (2026-04-19)
 
 
