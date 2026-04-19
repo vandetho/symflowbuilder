@@ -13,8 +13,9 @@ Design state machines graphically, then export production-ready YAML.
 - **Transition Nodes** -- Petri-net model with AND-split, AND-join, and OR patterns clearly visualized
 - **YAML Export** -- Production-ready Symfony workflow YAML for versions 5.4, 6.4, 7.4, and 8.0
 - **YAML Import** -- Drop in existing YAML files to visualize and edit them with auto-layout
-- **Workflow Simulator** -- Step through transitions visually with active state glow, auto-play, history, and step-back
+- **Workflow Simulator** -- Step through transitions visually with guard toggles, Symfony event log, auto-play, history, and step-back
 - **Workflow Validation** -- Detect unreachable states, dead transitions, and orphan places before exporting
+- **Workflow Engine** -- TypeScript runtime mirroring Symfony's Workflow component with marking, transitions, guards, and events
 - **Guards & Metadata** -- Configure guard expressions, transition listeners, and metadata visually
 - **Styling Metadata** -- Set `bg_color`, `description`, `color`, `arrow_color` with a built-in color picker
 - **Undo / Redo** -- 50-step history with Cmd+Z / Cmd+Shift+Z
@@ -144,9 +145,10 @@ Guest drafts are saved to `localStorage` and automatically migrated to the cloud
 ## Documentation
 
 - [Entity Relationship Diagram](docs/erm.md) – Database schema with all models and relationships
-- [Architecture](docs/architecture.md) – System overview, editor data flow, auth model, and deployment pipeline
-- [Design System](docs/design-system.md) – Dark glassmorphism theme, color tokens, glass utilities
-- [Editor Architecture](docs/editor.md) – Canvas, workflow engine, simulator, YAML export/import
+- [Architecture](docs/architecture.md) -- System overview, editor data flow, auth model, and deployment pipeline
+- [Design System](docs/design-system.md) -- Dark glassmorphism theme, color tokens, glass utilities
+- [Editor Architecture](docs/editor.md) -- Canvas, simulator, YAML export/import
+- [Workflow Engine](docs/workflow-engine.md) -- TypeScript runtime, Symfony compatibility, events, guards, validation
 
 ## Contributing
 

@@ -1,11 +1,9 @@
-import Link from "next/link";
 import { HelpCircle } from "lucide-react";
-import { LogoWithText } from "@/components/ui/logo";
-import { Button } from "@/components/ui/button";
-import { GitHubIcon } from "@/components/ui/icons";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { auth } from "@/auth";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
 const FAQS = [
     {
@@ -69,58 +67,7 @@ export default async function FaqPage() {
 
     return (
         <div className="flex flex-col min-h-screen">
-            {/* ─── Navbar ─── */}
-            <nav className="sticky top-0 z-50 glass border-b border-[var(--glass-border)]">
-                <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
-                    <Link href="/">
-                        <LogoWithText />
-                    </Link>
-
-                    <div className="hidden sm:flex items-center gap-6">
-                        <Link
-                            href="/explore"
-                            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                        >
-                            Explore
-                        </Link>
-                        <Link
-                            href="/faq"
-                            className="text-xs text-[var(--accent-bright)] transition-colors"
-                        >
-                            FAQ
-                        </Link>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <a
-                            href="https://github.com/vandetho/symflowbuilder"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <Button variant="ghost" size="sm" className="gap-1.5">
-                                <GitHubIcon className="w-3.5 h-3.5" />
-                                <span className="hidden sm:inline">GitHub</span>
-                            </Button>
-                        </a>
-                        {session?.user ? (
-                            <Link href="/dashboard">
-                                <Button variant="outline" size="sm">
-                                    Dashboard
-                                </Button>
-                            </Link>
-                        ) : (
-                            <Link href="/auth/signin">
-                                <Button variant="outline" size="sm">
-                                    Sign in
-                                </Button>
-                            </Link>
-                        )}
-                        <Link href="/editor">
-                            <Button size="sm">Open Editor</Button>
-                        </Link>
-                    </div>
-                </div>
-            </nav>
+            <Navbar activePath="/faq" session={session} />
 
             {/* ─── Header ─── */}
             <section className="relative px-6 pt-14 pb-8">
@@ -163,42 +110,7 @@ export default async function FaqPage() {
                 </div>
             </section>
 
-            {/* ─── Footer ─── */}
-            <footer className="border-t border-[var(--glass-border)] px-6 py-8">
-                <div className="max-w-5xl mx-auto">
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <LogoWithText size={24} />
-                        <div className="flex items-center gap-6 text-[11px] text-[var(--text-muted)]">
-                            <a
-                                href="https://github.com/vandetho/symflowbuilder"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                GitHub
-                            </a>
-                            <Link
-                                href="/editor"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                Editor
-                            </Link>
-                            <Link
-                                href="/explore"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                Explore
-                            </Link>
-                            <Link
-                                href="/faq"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                FAQ
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }

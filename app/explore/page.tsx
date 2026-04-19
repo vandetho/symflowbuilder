@@ -1,12 +1,9 @@
-import Image from "next/image";
-import Link from "next/link";
 import { Compass } from "lucide-react";
-import { LogoWithText } from "@/components/ui/logo";
-import { Button } from "@/components/ui/button";
-import { GitHubIcon } from "@/components/ui/icons";
 import { Badge } from "@/components/ui/badge";
 import { auth } from "@/auth";
 import { ExploreGrid } from "./ExploreGrid";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
 export const metadata = {
     title: "Explore Public Workflows — SymFlowBuilder",
@@ -19,58 +16,7 @@ export default async function ExplorePage() {
 
     return (
         <div className="flex flex-col min-h-screen">
-            {/* ─── Navbar ─── */}
-            <nav className="sticky top-0 z-50 glass border-b border-[var(--glass-border)]">
-                <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
-                    <Link href="/">
-                        <LogoWithText />
-                    </Link>
-
-                    <div className="hidden sm:flex items-center gap-6">
-                        <Link
-                            href="/explore"
-                            className="text-xs text-[var(--accent-bright)] transition-colors"
-                        >
-                            Explore
-                        </Link>
-                        <Link
-                            href="/editor"
-                            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                        >
-                            Editor
-                        </Link>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <a
-                            href="https://github.com/vandetho/symflowbuilder"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <Button variant="ghost" size="sm" className="gap-1.5">
-                                <GitHubIcon className="w-3.5 h-3.5" />
-                                <span className="hidden sm:inline">GitHub</span>
-                            </Button>
-                        </a>
-                        {session?.user ? (
-                            <Link href="/dashboard">
-                                <Button variant="outline" size="sm">
-                                    Dashboard
-                                </Button>
-                            </Link>
-                        ) : (
-                            <Link href="/auth/signin">
-                                <Button variant="outline" size="sm">
-                                    Sign in
-                                </Button>
-                            </Link>
-                        )}
-                        <Link href="/editor">
-                            <Button size="sm">Open Editor</Button>
-                        </Link>
-                    </div>
-                </div>
-            </nav>
+            <Navbar activePath="/explore" session={session} />
 
             {/* ─── Header ─── */}
             <section className="relative px-6 pt-14 pb-8">
@@ -103,84 +49,7 @@ export default async function ExplorePage() {
                 </div>
             </section>
 
-            {/* ─── Footer ─── */}
-            <footer className="border-t border-[var(--glass-border)] px-6 py-8">
-                <div className="max-w-5xl mx-auto">
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <LogoWithText size={24} />
-                        <div className="flex items-center gap-6 text-[11px] text-[var(--text-muted)]">
-                            <a
-                                href="https://github.com/vandetho/symflowbuilder"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                GitHub
-                            </a>
-                            <Link
-                                href="/editor"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                Editor
-                            </Link>
-                            <Link
-                                href="/explore"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                Explore
-                            </Link>
-                        </div>
-                        <div className="flex items-center gap-3 text-[10px] text-[var(--text-muted)]">
-                            <span>Sponsored by</span>
-                            <a
-                                href="https://supportdock.io"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1.5 font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                            >
-                                <Image
-                                    src="/supportdock-logo.png"
-                                    alt="SupportDock"
-                                    width={14}
-                                    height={14}
-                                    className="rounded-sm"
-                                />
-                                SupportDock
-                            </a>
-                            <a
-                                href="https://basilbook.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1.5 font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                            >
-                                <Image
-                                    src="/basilbook-logo.png"
-                                    alt="BasilBook"
-                                    width={14}
-                                    height={14}
-                                    className="rounded-sm"
-                                />
-                                BasilBook
-                            </a>
-                            <a
-                                href="https://dailybrew.work"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1.5 font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                            >
-                                <Image
-                                    src="/dailybrew-logo.svg"
-                                    alt="DailyBrew"
-                                    width={14}
-                                    height={14}
-                                    className="rounded-sm"
-                                />
-                                DailyBrew
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }

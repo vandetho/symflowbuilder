@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
     FileCode2,
@@ -15,7 +14,9 @@ import {
     Palette,
 } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/icons";
-import { Logo, LogoWithText } from "@/components/ui/logo";
+import { Logo } from "@/components/ui/logo";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -54,7 +55,7 @@ const FEATURES = [
         icon: Play,
         title: "Workflow Simulator",
         description:
-            "Step through your workflow visually. Active states glow, available transitions highlight. Auto-play mode with history and step-back.",
+            "Step through your workflow visually. Toggle guards on/off to test different paths. See Symfony events fire in real-time. Auto-play with history and step-back.",
     },
     {
         icon: AlertTriangle,
@@ -98,78 +99,15 @@ const SYMFONY_VERSIONS = [
 export default async function LandingPage() {
     const session = await auth();
     return (
-        <div className="flex flex-col min-h-screen overflow-x-hidden">
-            {/* ─── Navbar ─── */}
-            <nav className="sticky top-0 z-50 glass border-b border-[var(--glass-border)]">
-                <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
-                    <Link href="/">
-                        <LogoWithText />
-                    </Link>
-
-                    <div className="hidden sm:flex items-center gap-6">
-                        <Link
-                            href="/explore"
-                            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                        >
-                            Explore
-                        </Link>
-                        <a
-                            href="#features"
-                            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                        >
-                            Features
-                        </a>
-                        <a
-                            href="#how-it-works"
-                            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                        >
-                            How it works
-                        </a>
-                        <a
-                            href="#yaml"
-                            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                        >
-                            YAML
-                        </a>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <a
-                            href="https://github.com/vandetho/symflowbuilder"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <Button variant="ghost" size="sm" className="gap-1.5">
-                                <GitHubIcon className="w-3.5 h-3.5" />
-                                <span className="hidden sm:inline">GitHub</span>
-                            </Button>
-                        </a>
-                        {session?.user ? (
-                            <Link href="/dashboard">
-                                <Button variant="outline" size="sm">
-                                    Dashboard
-                                </Button>
-                            </Link>
-                        ) : (
-                            <Link href="/auth/signin">
-                                <Button variant="outline" size="sm">
-                                    Sign in
-                                </Button>
-                            </Link>
-                        )}
-                        <Link href="/editor">
-                            <Button size="sm">Open Editor</Button>
-                        </Link>
-                    </div>
-                </div>
-            </nav>
+        <div className="flex flex-col min-h-screen">
+            <Navbar session={session} />
 
             {/* ─── Workflow Flow ─── */}
             <div className="flex flex-col items-center">
                 {/* ─── Node: Hero (Initial) ─── */}
                 <FlowNode label="initial_marking" isInitial className="pt-20 pb-8">
                     <div
-                        className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] pointer-events-none"
+                        className="absolute top-0 left-1/2 -translate-x-1/2 w-150 h-100 pointer-events-none"
                         style={{
                             background:
                                 "radial-gradient(ellipse at center, rgba(124,111,247,0.12) 0%, transparent 70%)",
@@ -187,14 +125,14 @@ export default async function LandingPage() {
                             </Badge>
                         </div>
 
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[var(--text-primary)] leading-[1.1] tracking-tight max-w-2xl">
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light text-(--text-primary) leading-[1.1] tracking-tight max-w-2xl">
                             Design Symfony Workflows{" "}
                             <span className="font-semibold bg-linear-to-r from-[#7c6ff7] to-[#9d94ff] bg-clip-text text-transparent">
                                 Visually
                             </span>
                         </h1>
 
-                        <p className="text-base sm:text-lg text-[var(--text-secondary)] max-w-lg leading-relaxed">
+                        <p className="text-base sm:text-lg text-(--text-secondary) max-w-lg leading-relaxed">
                             A drag-and-drop builder for Symfony Workflow configurations.
                             Design state machines graphically, then export
                             production-ready YAML.
@@ -223,7 +161,7 @@ export default async function LandingPage() {
                             </a>
                         </div>
 
-                        <p className="text-[11px] text-[var(--text-muted)]">
+                        <p className="text-[11px] text-(--text-muted)">
                             No account required. Free and open source forever.
                         </p>
                     </div>
@@ -235,7 +173,7 @@ export default async function LandingPage() {
                 <FlowNode label="preview" className="pb-12">
                     <div className="max-w-5xl mx-auto">
                         <HeroGraph />
-                        <p className="text-center text-[10px] text-[var(--text-muted)] mt-3 font-mono">
+                        <p className="text-center text-[10px] text-(--text-muted) mt-3 font-mono">
                             Live workflow preview &mdash; this is what you build in the
                             editor
                         </p>
@@ -247,7 +185,7 @@ export default async function LandingPage() {
                 {/* ─── Node: Versions ─── */}
                 <FlowNode label="supports" className="pb-12">
                     <div className="max-w-3xl mx-auto text-center">
-                        <p className="text-xs text-[var(--text-muted)] uppercase tracking-widest mb-4">
+                        <p className="text-xs text-(--text-muted) uppercase tracking-widest mb-4">
                             Symfony Version Support
                         </p>
                         <div className="flex items-center justify-center gap-3 flex-wrap">
@@ -538,94 +476,7 @@ export default async function LandingPage() {
                 </FlowNode>
             </div>
 
-            {/* ─── Footer ─── */}
-            <footer className="border-t border-[var(--glass-border)] px-6 py-8 mt-8">
-                <div className="max-w-5xl mx-auto">
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <LogoWithText size={24} />
-
-                        <div className="flex items-center gap-6 text-[11px] text-[var(--text-muted)]">
-                            <a
-                                href="https://github.com/vandetho/symflowbuilder"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                GitHub
-                            </a>
-                            <a
-                                href="https://github.com/vandetho/symflowbuilder/blob/main/LICENSE"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                MIT License
-                            </a>
-                            <Link
-                                href="/editor"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                Editor
-                            </Link>
-                            <Link
-                                href="/explore"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                Explore
-                            </Link>
-                        </div>
-
-                        <div className="flex items-center gap-3 text-[10px] text-[var(--text-muted)]">
-                            <span>Sponsored by</span>
-                            <a
-                                href="https://supportdock.io"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1.5 font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                            >
-                                <Image
-                                    src="/supportdock-logo.png"
-                                    alt="SupportDock"
-                                    width={14}
-                                    height={14}
-                                    className="rounded-sm"
-                                />
-                                SupportDock
-                            </a>
-                            <a
-                                href="https://basilbook.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1.5 font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                            >
-                                <Image
-                                    src="/basilbook-logo.png"
-                                    alt="BasilBook"
-                                    width={14}
-                                    height={14}
-                                    className="rounded-sm"
-                                />
-                                BasilBook
-                            </a>
-                            <a
-                                href="https://dailybrew.work"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1.5 font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                            >
-                                <Image
-                                    src="/dailybrew-logo.svg"
-                                    alt="DailyBrew"
-                                    width={14}
-                                    height={14}
-                                    className="rounded-sm"
-                                />
-                                DailyBrew
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }

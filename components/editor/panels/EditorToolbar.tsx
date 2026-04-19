@@ -14,6 +14,7 @@ import {
     Check,
     Play,
     Square,
+    Globe,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
@@ -217,7 +218,7 @@ function ShareButton() {
                     {copied ? "Copied!" : "Share"}
                 </Button>
             </TooltipTrigger>
-            <TooltipContent>{tooltipText}</TooltipContent>
+            <TooltipContent side="bottom">{tooltipText}</TooltipContent>
         </Tooltip>
     );
 }
@@ -369,6 +370,13 @@ export function EditorToolbar() {
                     </Button>
 
                     <div className="flex-1" />
+
+                    <Link href="/explore">
+                        <Button variant="ghost" size="sm" className="gap-1.5">
+                            <Globe className="w-3.5 h-3.5" />
+                            Explore
+                        </Button>
+                    </Link>
 
                     <Button variant="ghost" size="sm" onClick={handleImport}>
                         <Upload className="w-3.5 h-3.5" />

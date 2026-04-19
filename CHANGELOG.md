@@ -1,5 +1,114 @@
 # Changelog
 
+## [1.23.0](https://github.com/vandetho/symflowbuilder/compare/v1.22.1...v1.23.0) (2026-04-19)
+
+
+### Features
+
+* add YAML export and simulator to shared workflow view ([26a9eab](https://github.com/vandetho/symflowbuilder/commit/26a9eab642669878d12b0da48bbf9eae1b4d71e9))
+
+
+### Bug Fixes
+
+* add Play/Square icons to simulate button in shared view ([49dd91d](https://github.com/vandetho/symflowbuilder/commit/49dd91d7e4cd2da75010cec5b08cde7efccd634f))
+
+## [1.22.1](https://github.com/vandetho/symflowbuilder/compare/v1.22.0...v1.22.1) (2026-04-19)
+
+
+### Bug Fixes
+
+* remove overflow-x-hidden that breaks sticky navbar on landing page ([5708a4c](https://github.com/vandetho/symflowbuilder/commit/5708a4ce8151b8a2ed2227bdda64e3310c21bb5d))
+
+## [1.22.0](https://github.com/vandetho/symflowbuilder/compare/v1.21.2...v1.22.0) (2026-04-19)
+
+
+### Features
+
+* add Config dialog to shared workflow view ([e5e66ff](https://github.com/vandetho/symflowbuilder/commit/e5e66ff21d0db83ff3a21e9fde63692f8d897ea9))
+
+## [1.21.2](https://github.com/vandetho/symflowbuilder/compare/v1.21.1...v1.21.2) (2026-04-19)
+
+
+### Bug Fixes
+
+* make landing page navbar sticky on scroll ([aa2d6a9](https://github.com/vandetho/symflowbuilder/commit/aa2d6a9818ced662d2f42c417bf8700fad148ae0))
+
+## [1.21.1](https://github.com/vandetho/symflowbuilder/compare/v1.21.0...v1.21.1) (2026-04-19)
+
+
+### Bug Fixes
+
+* register TransitionNode and ConnectorEdge in shared workflow view ([978867a](https://github.com/vandetho/symflowbuilder/commit/978867a8958599eca25387ebdc8c2c7be19ff4bf))
+
+## [1.21.0](https://github.com/vandetho/symflowbuilder/compare/v1.20.2...v1.21.0) (2026-04-19)
+
+
+### Features
+
+* add mobile hamburger menu with glass slide-over panel ([3f82db7](https://github.com/vandetho/symflowbuilder/commit/3f82db7c1ebd9a9d7f39e959628672c04e349b8a))
+
+## [1.20.2](https://github.com/vandetho/symflowbuilder/compare/v1.20.1...v1.20.2) (2026-04-19)
+
+
+### Refactoring
+
+* extract Footer component, navbar sticky only on subpages ([0ff741d](https://github.com/vandetho/symflowbuilder/commit/0ff741dead47cdc38db5dc4f388eff57d43bc6c0))
+
+## [1.20.1](https://github.com/vandetho/symflowbuilder/compare/v1.20.0...v1.20.1) (2026-04-19)
+
+
+### Refactoring
+
+* extract shared Navbar component from 6 pages ([1b6130a](https://github.com/vandetho/symflowbuilder/commit/1b6130aaad06e33914140d3ff6addad1440a1206))
+
+## [1.20.0](https://github.com/vandetho/symflowbuilder/compare/v1.19.1...v1.20.0) (2026-04-19)
+
+
+### Features
+
+* fix engine event order to match Symfony, add docs, update navbars ([eef4262](https://github.com/vandetho/symflowbuilder/commit/eef426248833d3aee626a54253f5e6d6a6c17803))
+
+
+### Bug Fixes
+
+* use glass-strong for all page navbars ([de516d5](https://github.com/vandetho/symflowbuilder/commit/de516d594802ae68e3704411683b9e91d1317a7f))
+
+## [1.19.1](https://github.com/vandetho/symflowbuilder/compare/v1.19.0...v1.19.1) (2026-04-19)
+
+
+### Documentation
+
+* update landing, features, how-it-works, and blog with guard/event features ([7734bf2](https://github.com/vandetho/symflowbuilder/commit/7734bf22eaabf58144020f47785a99bfae865960))
+* update README with workflow engine and guard toggle features ([0484aa9](https://github.com/vandetho/symflowbuilder/commit/0484aa98c0a26822e508871265edb9017f7d590a))
+
+## [1.19.0](https://github.com/vandetho/symflowbuilder/compare/v1.18.0...v1.19.0) (2026-04-19)
+
+
+### Features
+
+* add guard toggles and event log to simulator ([3b9062f](https://github.com/vandetho/symflowbuilder/commit/3b9062fc9d7c9f802dd2f893fd17a52f50005936))
+
+## [1.18.0](https://github.com/vandetho/symflowbuilder/compare/v1.17.0...v1.18.0) (2026-04-19)
+
+
+### Features
+
+* add Explore button to editor toolbar ([1ea11b7](https://github.com/vandetho/symflowbuilder/commit/1ea11b76cefc9bff951601f8885555ec9c17c353))
+
+## [1.17.0](https://github.com/vandetho/symflowbuilder/compare/v1.16.5...v1.17.0) (2026-04-19)
+
+
+### Features
+
+* add Features, How It Works, and Blog pages ([cfb9ea4](https://github.com/vandetho/symflowbuilder/commit/cfb9ea4e204fb5e9664340ca59f8534182b38183))
+
+## [1.16.5](https://github.com/vandetho/symflowbuilder/compare/v1.16.4...v1.16.5) (2026-04-19)
+
+
+### Bug Fixes
+
+* show share tooltip below the toolbar button ([c7eb2bc](https://github.com/vandetho/symflowbuilder/commit/c7eb2bc6986b9bfb0c445d69f04d66a648cd4806))
+
 ## [1.16.4](https://github.com/vandetho/symflowbuilder/compare/v1.16.3...v1.16.4) (2026-04-17)
 
 
