@@ -20,7 +20,7 @@ export default async function ExplorePage() {
     return (
         <div className="flex flex-col min-h-screen">
             {/* ─── Navbar ─── */}
-            <nav className="sticky top-0 z-50 glass border-b border-[var(--glass-border)]">
+            <nav className="sticky top-0 z-50 glass-strong border-b border-[var(--glass-border)]">
                 <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
                     <Link href="/">
                         <LogoWithText />
