@@ -2,6 +2,7 @@ import Link from "next/link";
 import { LogoWithText } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
 import { GitHubIcon } from "@/components/ui/icons";
+import { MobileMenu } from "./MobileMenu";
 
 const NAV_LINKS = [
     { href: "/features", label: "Features" },
@@ -12,10 +13,8 @@ const NAV_LINKS = [
 ];
 
 interface NavbarProps {
-    /** Current page path to highlight the active link */
     activePath?: string;
     session?: { user?: { name?: string | null; image?: string | null } } | null;
-    /** Whether the navbar sticks to the top on scroll (default: true) */
     sticky?: boolean;
 }
 
@@ -56,22 +55,25 @@ export function Navbar({ activePath, session, sticky = true }: NavbarProps) {
                             <span className="hidden sm:inline">GitHub</span>
                         </Button>
                     </a>
-                    {session?.user ? (
-                        <Link href="/dashboard">
-                            <Button variant="outline" size="sm">
-                                Dashboard
-                            </Button>
+                    <div className="hidden sm:flex items-center gap-2">
+                        {session?.user ? (
+                            <Link href="/dashboard">
+                                <Button variant="outline" size="sm">
+                                    Dashboard
+                                </Button>
+                            </Link>
+                        ) : (
+                            <Link href="/auth/signin">
+                                <Button variant="outline" size="sm">
+                                    Sign in
+                                </Button>
+                            </Link>
+                        )}
+                        <Link href="/editor">
+                            <Button size="sm">Open Editor</Button>
                         </Link>
-                    ) : (
-                        <Link href="/auth/signin">
-                            <Button variant="outline" size="sm">
-                                Sign in
-                            </Button>
-                        </Link>
-                    )}
-                    <Link href="/editor">
-                        <Button size="sm">Open Editor</Button>
-                    </Link>
+                    </div>
+                    <MobileMenu activePath={activePath} session={session} />
                 </div>
             </div>
         </nav>
