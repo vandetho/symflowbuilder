@@ -21,7 +21,7 @@ interface NavbarProps {
 export function Navbar({ activePath, session, sticky = true }: NavbarProps) {
     return (
         <nav
-            className={`${sticky ? "sticky top-0" : ""} z-50 glass-strong border-b border-[var(--glass-border)]`}
+            className={`${sticky ? "sticky top-0" : ""} z-50 border-b border-[var(--glass-border)] bg-[#0a0a14]/95 backdrop-blur-xl`}
         >
             <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
                 <Link href="/">
