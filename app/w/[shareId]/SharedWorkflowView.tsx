@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
     ReactFlow,
     Background,
@@ -12,7 +13,7 @@ import {
 import "@xyflow/react/dist/style.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Settings2 } from "lucide-react";
 
 import { Logo } from "@/components/ui/logo";
 import { StateNode } from "@/components/editor/nodes/StateNode";
@@ -20,7 +21,16 @@ import { TransitionNode } from "@/components/editor/nodes/TransitionNode";
 import { ConnectorEdge } from "@/components/editor/edges/ConnectorEdge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+} from "@/components/ui/dialog";
 import { migrateGraphData } from "@/lib/migrate-graph";
+import type { WorkflowMeta } from "@/types/workflow";
 
 const nodeTypes = {
     state: StateNode,
@@ -40,37 +50,33 @@ interface Props {
 
 export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Props) {
     const router = useRouter();
+    const [showConfig, setShowConfig] = useState(false);
     const rawNodes = (graphJson.nodes as Node[]) ?? [];
     const rawEdges = (graphJson.edges as Edge[]) ?? [];
 
-    // Migrate old edge-based format to node-based
     const { nodes, edges } = migrateGraphData({ nodes: rawNodes, edges: rawEdges });
 
     const stateCount = nodes.filter((n) => n.type === "state").length;
+    const transitionCount = nodes.filter((n) => n.type === "transition").length;
+
+    const meta = (graphJson.meta as WorkflowMeta) ?? {
+        name,
+        symfonyVersion,
+        type,
+        marking_store: "method",
+        initial_marking: [],
+        supports: "App\\Entity\\MyEntity",
+        property: "currentState",
+    };
 
     const handleOpenInEditor = () => {
-        localStorage.setItem(
-            "sfb_draft_new",
-            JSON.stringify({
-                nodes,
-                edges,
-                meta: graphJson.meta ?? {
-                    name,
-                    symfonyVersion,
-                    type,
-                    marking_store: "method",
-                    initial_marking: [],
-                    supports: "App\\Entity\\MyEntity",
-                    property: "currentState",
-                },
-            })
-        );
+        localStorage.setItem("sfb_draft_new", JSON.stringify({ nodes, edges, meta }));
         router.push("/editor");
     };
 
     return (
         <div className="h-screen w-screen flex flex-col">
-            <div className="flex items-center justify-between px-4 py-3 glass-strong border-b border-[var(--glass-border)]">
+            <div className="flex items-center justify-between px-4 py-3 bg-[#0a0a14]/95 backdrop-blur-xl border-b border-[var(--glass-border)]">
                 <div className="flex items-center gap-3">
                     <Link href="/" className="flex items-center gap-2">
                         <Logo size={24} />
@@ -87,8 +93,17 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="text-xs text-[var(--text-muted)]">
-                        {stateCount} states
+                        {stateCount} states · {transitionCount} transitions
                     </span>
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        className="gap-1.5"
+                        onClick={() => setShowConfig(true)}
+                    >
+                        <Settings2 className="w-3.5 h-3.5" />
+                        Config
+                    </Button>
                     <Button
                         size="sm"
                         variant="ghost"
@@ -130,6 +145,87 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
                     </ReactFlow>
                 </ReactFlowProvider>
             </div>
+
+            {/* Config Dialog */}
+            <Dialog open={showConfig} onOpenChange={setShowConfig}>
+                <DialogContent className="max-w-sm">
+                    <DialogHeader>
+                        <DialogTitle>Workflow Configuration</DialogTitle>
+                        <DialogDescription>
+                            Read-only configuration for this shared workflow.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex flex-col gap-3 pt-2">
+                        <div className="flex flex-col gap-1">
+                            <Label className="text-[10px] text-[var(--text-muted)]">
+                                Name
+                            </Label>
+                            <span className="text-sm font-mono text-[var(--text-primary)]">
+                                {meta.name}
+                            </span>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <Label className="text-[10px] text-[var(--text-muted)]">
+                                Type
+                            </Label>
+                            <span className="text-sm font-mono text-[var(--text-primary)]">
+                                {meta.type}
+                            </span>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <Label className="text-[10px] text-[var(--text-muted)]">
+                                Symfony Version
+                            </Label>
+                            <span className="text-sm font-mono text-[var(--text-primary)]">
+                                {meta.symfonyVersion}
+                            </span>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <Label className="text-[10px] text-[var(--text-muted)]">
+                                Marking Store
+                            </Label>
+                            <span className="text-sm font-mono text-[var(--text-primary)]">
+                                {meta.marking_store} ({meta.property})
+                            </span>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <Label className="text-[10px] text-[var(--text-muted)]">
+                                Supports
+                            </Label>
+                            <span className="text-sm font-mono text-[var(--text-primary)]">
+                                {meta.supports}
+                            </span>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <Label className="text-[10px] text-[var(--text-muted)]">
+                                Initial Marking
+                            </Label>
+                            <div className="flex flex-wrap gap-1">
+                                {meta.initial_marking.length > 0 ? (
+                                    meta.initial_marking.map((p) => (
+                                        <Badge
+                                            key={p}
+                                            variant="outline"
+                                            className="text-[10px] font-mono"
+                                        >
+                                            {p}
+                                        </Badge>
+                                    ))
+                                ) : (
+                                    <span className="text-xs text-[var(--text-muted)]">
+                                        Derived from initial nodes
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-between pt-2 text-xs text-[var(--text-muted)]">
+                            <span>
+                                {stateCount} states · {transitionCount} transitions
+                            </span>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
