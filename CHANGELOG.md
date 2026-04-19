@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.0](https://github.com/vandetho/symflowbuilder/compare/v1.16.5...v1.17.0) (2026-04-19)
+
+
+### Features
+
+* add Features, How It Works, and Blog pages ([cfb9ea4](https://github.com/vandetho/symflowbuilder/commit/cfb9ea4e204fb5e9664340ca59f8534182b38183))
+
 ## [1.16.5](https://github.com/vandetho/symflowbuilder/compare/v1.16.4...v1.16.5) (2026-04-19)
 
 
