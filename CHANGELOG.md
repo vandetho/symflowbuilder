@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.2](https://github.com/vandetho/symflowbuilder/compare/v1.20.1...v1.20.2) (2026-04-19)
+
+
+### Refactoring
+
+* extract Footer component, navbar sticky only on subpages ([0ff741d](https://github.com/vandetho/symflowbuilder/commit/0ff741dead47cdc38db5dc4f388eff57d43bc6c0))
+
 ## [1.20.1](https://github.com/vandetho/symflowbuilder/compare/v1.20.0...v1.20.1) (2026-04-19)
 
 
