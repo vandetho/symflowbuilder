@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
-import { Play, RotateCcw, X, SkipBack, Pause } from "lucide-react";
+import { Play, RotateCcw, X, SkipBack, Pause, ShieldOff, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectItem } from "@/components/ui/select";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { useSimulatorStore } from "@/stores/simulator";
 
 export function SimulatorPanel() {
@@ -15,6 +16,7 @@ export function SimulatorPanel() {
         enabledTransitions,
         history,
         analysis,
+        blockedGuards,
         autoPlaying,
         autoPlaySpeed,
         applyTransition,
@@ -23,6 +25,8 @@ export function SimulatorPanel() {
         deactivate,
         toggleAutoPlay,
         setAutoPlaySpeed,
+        toggleGuard,
+        engine,
     } = useSimulatorStore();
 
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -58,8 +62,13 @@ export function SimulatorPanel() {
 
     const isDeadEnd = enabledTransitions.length === 0;
 
+    // Get transitions that have guards
+    const guardedTransitions = engine
+        ? engine.getDefinition().transitions.filter((t) => t.guard)
+        : [];
+
     return (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 w-[480px] max-h-[360px] bg-[#12121f] border border-[var(--glass-border)] rounded-[18px] flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 w-[480px] max-h-[440px] bg-[#12121f] border border-[var(--glass-border)] rounded-[18px] flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--glass-border)]">
                 <div className="flex items-center gap-2">
@@ -139,6 +148,65 @@ export function SimulatorPanel() {
                         )}
                     </div>
                 </div>
+
+                {/* Guards */}
+                {guardedTransitions.length > 0 && (
+                    <>
+                        <Separator />
+                        <div className="flex flex-col gap-1.5">
+                            <span className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-wider">
+                                Guards
+                            </span>
+                            <div className="flex flex-col gap-1">
+                                {guardedTransitions.map((t) => {
+                                    const isBlocked = blockedGuards[t.name];
+                                    return (
+                                        <div
+                                            key={t.name}
+                                            className="flex items-center gap-2 text-[10px] font-mono"
+                                        >
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className={`h-5 w-5 ${isBlocked ? "text-[var(--danger)]" : "text-[var(--success)]"}`}
+                                                        onClick={() =>
+                                                            toggleGuard(t.name)
+                                                        }
+                                                    >
+                                                        {isBlocked ? (
+                                                            <ShieldOff className="w-3 h-3" />
+                                                        ) : (
+                                                            <Shield className="w-3 h-3" />
+                                                        )}
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent side="right">
+                                                    {isBlocked
+                                                        ? "Guard is blocked — click to allow"
+                                                        : "Guard passes — click to block"}
+                                                </TooltipContent>
+                                            </Tooltip>
+                                            <span
+                                                className={
+                                                    isBlocked
+                                                        ? "text-[var(--danger)] line-through"
+                                                        : "text-[var(--text-secondary)]"
+                                                }
+                                            >
+                                                {t.name}
+                                            </span>
+                                            <span className="text-[var(--text-muted)] truncate max-w-[200px]">
+                                                {t.guard}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </>
+                )}
 
                 <Separator />
 
@@ -220,6 +288,24 @@ export function SimulatorPanel() {
                                                 →
                                             </span>
                                             <span>{toPlaces.join(", ")}</span>
+                                            {step.events.length > 0 && (
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <span className="text-[8px] px-1 py-px rounded bg-[var(--accent-dim)] text-[var(--accent-bright)] border border-[var(--accent-border)] cursor-help">
+                                                            {step.events.length} events
+                                                        </span>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent side="left">
+                                                        <div className="flex flex-col gap-0.5 text-[9px]">
+                                                            {step.events.map((evt, j) => (
+                                                                <span key={j}>
+                                                                    {evt.type}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            )}
                                         </div>
                                     );
                                 })}

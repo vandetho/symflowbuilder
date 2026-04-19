@@ -10,12 +10,14 @@ import {
     type Transition,
     type ValidationResult,
     type WorkflowAnalysis,
+    type WorkflowEvent,
 } from "@/lib/engine";
 
 export interface SimulationStep {
     transitionName: string;
     fromMarking: Marking;
     toMarking: Marking;
+    events: WorkflowEvent[];
     timestamp: number;
 }
 
@@ -33,6 +35,9 @@ interface SimulatorStore {
     validation: ValidationResult | null;
     analysis: WorkflowAnalysis | null;
 
+    // Guard overrides: transition name → blocked (true = guard blocks)
+    blockedGuards: Record<string, boolean>;
+
     // Auto-play
     autoPlaying: boolean;
     autoPlaySpeed: number;
@@ -46,6 +51,7 @@ interface SimulatorStore {
     stepBack: () => void;
     toggleAutoPlay: () => void;
     setAutoPlaySpeed: (ms: number) => void;
+    toggleGuard: (transitionName: string) => void;
 }
 
 export const useSimulatorStore = create<SimulatorStore>((set, get) => ({
@@ -56,6 +62,7 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => ({
     history: [],
     validation: null,
     analysis: null,
+    blockedGuards: {},
     autoPlaying: false,
     autoPlaySpeed: 1000,
 
@@ -63,7 +70,21 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => ({
         const definition = buildDefinition(nodes, edges, meta);
         const validation = validateDefinition(definition);
         const analysis = analyzeWorkflow(definition);
-        const engine = new WorkflowEngine(definition);
+
+        // Build initial guard block state (all guards pass by default)
+        const blockedGuards: Record<string, boolean> = {};
+        for (const t of definition.transitions) {
+            if (t.guard) {
+                blockedGuards[t.name] = false;
+            }
+        }
+
+        const engine = new WorkflowEngine(definition, {
+            guardEvaluator: (_expr, ctx) => {
+                const current = get().blockedGuards;
+                return !current[ctx.transition.name];
+            },
+        });
 
         set({
             engine,
@@ -72,6 +93,7 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => ({
             history: [],
             validation,
             analysis,
+            blockedGuards,
         });
     },
 
@@ -86,6 +108,7 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => ({
             history: [],
             validation: null,
             analysis: null,
+            blockedGuards: {},
             autoPlaying: false,
         }),
 
@@ -94,6 +117,13 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => ({
         if (!engine) return;
 
         const fromMarking = engine.getMarking();
+
+        // Collect events fired during this transition
+        const firedEvents: WorkflowEvent[] = [];
+        const unsubs = (
+            ["guard", "leave", "transition", "enter", "entered", "completed"] as const
+        ).map((type) => engine.on(type, (event) => firedEvents.push(event)));
+
         try {
             const toMarking = engine.apply(transitionName);
             set((state) => ({
@@ -105,13 +135,15 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => ({
                         transitionName,
                         fromMarking,
                         toMarking,
+                        events: firedEvents,
                         timestamp: Date.now(),
                     },
                 ],
             }));
         } catch {
-            // Transition failed — refresh enabled transitions
             set({ enabledTransitions: engine.getEnabledTransitions() });
+        } finally {
+            unsubs.forEach((unsub) => unsub());
         }
     },
 
@@ -138,6 +170,20 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => ({
             enabledTransitions: engine.getEnabledTransitions(),
             history: history.slice(0, -1),
         });
+    },
+
+    toggleGuard: (transitionName) => {
+        const { engine, blockedGuards } = get();
+        const updated = {
+            ...blockedGuards,
+            [transitionName]: !blockedGuards[transitionName],
+        };
+        set({ blockedGuards: updated });
+
+        // Re-evaluate enabled transitions with new guard state
+        if (engine) {
+            set({ enabledTransitions: engine.getEnabledTransitions() });
+        }
     },
 
     toggleAutoPlay: () => {
