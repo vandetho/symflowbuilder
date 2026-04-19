@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.1](https://github.com/vandetho/symflowbuilder/compare/v1.21.0...v1.21.1) (2026-04-19)
+
+
+### Bug Fixes
+
+* register TransitionNode and ConnectorEdge in shared workflow view ([978867a](https://github.com/vandetho/symflowbuilder/commit/978867a8958599eca25387ebdc8c2c7be19ff4bf))
+
 ## [1.21.0](https://github.com/vandetho/symflowbuilder/compare/v1.20.2...v1.21.0) (2026-04-19)
 
 
