@@ -13,7 +13,7 @@ import {
 import "@xyflow/react/dist/style.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Settings2, Download, Copy, Check } from "lucide-react";
+import { ArrowRight, Settings2, Download, Copy, Check, Play, Square } from "lucide-react";
 
 import { Logo } from "@/components/ui/logo";
 import { StateNode } from "@/components/editor/nodes/StateNode";
@@ -144,7 +144,15 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
                             }
                         }}
                     >
-                        {simActive ? "Stop" : "Simulate"}
+                        {simActive ? (
+                            <>
+                                <Square className="w-3.5 h-3.5" /> Stop
+                            </>
+                        ) : (
+                            <>
+                                <Play className="w-3.5 h-3.5" /> Simulate
+                            </>
+                        )}
                     </Button>
                     <Button
                         size="sm"
