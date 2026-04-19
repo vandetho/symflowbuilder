@@ -13,15 +13,17 @@ import {
 import "@xyflow/react/dist/style.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Settings2 } from "lucide-react";
+import { ArrowRight, Settings2, Download, Copy, Check } from "lucide-react";
 
 import { Logo } from "@/components/ui/logo";
 import { StateNode } from "@/components/editor/nodes/StateNode";
 import { TransitionNode } from "@/components/editor/nodes/TransitionNode";
 import { ConnectorEdge } from "@/components/editor/edges/ConnectorEdge";
+import { SimulatorPanel } from "@/components/editor/panels/SimulatorPanel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { useSimulatorStore } from "@/stores/simulator";
 import {
     Dialog,
     DialogContent,
@@ -30,6 +32,7 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 import { migrateGraphData } from "@/lib/migrate-graph";
+import { exportWorkflowYaml } from "@/lib/yaml-export";
 import type { WorkflowMeta } from "@/types/workflow";
 
 const nodeTypes = {
@@ -51,6 +54,12 @@ interface Props {
 export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Props) {
     const router = useRouter();
     const [showConfig, setShowConfig] = useState(false);
+    const [showYaml, setShowYaml] = useState(false);
+    const [copied, setCopied] = useState(false);
+    const simActive = useSimulatorStore((s) => s.active);
+    const simInitialize = useSimulatorStore((s) => s.initialize);
+    const simActivate = useSimulatorStore((s) => s.activate);
+    const simDeactivate = useSimulatorStore((s) => s.deactivate);
     const rawNodes = (graphJson.nodes as Node[]) ?? [];
     const rawEdges = (graphJson.edges as Edge[]) ?? [];
 
@@ -67,6 +76,24 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
         initial_marking: [],
         supports: "App\\Entity\\MyEntity",
         property: "currentState",
+    };
+
+    const yamlOutput = exportWorkflowYaml({ nodes, edges, meta });
+
+    const handleCopyYaml = async () => {
+        await navigator.clipboard.writeText(yamlOutput);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    const handleDownloadYaml = () => {
+        const blob = new Blob([yamlOutput], { type: "text/yaml" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${meta.name}.yaml`;
+        a.click();
+        URL.revokeObjectURL(url);
     };
 
     const handleOpenInEditor = () => {
@@ -99,6 +126,30 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
                         size="sm"
                         variant="ghost"
                         className="gap-1.5"
+                        onClick={() => setShowYaml(!showYaml)}
+                    >
+                        <Download className="w-3.5 h-3.5" />
+                        Export
+                    </Button>
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        className={`gap-1.5 ${simActive ? "text-[var(--success)] bg-[var(--success-dim)]" : ""}`}
+                        onClick={() => {
+                            if (simActive) {
+                                simDeactivate();
+                            } else {
+                                simInitialize(nodes, edges, meta);
+                                simActivate();
+                            }
+                        }}
+                    >
+                        {simActive ? "Stop" : "Simulate"}
+                    </Button>
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        className="gap-1.5"
                         onClick={() => setShowConfig(true)}
                     >
                         <Settings2 className="w-3.5 h-3.5" />
@@ -116,7 +167,43 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
                 </div>
             </div>
 
-            <div className="flex-1">
+            <div className="flex-1 relative">
+                {/* YAML Export Drawer */}
+                {showYaml && (
+                    <div className="absolute top-0 right-0 bottom-0 z-30 w-[420px] bg-[#0a0a14]/98 border-l border-[var(--glass-border)] flex flex-col">
+                        <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--glass-border)]">
+                            <span className="text-sm font-medium text-[var(--text-primary)]">
+                                YAML Export
+                            </span>
+                            <div className="flex items-center gap-1">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={handleCopyYaml}
+                                >
+                                    {copied ? (
+                                        <Check className="w-3.5 h-3.5 text-[var(--success)]" />
+                                    ) : (
+                                        <Copy className="w-3.5 h-3.5" />
+                                    )}
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={handleDownloadYaml}
+                                >
+                                    <Download className="w-3.5 h-3.5" />
+                                </Button>
+                            </div>
+                        </div>
+                        <pre className="flex-1 overflow-auto p-4 text-[11px] font-mono text-[var(--text-secondary)] leading-relaxed whitespace-pre">
+                            {yamlOutput}
+                        </pre>
+                    </div>
+                )}
+
                 <ReactFlowProvider>
                     <ReactFlow
                         nodes={nodes}
@@ -143,6 +230,7 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
                             maskColor="rgba(0,0,0,0.5)"
                         />
                     </ReactFlow>
+                    <SimulatorPanel />
                 </ReactFlowProvider>
             </div>
 
