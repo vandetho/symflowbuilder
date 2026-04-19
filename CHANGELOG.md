@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.0](https://github.com/vandetho/symflowbuilder/compare/v1.18.0...v1.19.0) (2026-04-19)
+
+
+### Features
+
+* add guard toggles and event log to simulator ([3b9062f](https://github.com/vandetho/symflowbuilder/commit/3b9062fc9d7c9f802dd2f893fd17a52f50005936))
+
 ## [1.18.0](https://github.com/vandetho/symflowbuilder/compare/v1.17.0...v1.18.0) (2026-04-19)
 
 
