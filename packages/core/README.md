@@ -12,6 +12,7 @@ Node CLI, worker, or plain browser project.
 | Import                     | Contents                                                                                                                                                                                             | Extra deps             |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `@symflow/core/engine`     | `WorkflowEngine`, validator, analyzer, domain types                                                                                                                                                  | none                   |
+| `@symflow/core/subject`    | Symfony-style subject API: `Workflow<T>`, `MarkingStore<T>`, `propertyMarkingStore`, `methodMarkingStore` (opt-in)                                                                                   | none                   |
 | `@symflow/core/yaml`       | Symfony YAML ↔ `WorkflowDefinition`                                                                                                                                                                  | `js-yaml`              |
 | `@symflow/core/json`       | JSON ↔ `WorkflowDefinition` + `WorkflowMeta`                                                                                                                                                         | none                   |
 | `@symflow/core/typescript` | Emit a typed `.ts` module string from a workflow (codegen)                                                                                                                                           | none                   |
@@ -19,8 +20,8 @@ Node CLI, worker, or plain browser project.
 | `@symflow/core/react-flow` | RF node/edge types + `buildDefinition`, `autoLayoutNodes`, `migrateGraphData`, `importWorkflowYamlToGraph`, `exportGraphToYaml`, `importWorkflowJsonToGraph`, `exportGraphToJson`, `exportGraphToTs` | `@xyflow/react` (peer) |
 | `@symflow/core`            | All of the above re-exported                                                                                                                                                                         | all                    |
 
-Pick the subpath that matches your need — `/engine`, `/json`, `/typescript`,
-and `/types` pull nothing at all.
+Pick the subpath that matches your need — `/engine`, `/subject`, `/json`,
+`/typescript`, and `/types` pull nothing at all.
 
 ## Engine usage
 
@@ -55,6 +56,40 @@ if (engine.can("submit").allowed) {
     engine.apply("submit");
 }
 ```
+
+## Subject-driven API (optional)
+
+If you prefer Symfony's `$workflow->apply($entity, 'submit')` style, opt in to
+`@symflow/core/subject`. Pass a `MarkingStore<T>` that reads/writes the marking
+onto your entity and you get a facade that mirrors Symfony's `Workflow` service.
+The engine subpath is untouched — this is purely additive.
+
+```ts
+import { createWorkflow, propertyMarkingStore } from "@symflow/core/subject";
+import { invoiceDefinition } from "./invoice-definition";
+
+interface Invoice {
+    id: string;
+    currentState: string | string[];
+}
+
+const workflow = createWorkflow<Invoice>(invoiceDefinition, {
+    markingStore: propertyMarkingStore("currentState"),
+    guardEvaluator: (expr, { subject }) => evaluate(expr, { invoice: subject }),
+});
+
+workflow.on("entered", (e) => audit(e.subject, e.transition.name));
+
+if (workflow.can(invoice, "submit").allowed) {
+    workflow.apply(invoice, "submit"); // reads + writes invoice.currentState
+    await db.invoice.update(invoice);
+}
+```
+
+Helpers: `propertyMarkingStore("currentState")` matches Symfony's `property`
+marking store; `methodMarkingStore()` calls `subject.getMarking()` /
+`subject.setMarking(value)`. Write your own `MarkingStore<T>` for anything else
+(column on a Prisma model, Redis key, event-sourced aggregate, …).
 
 ## Persistence formats
 

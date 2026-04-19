@@ -8,6 +8,7 @@
     "exports": {
         ".": "./src/index.ts",
         "./engine": "./src/engine/index.ts",
+        "./subject": "./src/subject/index.ts",
         "./yaml": "./src/yaml/index.ts",
         "./json": "./src/json/index.ts",
         "./typescript": "./src/typescript/index.ts",
@@ -34,6 +35,11 @@
                 "types": "./dist/engine.d.ts",
                 "import": "./dist/engine.js",
                 "require": "./dist/engine.cjs"
+            },
+            "./subject": {
+                "types": "./dist/subject.d.ts",
+                "import": "./dist/subject.js",
+                "require": "./dist/subject.cjs"
             },
             "./yaml": {
                 "types": "./dist/yaml.d.ts",

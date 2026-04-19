@@ -4,6 +4,7 @@ export default defineConfig({
     entry: {
         index: "src/index.ts",
         engine: "src/engine/index.ts",
+        subject: "src/subject/index.ts",
         yaml: "src/yaml/index.ts",
         json: "src/json/index.ts",
         typescript: "src/typescript/index.ts",
