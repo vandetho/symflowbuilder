@@ -28,8 +28,8 @@ import { EditorControls } from "./panels/EditorControls";
 import { PropertiesPanel } from "./panels/PropertiesPanel";
 import { SimulatorPanel } from "./panels/SimulatorPanel";
 import { ContextMenu, type ContextMenuState } from "./panels/ContextMenu";
-import type { StateNodeData, TransitionNodeData } from "@/types/workflow";
-import { uid, uniqueName } from "@/lib/utils";
+import type { StateNodeData, TransitionNodeData } from "@symflowbuilder/core";
+import { uid, uniqueName } from "@symflowbuilder/core";
 
 const nodeTypes = {
     state: StateNode,

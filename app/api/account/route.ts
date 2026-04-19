@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@symflowbuilder/db";
 
 export async function DELETE() {
     const session = await auth();

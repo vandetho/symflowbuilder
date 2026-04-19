@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@symflowbuilder/db";
 import { notFound } from "next/navigation";
 import { SharedWorkflowView } from "./SharedWorkflowView";
 

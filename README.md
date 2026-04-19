@@ -60,8 +60,8 @@ cp .env.example .env.local
 docker compose up -d
 
 # Generate Prisma client and run migrations
-npx prisma generate
-npx prisma migrate dev --name init
+pnpm prisma:generate
+pnpm --filter @symflowbuilder/db exec prisma migrate dev --name init
 
 # Start the dev server
 npm run dev

@@ -6,9 +6,9 @@ import type {
     WorkflowMeta,
     WorkflowType,
     MarkingStoreType,
-} from "@/types/workflow";
-import { DEFAULT_WORKFLOW_META } from "@/types/workflow";
-import { autoLayoutNodes } from "./layout-engine";
+} from "../types/workflow";
+import { DEFAULT_WORKFLOW_META } from "../types/workflow";
+import { autoLayoutNodes } from "../layout/auto-layout";
 
 interface ImportResult {
     nodes: Node[];

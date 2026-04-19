@@ -2,7 +2,7 @@
 
 import { useEffect, useCallback } from "react";
 import { useEditorStore } from "@/stores/editor";
-import type { GraphJson } from "@/types/workflow";
+import type { GraphJson } from "@symflowbuilder/core";
 
 const STORAGE_PREFIX = "sfb_draft_";
 

@@ -4,8 +4,8 @@ import { useCallback, useEffect, useRef } from "react";
 import { Trash2, Copy, CircleDot, FlagOff, Play, Square, Plus } from "lucide-react";
 import { useReactFlow } from "@xyflow/react";
 import { useEditorStore } from "@/stores/editor";
-import type { StateNodeData } from "@/types/workflow";
-import { uid, uniqueName } from "@/lib/utils";
+import type { StateNodeData } from "@symflowbuilder/core";
+import { uid, uniqueName } from "@symflowbuilder/core";
 
 export interface ContextMenuState {
     type: "node" | "edge" | "pane";

@@ -15,13 +15,13 @@ import type {
     TransitionEdgeData,
     WorkflowMeta,
     Snapshot,
-} from "@/types/workflow";
-import type { AccessLevel } from "@/types/collaboration";
-import { DEFAULT_WORKFLOW_META } from "@/types/workflow";
-import { exportWorkflowYaml } from "@/lib/yaml-export";
-import { importWorkflowYaml } from "@/lib/yaml-import";
-import { migrateGraphData } from "@/lib/migrate-graph";
-import { uid, uniqueName } from "@/lib/utils";
+} from "@symflowbuilder/core";
+import type { AccessLevel } from "@symflowbuilder/core";
+import { DEFAULT_WORKFLOW_META } from "@symflowbuilder/core";
+import { exportWorkflowYaml } from "@symflowbuilder/core";
+import { importWorkflowYaml } from "@symflowbuilder/core";
+import { migrateGraphData } from "@symflowbuilder/core";
+import { uid, uniqueName } from "@symflowbuilder/core";
 
 interface EditorStore {
     nodes: Node[];

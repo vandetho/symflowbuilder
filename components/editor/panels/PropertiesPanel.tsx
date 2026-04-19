@@ -14,7 +14,7 @@ import type {
     StateNodeData,
     TransitionNodeData,
     TransitionListener,
-} from "@/types/workflow";
+} from "@symflowbuilder/core";
 
 const PLACE_STYLING_KEYS = ["bg_color", "description"];
 const TRANSITION_STYLING_KEYS = ["label", "color", "arrow_color"];

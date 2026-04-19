@@ -14,3 +14,14 @@ export const prisma =
     });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
+export type {
+    User,
+    Account,
+    Session,
+    VerificationToken,
+    Workflow,
+    WorkflowVersion,
+    WorkflowCollaborator,
+    Prisma,
+} from "@prisma/client";

@@ -5,8 +5,8 @@ import { Download, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { exportWorkflowYaml } from "@/lib/yaml-export";
-import type { WorkflowMeta } from "@/types/workflow";
+import { exportWorkflowYaml } from "@symflowbuilder/core";
+import type { WorkflowMeta } from "@symflowbuilder/core";
 import type { Node, Edge } from "@xyflow/react";
 
 interface ExportWorkflowButtonProps {

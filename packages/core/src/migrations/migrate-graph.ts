@@ -1,5 +1,5 @@
 import type { Node, Edge } from "@xyflow/react";
-import type { TransitionNodeData, TransitionListener } from "@/types/workflow";
+import type { TransitionNodeData, TransitionListener } from "../types/workflow";
 
 interface GraphData {
     nodes: Node[];

@@ -70,8 +70,8 @@ chown -R debian:debian "$APP_DIR" /home/debian/.npm /home/debian/.pm2
 echo "==> Installing dependencies and building..."
 cd "$APP_DIR"
 sudo -u debian npm ci
-sudo -u debian npx prisma generate
-sudo -u debian npx prisma migrate deploy
+sudo -u debian npm run prisma:generate
+sudo -u debian npm run prisma:migrate
 sudo -u debian npm run build
 
 echo "==> Installing PM2..."
