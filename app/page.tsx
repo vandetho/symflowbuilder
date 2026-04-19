@@ -100,7 +100,7 @@ export default async function LandingPage() {
     const session = await auth();
     return (
         <div className="flex flex-col min-h-screen overflow-x-hidden">
-            <Navbar session={session} sticky={false} />
+            <Navbar session={session} />
 
             {/* ─── Workflow Flow ─── */}
             <div className="flex flex-col items-center">
