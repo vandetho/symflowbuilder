@@ -121,7 +121,15 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => ({
         // Collect events fired during this transition
         const firedEvents: WorkflowEvent[] = [];
         const unsubs = (
-            ["guard", "leave", "transition", "enter", "entered", "completed"] as const
+            [
+                "guard",
+                "leave",
+                "transition",
+                "enter",
+                "entered",
+                "completed",
+                "announce",
+            ] as const
         ).map((type) => engine.on(type, (event) => firedEvents.push(event)));
 
         try {

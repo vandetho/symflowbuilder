@@ -76,7 +76,8 @@ export type WorkflowEventType =
     | "transition"
     | "enter"
     | "entered"
-    | "completed";
+    | "completed"
+    | "announce";
 
 export interface WorkflowEvent {
     type: WorkflowEventType;

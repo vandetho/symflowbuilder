@@ -153,25 +153,44 @@ export class WorkflowEngine {
             (t) => t.name === transitionName
         )!;
 
-        // Fire events in Symfony order
+        // Fire events in Symfony order:
+        // https://symfony.com/doc/current/workflow.html#using-events
+
+        // 1. Guard (already checked in can(), but fire the event)
         this.emit("guard", transition);
 
-        // Leave: remove tokens from source places
+        // 2. Leave — fire per from-place, then remove tokens
         for (const from of transition.froms) {
             this.emit("leave", transition);
+        }
+        for (const from of transition.froms) {
             this.marking[from] = Math.max(0, (this.marking[from] ?? 0) - 1);
         }
 
+        // 3. Transition
         this.emit("transition", transition);
 
-        // Enter: add tokens to target places
+        // 4. Enter — fire BEFORE marking update (subject not yet in new place)
         for (const to of transition.tos) {
-            this.marking[to] = (this.marking[to] ?? 0) + 1;
             this.emit("enter", transition);
         }
 
+        // 5. Update marking (add tokens to target places)
+        for (const to of transition.tos) {
+            this.marking[to] = (this.marking[to] ?? 0) + 1;
+        }
+
+        // 6. Entered — fire AFTER marking update (subject is now in new place)
         this.emit("entered", transition);
+
+        // 7. Completed
         this.emit("completed", transition);
+
+        // 8. Announce — fire for each newly enabled transition
+        const enabled = this.getEnabledTransitions();
+        for (const t of enabled) {
+            this.emit("announce", transition);
+        }
 
         return this.getMarking();
     }

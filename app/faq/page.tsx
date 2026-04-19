@@ -78,10 +78,28 @@ export default async function FaqPage() {
 
                     <div className="hidden sm:flex items-center gap-6">
                         <Link
+                            href="/features"
+                            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                        >
+                            Features
+                        </Link>
+                        <Link
+                            href="/how-it-works"
+                            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                        >
+                            How It Works
+                        </Link>
+                        <Link
                             href="/explore"
                             className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                         >
                             Explore
+                        </Link>
+                        <Link
+                            href="/blog"
+                            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                        >
+                            Blog
                         </Link>
                         <Link
                             href="/faq"

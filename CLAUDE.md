@@ -12,7 +12,8 @@ Visual drag-and-drop builder for Symfony Workflow configurations. Design state m
 ## Documentation
 
 - [Design System](docs/design-system.md) — Dark glassmorphism theme, color tokens, glass utilities
-- [Editor Architecture](docs/editor.md) — Canvas, engine, simulator, YAML export/import
+- [Editor Architecture](docs/editor.md) — Canvas, simulator, YAML export/import
+- [Workflow Engine](docs/workflow-engine.md) — TypeScript runtime, Symfony compatibility, events, guards
 - [Entity Relationship Diagram](docs/erm.md) — Database schema
 - [Architecture](docs/architecture.md) — System overview, deployment pipeline
 

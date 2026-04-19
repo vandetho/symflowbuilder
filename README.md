@@ -145,9 +145,10 @@ Guest drafts are saved to `localStorage` and automatically migrated to the cloud
 ## Documentation
 
 - [Entity Relationship Diagram](docs/erm.md) – Database schema with all models and relationships
-- [Architecture](docs/architecture.md) – System overview, editor data flow, auth model, and deployment pipeline
-- [Design System](docs/design-system.md) – Dark glassmorphism theme, color tokens, glass utilities
-- [Editor Architecture](docs/editor.md) – Canvas, workflow engine, simulator, YAML export/import
+- [Architecture](docs/architecture.md) -- System overview, editor data flow, auth model, and deployment pipeline
+- [Design System](docs/design-system.md) -- Dark glassmorphism theme, color tokens, glass utilities
+- [Editor Architecture](docs/editor.md) -- Canvas, simulator, YAML export/import
+- [Workflow Engine](docs/workflow-engine.md) -- TypeScript runtime, Symfony compatibility, events, guards, validation
 
 ## Contributing
 

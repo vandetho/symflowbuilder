@@ -108,29 +108,35 @@ export default async function LandingPage() {
 
                     <div className="hidden sm:flex items-center gap-6">
                         <Link
+                            href="/features"
+                            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                        >
+                            Features
+                        </Link>
+                        <Link
+                            href="/how-it-works"
+                            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                        >
+                            How It Works
+                        </Link>
+                        <Link
                             href="/explore"
                             className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                         >
                             Explore
                         </Link>
-                        <a
-                            href="#features"
+                        <Link
+                            href="/blog"
                             className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                         >
-                            Features
-                        </a>
-                        <a
-                            href="#how-it-works"
+                            Blog
+                        </Link>
+                        <Link
+                            href="/faq"
                             className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                         >
-                            How it works
-                        </a>
-                        <a
-                            href="#yaml"
-                            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                        >
-                            YAML
-                        </a>
+                            FAQ
+                        </Link>
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -544,7 +550,43 @@ export default async function LandingPage() {
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                         <LogoWithText size={24} />
 
-                        <div className="flex items-center gap-6 text-[11px] text-[var(--text-muted)]">
+                        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] text-[var(--text-muted)]">
+                            <Link
+                                href="/editor"
+                                className="hover:text-[var(--text-secondary)] transition-colors"
+                            >
+                                Editor
+                            </Link>
+                            <Link
+                                href="/features"
+                                className="hover:text-[var(--text-secondary)] transition-colors"
+                            >
+                                Features
+                            </Link>
+                            <Link
+                                href="/how-it-works"
+                                className="hover:text-[var(--text-secondary)] transition-colors"
+                            >
+                                How It Works
+                            </Link>
+                            <Link
+                                href="/explore"
+                                className="hover:text-[var(--text-secondary)] transition-colors"
+                            >
+                                Explore
+                            </Link>
+                            <Link
+                                href="/blog"
+                                className="hover:text-[var(--text-secondary)] transition-colors"
+                            >
+                                Blog
+                            </Link>
+                            <Link
+                                href="/faq"
+                                className="hover:text-[var(--text-secondary)] transition-colors"
+                            >
+                                FAQ
+                            </Link>
                             <a
                                 href="https://github.com/vandetho/symflowbuilder"
                                 target="_blank"
@@ -561,18 +603,6 @@ export default async function LandingPage() {
                             >
                                 MIT License
                             </a>
-                            <Link
-                                href="/editor"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                Editor
-                            </Link>
-                            <Link
-                                href="/explore"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                Explore
-                            </Link>
                         </div>
 
                         <div className="flex items-center gap-3 text-[10px] text-[var(--text-muted)]">
