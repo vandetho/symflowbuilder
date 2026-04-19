@@ -14,15 +14,75 @@
         "./types": "./src/types/index.ts",
         "./adapters/react-flow": "./src/adapters/react-flow/index.ts"
     },
+    "files": [
+        "dist",
+        "src",
+        "README.md"
+    ],
+    "publishConfig": {
+        "access": "public",
+        "main": "./dist/index.cjs",
+        "module": "./dist/index.js",
+        "types": "./dist/index.d.ts",
+        "exports": {
+            ".": {
+                "types": "./dist/index.d.ts",
+                "import": "./dist/index.js",
+                "require": "./dist/index.cjs"
+            },
+            "./engine": {
+                "types": "./dist/engine.d.ts",
+                "import": "./dist/engine.js",
+                "require": "./dist/engine.cjs"
+            },
+            "./yaml": {
+                "types": "./dist/yaml.d.ts",
+                "import": "./dist/yaml.js",
+                "require": "./dist/yaml.cjs"
+            },
+            "./layout": {
+                "types": "./dist/layout.d.ts",
+                "import": "./dist/layout.js",
+                "require": "./dist/layout.cjs"
+            },
+            "./migrations": {
+                "types": "./dist/migrations.d.ts",
+                "import": "./dist/migrations.js",
+                "require": "./dist/migrations.cjs"
+            },
+            "./types": {
+                "types": "./dist/types.d.ts",
+                "import": "./dist/types.js",
+                "require": "./dist/types.cjs"
+            },
+            "./adapters/react-flow": {
+                "types": "./dist/adapters/react-flow.d.ts",
+                "import": "./dist/adapters/react-flow.js",
+                "require": "./dist/adapters/react-flow.cjs"
+            }
+        }
+    },
     "scripts": {
-        "typecheck": "tsc --noEmit"
+        "build": "tsup",
+        "dev": "tsup --watch",
+        "typecheck": "tsc --noEmit",
+        "clean": "rm -rf dist"
+    },
+    "peerDependencies": {
+        "@xyflow/react": "^12.10.2"
+    },
+    "peerDependenciesMeta": {
+        "@xyflow/react": {
+            "optional": true
+        }
     },
     "dependencies": {
-        "@xyflow/react": "^12.10.2",
         "js-yaml": "^4.1.1"
     },
     "devDependencies": {
         "@types/js-yaml": "^4.0.9",
+        "@xyflow/react": "^12.10.2",
+        "tsup": "^8.3.5",
         "typescript": "^5.9.3"
     }
 }
