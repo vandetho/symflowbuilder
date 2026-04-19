@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.2](https://github.com/vandetho/symflowbuilder/compare/v1.21.1...v1.21.2) (2026-04-19)
+
+
+### Bug Fixes
+
+* make landing page navbar sticky on scroll ([aa2d6a9](https://github.com/vandetho/symflowbuilder/commit/aa2d6a9818ced662d2f42c417bf8700fad148ae0))
+
 ## [1.21.1](https://github.com/vandetho/symflowbuilder/compare/v1.21.0...v1.21.1) (2026-04-19)
 
 
