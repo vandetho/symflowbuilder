@@ -88,7 +88,7 @@ const CATEGORIES: { title: string; features: Feature[] }[] = [
                 icon: Play,
                 title: "Workflow Simulator",
                 description:
-                    "Toggle simulate mode to step through your workflow visually. Active states glow green, available transitions highlight. Use auto-play with configurable speed, step back through history, or reset to the initial marking.",
+                    "Toggle simulate mode to step through your workflow visually. Active states glow green, available transitions highlight. Toggle guards on/off to test different paths. See Symfony events (guard, leave, transition, enter, entered, completed) fire in real-time. Use auto-play with configurable speed, step back through history, or reset to the initial marking.",
             },
             {
                 icon: AlertTriangle,

@@ -8,6 +8,14 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
     {
+        slug: "guard-toggles-and-event-log",
+        title: "Testing Guards and Watching Events Fire",
+        date: "2026-04-18",
+        excerpt:
+            "The simulator now lets you toggle guards on and off to test different workflow paths. See which Symfony events fire at each step — guard, leave, transition, enter, entered, completed.",
+        tags: ["feature", "simulator", "guards"],
+    },
+    {
         slug: "introducing-workflow-simulator",
         title: "Introducing the Workflow Simulator",
         date: "2026-04-17",

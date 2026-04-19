@@ -54,7 +54,7 @@ const FEATURES = [
         icon: Play,
         title: "Workflow Simulator",
         description:
-            "Step through your workflow visually. Active states glow, available transitions highlight. Auto-play mode with history and step-back.",
+            "Step through your workflow visually. Toggle guards on/off to test different paths. See Symfony events fire in real-time. Auto-play with history and step-back.",
     },
     {
         icon: AlertTriangle,

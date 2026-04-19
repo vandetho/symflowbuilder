@@ -52,7 +52,7 @@ const STEPS: Step[] = [
         step: "04",
         title: "Simulate & validate",
         description:
-            "Toggle the simulator to step through your workflow visually. Active states glow green, available transitions highlight. Use auto-play to watch the full flow, or step back through history. The validator catches unreachable states, dead transitions, and orphan places before you export.",
+            "Toggle the simulator to step through your workflow visually. Active states glow green, available transitions highlight. Toggle guards on or off to test different paths and see which Symfony events fire at each step. Use auto-play to watch the full flow, or step back through history. The validator catches unreachable states, dead transitions, and orphan places before you export.",
         icon: Play,
         accent: "var(--success)",
     },
