@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.1](https://github.com/vandetho/symflowbuilder/compare/v1.22.0...v1.22.1) (2026-04-19)
+
+
+### Bug Fixes
+
+* remove overflow-x-hidden that breaks sticky navbar on landing page ([5708a4c](https://github.com/vandetho/symflowbuilder/commit/5708a4ce8151b8a2ed2227bdda64e3310c21bb5d))
+
 ## [1.22.0](https://github.com/vandetho/symflowbuilder/compare/v1.21.2...v1.22.0) (2026-04-19)
 
 
