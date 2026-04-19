@@ -10,7 +10,9 @@
         "./engine": "./src/engine/index.ts",
         "./yaml": "./src/yaml/index.ts",
         "./layout": "./src/layout/index.ts",
-        "./types": "./src/types/index.ts"
+        "./migrations": "./src/migrations/index.ts",
+        "./types": "./src/types/index.ts",
+        "./adapters/react-flow": "./src/adapters/react-flow/index.ts"
     },
     "scripts": {
         "typecheck": "tsc --noEmit"
