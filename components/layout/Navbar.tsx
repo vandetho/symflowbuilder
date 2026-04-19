@@ -15,11 +15,15 @@ interface NavbarProps {
     /** Current page path to highlight the active link */
     activePath?: string;
     session?: { user?: { name?: string | null; image?: string | null } } | null;
+    /** Whether the navbar sticks to the top on scroll (default: true) */
+    sticky?: boolean;
 }
 
-export function Navbar({ activePath, session }: NavbarProps) {
+export function Navbar({ activePath, session, sticky = true }: NavbarProps) {
     return (
-        <nav className="sticky top-0 z-50 glass-strong border-b border-[var(--glass-border)]">
+        <nav
+            className={`${sticky ? "sticky top-0" : ""} z-50 glass-strong border-b border-[var(--glass-border)]`}
+        >
             <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
                 <Link href="/">
                     <LogoWithText />

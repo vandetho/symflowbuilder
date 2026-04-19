@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { auth } from "@/auth";
 import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
 interface Feature {
     icon: LucideIcon;
@@ -186,6 +187,8 @@ export default async function FeaturesPage() {
                     ))}
                 </div>
             </section>
+
+            <Footer />
         </div>
     );
 }

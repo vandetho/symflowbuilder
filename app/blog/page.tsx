@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { blogPosts } from "@/lib/data/blog-posts";
 import { formatDistanceToNow } from "date-fns";
 import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
 export const metadata = {
     title: "Blog — SymFlowBuilder",
@@ -82,6 +83,8 @@ export default async function BlogPage() {
                     ))}
                 </div>
             </section>
+
+            <Footer />
         </div>
     );
 }

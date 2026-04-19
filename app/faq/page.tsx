@@ -1,10 +1,9 @@
-import Link from "next/link";
 import { HelpCircle } from "lucide-react";
-import { LogoWithText } from "@/components/ui/logo";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { auth } from "@/auth";
 import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
 const FAQS = [
     {
@@ -111,42 +110,7 @@ export default async function FaqPage() {
                 </div>
             </section>
 
-            {/* ─── Footer ─── */}
-            <footer className="border-t border-[var(--glass-border)] px-6 py-8">
-                <div className="max-w-5xl mx-auto">
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <LogoWithText size={24} />
-                        <div className="flex items-center gap-6 text-[11px] text-[var(--text-muted)]">
-                            <a
-                                href="https://github.com/vandetho/symflowbuilder"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                GitHub
-                            </a>
-                            <Link
-                                href="/editor"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                Editor
-                            </Link>
-                            <Link
-                                href="/explore"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                Explore
-                            </Link>
-                            <Link
-                                href="/faq"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                FAQ
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }

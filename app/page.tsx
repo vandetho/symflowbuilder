@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
     FileCode2,
@@ -15,8 +14,9 @@ import {
     Palette,
 } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/icons";
-import { Logo, LogoWithText } from "@/components/ui/logo";
+import { Logo } from "@/components/ui/logo";
 import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -100,7 +100,7 @@ export default async function LandingPage() {
     const session = await auth();
     return (
         <div className="flex flex-col min-h-screen overflow-x-hidden">
-            <Navbar session={session} />
+            <Navbar session={session} sticky={false} />
 
             {/* ─── Workflow Flow ─── */}
             <div className="flex flex-col items-center">
@@ -476,118 +476,7 @@ export default async function LandingPage() {
                 </FlowNode>
             </div>
 
-            {/* ─── Footer ─── */}
-            <footer className="border-t border-[var(--glass-border)] px-6 py-8 mt-8">
-                <div className="max-w-5xl mx-auto">
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <LogoWithText size={24} />
-
-                        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] text-[var(--text-muted)]">
-                            <Link
-                                href="/editor"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                Editor
-                            </Link>
-                            <Link
-                                href="/features"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                Features
-                            </Link>
-                            <Link
-                                href="/how-it-works"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                How It Works
-                            </Link>
-                            <Link
-                                href="/explore"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                Explore
-                            </Link>
-                            <Link
-                                href="/blog"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                Blog
-                            </Link>
-                            <Link
-                                href="/faq"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                FAQ
-                            </Link>
-                            <a
-                                href="https://github.com/vandetho/symflowbuilder"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                GitHub
-                            </a>
-                            <a
-                                href="https://github.com/vandetho/symflowbuilder/blob/main/LICENSE"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:text-[var(--text-secondary)] transition-colors"
-                            >
-                                MIT License
-                            </a>
-                        </div>
-
-                        <div className="flex items-center gap-3 text-[10px] text-[var(--text-muted)]">
-                            <span>Sponsored by</span>
-                            <a
-                                href="https://supportdock.io"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1.5 font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                            >
-                                <Image
-                                    src="/supportdock-logo.png"
-                                    alt="SupportDock"
-                                    width={14}
-                                    height={14}
-                                    className="rounded-sm"
-                                />
-                                SupportDock
-                            </a>
-                            <a
-                                href="https://basilbook.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1.5 font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                            >
-                                <Image
-                                    src="/basilbook-logo.png"
-                                    alt="BasilBook"
-                                    width={14}
-                                    height={14}
-                                    className="rounded-sm"
-                                />
-                                BasilBook
-                            </a>
-                            <a
-                                href="https://dailybrew.work"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1.5 font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                            >
-                                <Image
-                                    src="/dailybrew-logo.svg"
-                                    alt="DailyBrew"
-                                    width={14}
-                                    height={14}
-                                    className="rounded-sm"
-                                />
-                                DailyBrew
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }
