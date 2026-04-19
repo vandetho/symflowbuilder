@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.20.0](https://github.com/vandetho/symflowbuilder/compare/v1.19.1...v1.20.0) (2026-04-19)
+
+
+### Features
+
+* fix engine event order to match Symfony, add docs, update navbars ([eef4262](https://github.com/vandetho/symflowbuilder/commit/eef426248833d3aee626a54253f5e6d6a6c17803))
+
+
+### Bug Fixes
+
+* use glass-strong for all page navbars ([de516d5](https://github.com/vandetho/symflowbuilder/commit/de516d594802ae68e3704411683b9e91d1317a7f))
+
 ## [1.19.1](https://github.com/vandetho/symflowbuilder/compare/v1.19.0...v1.19.1) (2026-04-19)
 
 
