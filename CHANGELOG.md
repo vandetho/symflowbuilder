@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.1](https://github.com/vandetho/symflowbuilder/compare/v1.20.0...v1.20.1) (2026-04-19)
+
+
+### Refactoring
+
+* extract shared Navbar component from 6 pages ([1b6130a](https://github.com/vandetho/symflowbuilder/commit/1b6130aaad06e33914140d3ff6addad1440a1206))
+
 ## [1.20.0](https://github.com/vandetho/symflowbuilder/compare/v1.19.1...v1.20.0) (2026-04-19)
 
 
