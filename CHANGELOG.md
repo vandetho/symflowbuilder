@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.0](https://github.com/vandetho/symflowbuilder/compare/v1.17.0...v1.18.0) (2026-04-19)
+
+
+### Features
+
+* add Explore button to editor toolbar ([1ea11b7](https://github.com/vandetho/symflowbuilder/commit/1ea11b76cefc9bff951601f8885555ec9c17c353))
+
 ## [1.17.0](https://github.com/vandetho/symflowbuilder/compare/v1.16.5...v1.17.0) (2026-04-19)
 
 
