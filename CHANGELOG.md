@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.25.0](https://github.com/vandetho/symflowbuilder/compare/v1.24.1...v1.25.0) (2026-04-20)
+
+
+### Features
+
+* add real blog post content and individual /blog/[slug] pages ([109bf56](https://github.com/vandetho/symflowbuilder/commit/109bf5617f3263de9b8b9954b569d7ae05411c90))
+
+
+### Bug Fixes
+
+* source .env files before prisma migrate deploy ([8ade201](https://github.com/vandetho/symflowbuilder/commit/8ade2015ba6bb3e532b60ce25141c89d42f295d8))
+
 ## [1.24.1](https://github.com/vandetho/symflowbuilder/compare/v1.24.0...v1.24.1) (2026-04-20)
 
 
