@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.2](https://github.com/vandetho/symflowbuilder/compare/v1.25.1...v1.25.2) (2026-04-20)
+
+
+### Bug Fixes
+
+* source all env file variants and skip migration if DATABASE_URL missing ([351810f](https://github.com/vandetho/symflowbuilder/commit/351810f20281e74bcb552f4308807e0b9d46ca86))
+
 ## [1.25.1](https://github.com/vandetho/symflowbuilder/compare/v1.25.0...v1.25.1) (2026-04-20)
 
 
