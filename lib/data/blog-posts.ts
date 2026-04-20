@@ -316,6 +316,36 @@ engine.getActivePlaces();  // ["PUBLISHED"]
 
 \`CREATE_ARTICLE\` is an AND-split — it forks into two parallel checks. \`PUBLISH\` is an AND-join — both content and spelling must be approved before the article can go live.
 
+## State Machine Example: Blog Publishing
+
+Not every workflow needs parallel states. This blog publishing flow uses \`type: state_machine\` — exactly one state active at a time, with branching paths for approval and rejection.
+
+The importer also handles Symfony's \`!php/const\` YAML tags — constants like \`!php/const App\\\\Workflow\\\\State\\\\BlogState::NEW_BLOG\` are resolved to \`"NEW_BLOG"\` automatically.
+
+\`\`\`typescript
+import { readFileSync } from "fs";
+import { importWorkflowYaml } from "symflow/yaml";
+import { WorkflowEngine } from "symflow/engine";
+
+const yaml = readFileSync("blog_event.yaml", "utf8");
+const { definition } = importWorkflowYaml(yaml);
+const engine = new WorkflowEngine(definition);
+
+// Happy path: create → check → review → publish
+engine.apply("CREATE_BLOG");
+engine.apply("VALID");
+engine.apply("PUBLISH");
+engine.getActivePlaces();  // ["PUBLISHED"]
+
+// Unpublish and update cycle
+engine.apply("NEED_REVIEW");
+engine.apply("REJECT");
+engine.apply("UPDATE");
+engine.getActivePlaces();  // ["NEED_REVIEW"]
+\`\`\`
+
+From \`CHECKING_CONTENT\`, the blog can go to \`NEED_REVIEW\` (valid) or \`NEED_UPDATE\` (invalid). Published articles can be pulled back to review. Rejected articles go through an update cycle until approved.
+
 ## What This Means for You
 
 If you are building a Node.js application that needs structured state management — order pipelines, approval flows, content publishing, onboarding funnels — you can now use the same workflow semantics as Symfony without running PHP.
