@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.30.0](https://github.com/vandetho/symflowbuilder/compare/v1.29.3...v1.30.0) (2026-04-20)
+
+
+### Features
+
+* move blog from static TypeScript array to PostgreSQL ([1d8cc87](https://github.com/vandetho/symflowbuilder/commit/1d8cc87a5176299342d1199ccb0b50a3940610c3))
+
 ## [1.29.3](https://github.com/vandetho/symflowbuilder/compare/v1.29.2...v1.29.3) (2026-04-20)
 
 
