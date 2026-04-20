@@ -31,7 +31,7 @@ jobs:
             - run: pnpm install --frozen-lockfile
 
             - name: Generate Prisma Client
-              run: pnpm dlx prisma generate
+              run: pnpm --filter @symflowbuilder/db prisma:generate
 
             - name: ESLint
               run: pnpm run lint
@@ -55,7 +55,7 @@ jobs:
             - run: pnpm install --frozen-lockfile
 
             - name: Generate Prisma Client
-              run: pnpm dlx prisma generate
+              run: pnpm --filter @symflowbuilder/db prisma:generate
 
             - name: TypeScript
               run: pnpm run typecheck
@@ -77,7 +77,7 @@ jobs:
             - run: pnpm install --frozen-lockfile
 
             - name: Generate Prisma Client
-              run: pnpm dlx prisma generate
+              run: pnpm --filter @symflowbuilder/db prisma:generate
 
             - name: Build
               run: pnpm run build

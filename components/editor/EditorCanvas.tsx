@@ -46,7 +46,7 @@ function EditorCanvasInner() {
         edges,
         onNodesChange,
         onEdgesChange,
-        onConnect: storeOnConnect,
+        onConnect: _storeOnConnect,
         addNode,
         setSelectedNode,
         setSelectedEdge,
