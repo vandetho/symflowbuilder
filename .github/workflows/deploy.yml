@@ -42,23 +42,11 @@ jobs:
                       echo "==> Installing dependencies..."
                       pnpm install --frozen-lockfile
 
-                      echo "==> Loading env..."
-                      for f in .env .env.local .env.production .env.production.local; do
-                          if [ -f "$f" ]; then
-                              echo "  Sourcing $f"
-                              set -a; . "./$f"; set +a
-                          fi
-                      done
-
                       echo "==> Generating Prisma client..."
-                      pnpm dlx prisma generate --schema packages/db/prisma/schema.prisma
+                      pnpm --filter @symflowbuilder/db prisma:generate
 
                       echo "==> Running migrations..."
-                      if [ -n "$DATABASE_URL" ]; then
-                          pnpm dlx prisma migrate deploy --schema packages/db/prisma/schema.prisma
-                      else
-                          echo "  WARNING: DATABASE_URL not set, skipping migrations"
-                      fi
+                      pnpm --filter @symflowbuilder/db prisma:migrate
 
                       echo "==> Building..."
                       pnpm run build
