@@ -42,6 +42,12 @@ jobs:
                       echo "==> Installing dependencies..."
                       pnpm install --frozen-lockfile
 
+                      echo "==> Loading env..."
+                      set -a
+                      [ -f .env ] && . .env
+                      [ -f .env.local ] && . .env.local
+                      set +a
+
                       echo "==> Generating Prisma client..."
                       pnpm dlx prisma generate --schema packages/db/prisma/schema.prisma
 
