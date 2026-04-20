@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.5](https://github.com/vandetho/symflowbuilder/compare/v1.25.4...v1.25.5) (2026-04-20)
+
+
+### Bug Fixes
+
+* delete and recreate PM2 process on deploy ([a95cf6b](https://github.com/vandetho/symflowbuilder/commit/a95cf6b3a3052790462ea25b7d951cceaca505f9))
+
 ## [1.25.4](https://github.com/vandetho/symflowbuilder/compare/v1.25.3...v1.25.4) (2026-04-20)
 
 
