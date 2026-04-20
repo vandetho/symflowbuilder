@@ -31,8 +31,8 @@ export async function loadCollab(): Promise<CollabModule | null> {
     loadAttempted = true;
 
     try {
-        collabModule =
-            (await import("@symflowbuilder/collab")) as unknown as CollabModule;
+        // @ts-expect-error — package is proprietary and not in the public repo
+        collabModule = (await import("@symflowbuilder/collab")) as CollabModule;
     } catch {
         collabModule = null;
     }
