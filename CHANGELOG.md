@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.7](https://github.com/vandetho/symflowbuilder/compare/v1.25.6...v1.25.7) (2026-04-20)
+
+
+### Documentation
+
+* update engine references from lib/engine to symflow npm package ([f9b6bba](https://github.com/vandetho/symflowbuilder/commit/f9b6bbaabf78754ee4e77041dfa7e3a5c66ad43f))
+
 ## [1.25.6](https://github.com/vandetho/symflowbuilder/compare/v1.25.5...v1.25.6) (2026-04-20)
 
 
