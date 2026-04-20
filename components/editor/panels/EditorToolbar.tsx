@@ -281,6 +281,15 @@ export function EditorToolbar() {
     const [showConfig, setShowConfig] = useState(false);
     const [exportOutput, setExportOutput] = useState("");
     const [exportFormat, setExportFormat] = useState<ExportFormat>("yaml");
+    const [openDropdown, setOpenDropdown] = useState<"import" | "export" | null>(null);
+
+    // Close dropdown on click outside
+    useEffect(() => {
+        if (!openDropdown) return;
+        const handleClick = () => setOpenDropdown(null);
+        document.addEventListener("click", handleClick);
+        return () => document.removeEventListener("click", handleClick);
+    }, [openDropdown]);
 
     const doExport = useCallback(
         (format: ExportFormat) => {
@@ -432,7 +441,7 @@ export function EditorToolbar() {
                         </Button>
                     </Link>
 
-                    <div className="relative group">
+                    <div className="relative">
                         <Button
                             variant="ghost"
                             size="sm"
@@ -447,9 +456,10 @@ export function EditorToolbar() {
                             size="sm"
                             className="rounded-l-none px-1.5"
                             onClick={(e) => {
-                                const menu = e.currentTarget
-                                    .nextElementSibling as HTMLElement;
-                                menu.classList.toggle("hidden");
+                                e.stopPropagation();
+                                setOpenDropdown(
+                                    openDropdown === "import" ? null : "import"
+                                );
                             }}
                         >
                             <svg
@@ -461,25 +471,33 @@ export function EditorToolbar() {
                                 <path d="M0 0l4 5 4-5z" />
                             </svg>
                         </Button>
-                        <div className="hidden absolute top-full right-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[160px] z-50">
-                            <button
-                                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                onClick={handleImportFile}
-                            >
-                                <Upload className="w-3.5 h-3.5" />
-                                From file (.yaml, .json)
-                            </button>
-                            <button
-                                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                onClick={() => setShowImportUrl(true)}
-                            >
-                                <Link2 className="w-3.5 h-3.5" />
-                                From URL
-                            </button>
-                        </div>
+                        {openDropdown === "import" && (
+                            <div className="absolute top-full right-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[160px] z-50">
+                                <button
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    onClick={() => {
+                                        setOpenDropdown(null);
+                                        handleImportFile();
+                                    }}
+                                >
+                                    <Upload className="w-3.5 h-3.5" />
+                                    From file (.yaml, .json)
+                                </button>
+                                <button
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    onClick={() => {
+                                        setOpenDropdown(null);
+                                        setShowImportUrl(true);
+                                    }}
+                                >
+                                    <Link2 className="w-3.5 h-3.5" />
+                                    From URL
+                                </button>
+                            </div>
+                        )}
                     </div>
 
-                    <div className="relative group">
+                    <div className="relative">
                         <Button
                             variant="default"
                             size="sm"
@@ -494,9 +512,10 @@ export function EditorToolbar() {
                             size="sm"
                             className="rounded-l-none border-l border-white/20 px-1.5"
                             onClick={(e) => {
-                                const menu = e.currentTarget
-                                    .nextElementSibling as HTMLElement;
-                                menu.classList.toggle("hidden");
+                                e.stopPropagation();
+                                setOpenDropdown(
+                                    openDropdown === "export" ? null : "export"
+                                );
                             }}
                         >
                             <svg
@@ -508,29 +527,40 @@ export function EditorToolbar() {
                                 <path d="M0 0l4 5 4-5z" />
                             </svg>
                         </Button>
-                        <div className="hidden absolute top-full right-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[140px] z-50">
-                            <button
-                                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                onClick={() => doExport("yaml")}
-                            >
-                                <FileDown className="w-3.5 h-3.5" />
-                                YAML
-                            </button>
-                            <button
-                                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                onClick={() => doExport("json")}
-                            >
-                                <FileJson className="w-3.5 h-3.5" />
-                                JSON
-                            </button>
-                            <button
-                                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                onClick={() => doExport("typescript")}
-                            >
-                                <FileCode className="w-3.5 h-3.5" />
-                                TypeScript
-                            </button>
-                        </div>
+                        {openDropdown === "export" && (
+                            <div className="absolute top-full right-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[140px] z-50">
+                                <button
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    onClick={() => {
+                                        setOpenDropdown(null);
+                                        doExport("yaml");
+                                    }}
+                                >
+                                    <FileDown className="w-3.5 h-3.5" />
+                                    YAML
+                                </button>
+                                <button
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    onClick={() => {
+                                        setOpenDropdown(null);
+                                        doExport("json");
+                                    }}
+                                >
+                                    <FileJson className="w-3.5 h-3.5" />
+                                    JSON
+                                </button>
+                                <button
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    onClick={() => {
+                                        setOpenDropdown(null);
+                                        doExport("typescript");
+                                    }}
+                                >
+                                    <FileCode className="w-3.5 h-3.5" />
+                                    TypeScript
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     <SimulateButton />
