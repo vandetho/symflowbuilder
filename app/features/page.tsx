@@ -11,7 +11,6 @@ import {
     Zap,
     Eye,
     Cloud,
-    Users,
     Package,
     Cpu,
     type LucideIcon,
@@ -122,7 +121,7 @@ const CATEGORIES: { title: string; features: Feature[] }[] = [
         ],
     },
     {
-        title: "Collaboration",
+        title: "Save & Share",
         features: [
             {
                 icon: Eye,
@@ -135,12 +134,6 @@ const CATEGORIES: { title: string; features: Feature[] }[] = [
                 title: "Cloud Save",
                 description:
                     "Authenticated users get auto-save with debounced sync to the cloud. Guest drafts persist to localStorage and migrate automatically on sign-in.",
-            },
-            {
-                icon: Users,
-                title: "Collaborators",
-                description:
-                    "Invite teammates by email with viewer or editor roles. Collaborators see shared workflows in their dashboard alongside their own.",
             },
         ],
     },

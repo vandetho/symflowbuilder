@@ -193,23 +193,25 @@ CI runs ESLint, Prettier, TypeScript checks, and a production build on every PR.
 - [x] GitHub + Google OAuth
 - [x] Cloud save with auto-sync
 - [x] Public sharing with read-only links
-- [x] Private sharing with collaborator roles (viewer/editor)
 - [x] Explore page for community workflows
 - [x] FAQ page
 - [x] Keyboard shortcuts via TanStack Hotkeys
 - [x] SEO with OG images, sitemap, and robots.txt
-- [ ] Version history UI with restore
-- [ ] Workflow templates (e-commerce, CMS, approval flows)
-- [ ] Real-time collaboration (multiplayer cursors)
 - [x] Workflow simulator with step-through, auto-play, and history
 - [x] Workflow validation (detect unreachable states, dead transitions)
+- [x] Color picker component for styling metadata (react-color)
+- [x] Standalone workflow engine (`symflow` npm package)
+- [x] JSON and TypeScript export formats
+- [x] Import from URL (GitHub raw, Gists, any HTTP endpoint)
+- [x] Blog backed by PostgreSQL
+- [ ] Version history UI with restore
+- [ ] Workflow templates (e-commerce, CMS, approval flows)
+- [ ] Real-time collaboration (multiplayer cursors) — in development
 - [ ] Symfony bundle generator (download a full bundle scaffold)
 - [ ] Export to Mermaid / PlantUML diagram formats
-- [ ] Email invitations for collaborators
 - [ ] Team workspaces with shared workflow libraries
 - [ ] Workflow diff view (compare two versions side by side)
 - [ ] Dark/light theme toggle
-- [x] Color picker component for styling metadata (react-color)
 
 ## Sponsors
 
