@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.31.2](https://github.com/vandetho/symflowbuilder/compare/v1.31.1...v1.31.2) (2026-04-20)
+
+
+### Bug Fixes
+
+* use PrismaPg adapter and load env in seed script ([287bac9](https://github.com/vandetho/symflowbuilder/commit/287bac9c280344e1ed56b505ee688896d9362f8e))
+
 ## [1.31.1](https://github.com/vandetho/symflowbuilder/compare/v1.31.0...v1.31.1) (2026-04-20)
 
 
