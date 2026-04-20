@@ -5,6 +5,7 @@ import { LogoWithText } from "@/components/ui/logo";
 const FOOTER_LINKS = [
     { href: "/editor", label: "Editor" },
     { href: "/features", label: "Features" },
+    { href: "/engine", label: "Engine" },
     { href: "/how-it-works", label: "How It Works" },
     { href: "/explore", label: "Explore" },
     { href: "/blog", label: "Blog" },

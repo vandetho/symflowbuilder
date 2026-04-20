@@ -93,6 +93,7 @@ const FEATURES = [
         title: "Node.js Engine",
         description:
             "The workflow engine is available as a standalone npm package — symflow. Run the same Symfony semantics in any Node.js, serverless, or browser project.",
+        href: "/engine",
     },
 ];
 
@@ -230,24 +231,36 @@ export default async function LandingPage() {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {FEATURES.map((feature) => (
-                                <Card
-                                    key={feature.title}
-                                    className="group hover:border-[var(--glass-border-hover)] transition-all duration-200"
-                                >
-                                    <CardContent className="flex flex-col gap-3">
-                                        <div className="w-10 h-10 rounded-[12px] bg-[var(--accent-dim)] border border-[var(--accent-border)] flex items-center justify-center group-hover:shadow-[0_0_20px_var(--accent-glow)] transition-shadow">
-                                            <feature.icon className="w-4.5 h-4.5 text-[var(--accent-bright)]" />
-                                        </div>
-                                        <h3 className="text-sm font-medium text-[var(--text-primary)]">
-                                            {feature.title}
-                                        </h3>
-                                        <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                                            {feature.description}
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                            ))}
+                            {FEATURES.map((feature) => {
+                                const card = (
+                                    <Card
+                                        key={feature.title}
+                                        className="group hover:border-[var(--glass-border-hover)] transition-all duration-200"
+                                    >
+                                        <CardContent className="flex flex-col gap-3">
+                                            <div className="w-10 h-10 rounded-[12px] bg-[var(--accent-dim)] border border-[var(--accent-border)] flex items-center justify-center group-hover:shadow-[0_0_20px_var(--accent-glow)] transition-shadow">
+                                                <feature.icon className="w-4.5 h-4.5 text-[var(--accent-bright)]" />
+                                            </div>
+                                            <h3 className="text-sm font-medium text-[var(--text-primary)]">
+                                                {feature.title}
+                                            </h3>
+                                            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                                                {feature.description}
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+                                );
+                                return "href" in feature && feature.href ? (
+                                    <Link
+                                        key={feature.title}
+                                        href={feature.href as string}
+                                    >
+                                        {card}
+                                    </Link>
+                                ) : (
+                                    <div key={feature.title}>{card}</div>
+                                );
+                            })}
                         </div>
                     </div>
                 </FlowNode>
