@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.1](https://github.com/vandetho/symflowbuilder/compare/v1.25.0...v1.25.1) (2026-04-20)
+
+
+### Bug Fixes
+
+* export DATABASE_URL explicitly for prisma migrate deploy ([a71af17](https://github.com/vandetho/symflowbuilder/commit/a71af179fab8ec934933b6223bed401c5488dfe2))
+
 ## [1.25.0](https://github.com/vandetho/symflowbuilder/compare/v1.24.1...v1.25.0) (2026-04-20)
 
 
