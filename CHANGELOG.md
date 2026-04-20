@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.28.0](https://github.com/vandetho/symflowbuilder/compare/v1.27.0...v1.28.0) (2026-04-20)
+
+
+### Features
+
+* **blog:** add SymFlowBuilder introduction article ([e7bb69f](https://github.com/vandetho/symflowbuilder/commit/e7bb69f540dcf181ec09991a1ca07b94048c5ea1))
+
+
+### Documentation
+
+* add shareable introduction article for Medium and SupportDock ([f130f52](https://github.com/vandetho/symflowbuilder/commit/f130f52f6f9d3bcde81491bfb92de2a1ce7040e4))
+
 ## [1.27.0](https://github.com/vandetho/symflowbuilder/compare/v1.26.0...v1.27.0) (2026-04-20)
 
 
