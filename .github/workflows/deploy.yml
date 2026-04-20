@@ -43,16 +43,14 @@ jobs:
                       pnpm install --frozen-lockfile
 
                       echo "==> Loading env..."
-                      set -a
-                      [ -f .env ] && . .env
-                      [ -f .env.local ] && . .env.local
-                      set +a
+                      export $(grep -v '^#' .env.local 2>/dev/null | xargs) 2>/dev/null || true
+                      export $(grep -v '^#' .env 2>/dev/null | xargs) 2>/dev/null || true
 
                       echo "==> Generating Prisma client..."
                       pnpm dlx prisma generate --schema packages/db/prisma/schema.prisma
 
                       echo "==> Running migrations..."
-                      pnpm dlx prisma migrate deploy --schema packages/db/prisma/schema.prisma
+                      DATABASE_URL="$DATABASE_URL" pnpm dlx prisma migrate deploy --schema packages/db/prisma/schema.prisma
 
                       echo "==> Building..."
                       pnpm run build
