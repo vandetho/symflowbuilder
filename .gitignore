@@ -23,6 +23,9 @@ node_modules
 # package build output
 packages/*/dist
 
+# proprietary packages (not open source)
+packages/collab/
+
 # misc
 .DS_Store
 *.pem
