@@ -22,6 +22,7 @@ import {
     exportGraphToJson,
     exportGraphToTs,
     importWorkflowYamlToGraph,
+    importWorkflowJsonToGraph,
     migrateGraphData,
 } from "@symflow/core/react-flow";
 import type { AccessLevel } from "@/types/collaboration";
@@ -66,6 +67,8 @@ interface EditorStore {
     exportJson: () => string;
     exportTs: () => string;
     importYaml: (yamlString: string) => void;
+    importJson: (jsonString: string) => void;
+    importFromUrl: (url: string) => Promise<void>;
     loadFromJson: (data: { nodes: Node[]; edges: Edge[]; meta: WorkflowMeta }) => void;
     reset: () => void;
 
@@ -240,6 +243,30 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
             selectedNodeId: null,
             selectedEdgeId: null,
         });
+    },
+
+    importJson: (jsonString) => {
+        const result = importWorkflowJsonToGraph(jsonString);
+        set({
+            nodes: result.nodes,
+            edges: result.edges,
+            workflowMeta: result.meta,
+            history: { past: [], future: [] },
+            selectedNodeId: null,
+            selectedEdgeId: null,
+        });
+    },
+
+    importFromUrl: async (url) => {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
+        const text = await res.text();
+        const isJson = url.endsWith(".json") || text.trimStart().startsWith("{");
+        if (isJson) {
+            get().importJson(text);
+        } else {
+            get().importYaml(text);
+        }
     },
 
     loadFromJson: ({ nodes, edges, meta }) => {

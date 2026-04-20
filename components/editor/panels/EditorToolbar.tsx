@@ -17,6 +17,7 @@ import {
     Globe,
     FileJson,
     FileCode,
+    Link2,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
@@ -271,6 +272,8 @@ export function EditorToolbar() {
         exportJson,
         exportTs,
         importYaml,
+        importJson,
+        importFromUrl,
         setSelectedNode,
         setSelectedEdge,
     } = useEditorStore();
@@ -315,28 +318,54 @@ export function EditorToolbar() {
         toast.success(`${cfg.label} file downloaded`);
     }, [exportOutput, exportFormat, workflowMeta.name]);
 
-    const handleImport = useCallback(() => {
+    const [showImportUrl, setShowImportUrl] = useState(false);
+    const [importUrlValue, setImportUrlValue] = useState("");
+    const [importingUrl, setImportingUrl] = useState(false);
+
+    const handleImportFile = useCallback(() => {
         const input = document.createElement("input");
         input.type = "file";
-        input.accept = ".yaml,.yml";
+        input.accept = ".yaml,.yml,.json";
         input.onchange = (e) => {
             const file = (e.target as HTMLInputElement).files?.[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = (event) => {
                 try {
-                    importYaml(event.target?.result as string);
+                    const text = event.target?.result as string;
+                    if (file.name.endsWith(".json")) {
+                        importJson(text);
+                    } else {
+                        importYaml(text);
+                    }
                     toast.success("Workflow imported successfully");
                 } catch (err) {
                     toast.error(
-                        `Import failed: ${err instanceof Error ? err.message : "Invalid YAML"}`
+                        `Import failed: ${err instanceof Error ? err.message : "Invalid file"}`
                     );
                 }
             };
             reader.readAsText(file);
         };
         input.click();
-    }, [importYaml]);
+    }, [importYaml, importJson]);
+
+    const handleImportFromUrl = useCallback(async () => {
+        if (!importUrlValue.trim()) return;
+        setImportingUrl(true);
+        try {
+            await importFromUrl(importUrlValue.trim());
+            toast.success("Workflow imported from URL");
+            setShowImportUrl(false);
+            setImportUrlValue("");
+        } catch (err) {
+            toast.error(
+                `Import failed: ${err instanceof Error ? err.message : "Failed to fetch"}`
+            );
+        } finally {
+            setImportingUrl(false);
+        }
+    }, [importUrlValue, importFromUrl]);
 
     return (
         <>
@@ -403,10 +432,52 @@ export function EditorToolbar() {
                         </Button>
                     </Link>
 
-                    <Button variant="ghost" size="sm" onClick={handleImport}>
-                        <Upload className="w-3.5 h-3.5" />
-                        Import
-                    </Button>
+                    <div className="relative group">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleImportFile}
+                            className="rounded-r-none"
+                        >
+                            <Upload className="w-3.5 h-3.5" />
+                            Import
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="rounded-l-none px-1.5"
+                            onClick={(e) => {
+                                const menu = e.currentTarget
+                                    .nextElementSibling as HTMLElement;
+                                menu.classList.toggle("hidden");
+                            }}
+                        >
+                            <svg
+                                width="8"
+                                height="5"
+                                viewBox="0 0 8 5"
+                                fill="currentColor"
+                            >
+                                <path d="M0 0l4 5 4-5z" />
+                            </svg>
+                        </Button>
+                        <div className="hidden absolute top-full right-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[160px] z-50">
+                            <button
+                                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                onClick={handleImportFile}
+                            >
+                                <Upload className="w-3.5 h-3.5" />
+                                From file (.yaml, .json)
+                            </button>
+                            <button
+                                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                onClick={() => setShowImportUrl(true)}
+                            >
+                                <Link2 className="w-3.5 h-3.5" />
+                                From URL
+                            </button>
+                        </div>
+                    </div>
 
                     <div className="relative group">
                         <Button
@@ -563,6 +634,38 @@ export function EditorToolbar() {
                                 <SelectItem value="property">property</SelectItem>
                             </Select>
                         </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Import from URL Dialog */}
+            <Dialog open={showImportUrl} onOpenChange={setShowImportUrl}>
+                <DialogContent className="max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Import from URL</DialogTitle>
+                        <DialogDescription>
+                            Paste a URL to a YAML or JSON workflow config (e.g. GitHub raw
+                            URL)
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="mt-3 flex flex-col gap-3">
+                        <Input
+                            value={importUrlValue}
+                            onChange={(e) => setImportUrlValue(e.target.value)}
+                            placeholder="https://raw.githubusercontent.com/..."
+                            className="text-xs"
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") handleImportFromUrl();
+                            }}
+                        />
+                        <Button
+                            onClick={handleImportFromUrl}
+                            disabled={importingUrl || !importUrlValue.trim()}
+                            className="gap-2"
+                        >
+                            <Link2 className="w-3.5 h-3.5" />
+                            {importingUrl ? "Importing..." : "Import"}
+                        </Button>
                     </div>
                 </DialogContent>
             </Dialog>
