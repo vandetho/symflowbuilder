@@ -116,13 +116,13 @@ stores/
   editor.ts                    # Zustand store (nodes, edges, undo/redo)
   simulator.ts                 # Simulator state (marking, history, auto-play)
 lib/
-  engine/                      # Workflow runtime engine
-    workflow-engine.ts         # Marking, transitions, guards, events
-    definition-builder.ts      # React Flow graph -> WorkflowDefinition
-    validator.ts               # Unreachable places, dead transitions
-  yaml-export.ts               # Graph -> Symfony YAML
-  yaml-import.ts               # Symfony YAML -> graph
-  layout-engine.ts             # Topological auto-layout
+  collab.ts                    # Optional collab module loader
+  schemas/                     # Zod validation schemas
+packages/
+  db/                          # Prisma schema + client (@symflowbuilder/db)
+
+# Workflow engine is the external `symflow` npm package
+# See: https://github.com/vandetho/symflow
 hooks/
   use-autosave.ts              # Debounced cloud/local save
   use-local-draft.ts           # localStorage persistence

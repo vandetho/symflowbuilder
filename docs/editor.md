@@ -25,14 +25,13 @@ components/editor/
     ContextMenu.tsx        — Right-click context menu
 ```
 
-## Workflow Engine (`lib/engine/`)
+## Workflow Engine ([`symflow`](https://www.npmjs.com/package/symflow))
 
-TypeScript runtime engine mirroring Symfony's Workflow component:
+The engine is published as the `symflow` npm package and imported via `@symflow/core` workspace alias. See [workflow-engine.md](workflow-engine.md) for the full API.
 
-- **types.ts** — Marking, Place, Transition, WorkflowDefinition, events
-- **workflow-engine.ts** — `WorkflowEngine` class: marking, transitions, guards, events
-- **definition-builder.ts** — Converts React Flow graph to WorkflowDefinition
-- **validator.ts** — Detects unreachable places, dead transitions, orphans
+- `symflow/engine` — `WorkflowEngine`, `validateDefinition`, `analyzeWorkflow`
+- `symflow/subject` — Subject-driven `Workflow<T>` with marking stores
+- `symflow/react-flow` — Converts React Flow graph ↔ WorkflowDefinition
 
 ## Simulator
 

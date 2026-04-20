@@ -1,6 +1,10 @@
 # Workflow Engine
 
-The workflow engine (`lib/engine/`) is a TypeScript implementation that mirrors Symfony's Workflow component. It powers the visual simulator in the editor.
+The workflow engine is published as the [`symflow`](https://www.npmjs.com/package/symflow) npm package ([GitHub](https://github.com/vandetho/symflow)). It powers the visual simulator in the editor and can be used standalone in any Node.js, serverless, or browser project.
+
+```bash
+npm install symflow
+```
 
 ## Symfony Compatibility
 
@@ -49,62 +53,90 @@ When `can()` returns `{ allowed: false }`, it includes `blockers[]` explaining w
 - `invalid_marking` — state_machine has wrong number of active places
 - `guard_blocked` — guard expression blocked the transition
 
-## Architecture
+## Package Structure
 
-```
-lib/engine/
-  types.ts              — Marking, Place, Transition, WorkflowDefinition, events
-  workflow-engine.ts    — WorkflowEngine class (core runtime)
-  definition-builder.ts — React Flow graph → WorkflowDefinition
-  validator.ts          — Structural validation (unreachable, dead, orphan)
-  analyzer.ts           — Pattern detection (AND/OR/XOR)
-  index.ts              — Barrel export
-```
+The engine is split into subpath exports:
+
+| Import               | Contents                                                                      | Extra deps             |
+| -------------------- | ----------------------------------------------------------------------------- | ---------------------- |
+| `symflow/engine`     | `WorkflowEngine`, `validateDefinition`, `analyzeWorkflow`, types              | none                   |
+| `symflow/subject`    | `Workflow<T>`, `createWorkflow`, `propertyMarkingStore`, `methodMarkingStore` | none                   |
+| `symflow/yaml`       | Symfony YAML import/export (supports `!php/const` and `!php/enum` tags)       | `js-yaml`              |
+| `symflow/json`       | JSON import/export                                                            | none                   |
+| `symflow/typescript` | TypeScript codegen from a definition                                          | none                   |
+| `symflow/react-flow` | React Flow node/edge types, graph utilities                                   | `@xyflow/react` (peer) |
 
 ## Usage
 
+### Standalone Engine
+
 ```typescript
-import { WorkflowEngine, buildDefinition, validateDefinition } from "@/lib/engine";
+import { WorkflowEngine, validateDefinition } from "symflow/engine";
+import type { WorkflowDefinition } from "symflow/engine";
 
-// Build definition from editor graph
-const definition = buildDefinition(nodes, edges, workflowMeta);
+const definition: WorkflowDefinition = {
+    name: "order",
+    type: "state_machine",
+    places: [{ name: "draft" }, { name: "submitted" }, { name: "approved" }],
+    transitions: [
+        { name: "submit", froms: ["draft"], tos: ["submitted"] },
+        { name: "approve", froms: ["submitted"], tos: ["approved"] },
+    ],
+    initialMarking: ["draft"],
+};
 
-// Validate
-const result = validateDefinition(definition);
-if (!result.valid) console.log(result.errors);
-
-// Create engine
+const { valid, errors } = validateDefinition(definition);
 const engine = new WorkflowEngine(definition);
 
-// Check and apply
 if (engine.can("submit").allowed) {
     engine.apply("submit");
 }
 
-// Get current state
-engine.getMarking(); // { draft: 0, submitted: 1, ... }
 engine.getActivePlaces(); // ["submitted"]
-engine.getEnabledTransitions(); // [{ name: "approve", ... }]
+```
 
-// Listen to events
-engine.on("entered", (event) => {
-    console.log(`Entered via ${event.transition.name}`);
+### Subject-Driven API
+
+```typescript
+import { createWorkflow, propertyMarkingStore } from "symflow/subject";
+
+interface Order {
+    id: string;
+    status: string;
+}
+
+const workflow = createWorkflow<Order>(definition, {
+    markingStore: propertyMarkingStore("status"),
 });
 
-// Reset
-engine.reset();
+const order: Order = { id: "1", status: "draft" };
+workflow.apply(order, "submit");
+console.log(order.status); // "submitted"
+```
+
+### Import Symfony YAML
+
+```typescript
+import { importWorkflowYaml } from "symflow/yaml";
+import { WorkflowEngine } from "symflow/engine";
+
+// Supports !php/const and !php/enum tags
+const { definition } = importWorkflowYaml(yamlString);
+const engine = new WorkflowEngine(definition);
 ```
 
 ## Differences from Symfony
 
-| Feature                       | Symfony                              | SymFlowBuilder Engine                          |
-| ----------------------------- | ------------------------------------ | ---------------------------------------------- |
-| Event names                   | `workflow.[name].guard.[transition]` | Generic types: `guard`, `leave`, etc.          |
-| Guard evaluation              | ExpressionLanguage                   | Pluggable function (toggle-based in simulator) |
-| Subject                       | PHP object with marking property     | No subject — marking is standalone             |
-| Weighted transitions          | Supported (token counts > 1)         | Not yet supported                              |
-| Transition metadata in events | Full context object                  | Transition + marking snapshot                  |
-| `announce` event              | Re-triggers all guard events         | Fires but does not re-dispatch guards          |
+| Feature                       | Symfony                              | symflow                                                 |
+| ----------------------------- | ------------------------------------ | ------------------------------------------------------- |
+| Event names                   | `workflow.[name].guard.[transition]` | Generic types: `guard`, `leave`, etc.                   |
+| Guard evaluation              | ExpressionLanguage                   | Pluggable function (toggle-based in simulator)          |
+| Subject                       | PHP object with marking property     | Optional via `symflow/subject`                          |
+| Marking stores                | `property` and `method` types        | Same, via `propertyMarkingStore` / `methodMarkingStore` |
+| Weighted transitions          | Supported (token counts > 1)         | Not yet supported                                       |
+| Transition metadata in events | Full context object                  | Transition + marking snapshot                           |
+| `announce` event              | Re-triggers all guard events         | Fires but does not re-dispatch guards                   |
+| `!php/const` / `!php/enum`    | Resolved by PHP at runtime           | Resolved to short name after `::`                       |
 
 ## Validator
 
@@ -132,6 +164,8 @@ engine.reset();
 
 - `or-split` — multiple outgoing transitions (choice)
 - `or-join` — multiple incoming transitions (merge)
+- `and-split` — target of a transition with multiple tos
+- `and-join` — source of a transition with multiple froms
 
 **Place patterns (state_machine type):**
 
