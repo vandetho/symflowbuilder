@@ -1,6 +1,7 @@
 import type { Node, Edge } from "@xyflow/react";
-import type { StateNodeData, TransitionNodeData, WorkflowMeta } from "@/types/workflow";
-import type { WorkflowDefinition, Place, Transition } from "./types";
+import type { WorkflowMeta } from "../../types/workflow";
+import type { WorkflowDefinition, Place, Transition } from "../../engine/types";
+import type { StateNodeData, TransitionNodeData } from "./types";
 
 /**
  * Converts React Flow graph state into a pure WorkflowDefinition

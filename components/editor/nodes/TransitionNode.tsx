@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import type { TransitionNodeData } from "@/types/workflow";
+import type { TransitionNodeData } from "@symflow/core/react-flow";
 import { useSimulatorStore } from "@/stores/simulator";
 
 export const TransitionNode = memo(

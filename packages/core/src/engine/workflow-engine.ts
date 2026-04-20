@@ -160,7 +160,7 @@ export class WorkflowEngine {
         this.emit("guard", transition);
 
         // 2. Leave — fire per from-place, then remove tokens
-        for (const from of transition.froms) {
+        for (let i = 0; i < transition.froms.length; i++) {
             this.emit("leave", transition);
         }
         for (const from of transition.froms) {
@@ -171,7 +171,7 @@ export class WorkflowEngine {
         this.emit("transition", transition);
 
         // 4. Enter — fire BEFORE marking update (subject not yet in new place)
-        for (const to of transition.tos) {
+        for (let i = 0; i < transition.tos.length; i++) {
             this.emit("enter", transition);
         }
 
@@ -188,7 +188,7 @@ export class WorkflowEngine {
 
         // 8. Announce — fire for each newly enabled transition
         const enabled = this.getEnabledTransitions();
-        for (const t of enabled) {
+        for (let i = 0; i < enabled.length; i++) {
             this.emit("announce", transition);
         }
 

@@ -7,7 +7,7 @@ import {
     useReactFlow,
     type EdgeProps,
 } from "@xyflow/react";
-import type { TransitionEdgeData } from "@/types/workflow";
+import type { TransitionEdgeData } from "@symflow/core/react-flow";
 import { useEditorStore } from "@/stores/editor";
 import { useSimulatorStore } from "@/stores/simulator";
 

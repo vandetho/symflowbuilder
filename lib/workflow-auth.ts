@@ -1,5 +1,4 @@
-import { prisma } from "@/lib/prisma";
-import type { Workflow } from "@prisma/client";
+import { prisma, type Workflow } from "@symflowbuilder/db";
 
 export type AccessLevel = "none" | "viewer" | "editor" | "owner";
 

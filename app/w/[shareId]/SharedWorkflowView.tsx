@@ -31,9 +31,8 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-import { migrateGraphData } from "@/lib/migrate-graph";
-import { exportWorkflowYaml } from "@/lib/yaml-export";
-import type { WorkflowMeta } from "@/types/workflow";
+import type { WorkflowMeta } from "@symflow/core";
+import { migrateGraphData, exportGraphToYaml } from "@symflow/core/react-flow";
 
 const nodeTypes = {
     state: StateNode,
@@ -78,7 +77,7 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
         property: "currentState",
     };
 
-    const yamlOutput = exportWorkflowYaml({ nodes, edges, meta });
+    const yamlOutput = exportGraphToYaml({ nodes, edges, meta });
 
     const handleCopyYaml = async () => {
         await navigator.clipboard.writeText(yamlOutput);

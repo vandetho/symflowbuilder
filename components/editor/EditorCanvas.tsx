@@ -28,7 +28,7 @@ import { EditorControls } from "./panels/EditorControls";
 import { PropertiesPanel } from "./panels/PropertiesPanel";
 import { SimulatorPanel } from "./panels/SimulatorPanel";
 import { ContextMenu, type ContextMenuState } from "./panels/ContextMenu";
-import type { StateNodeData, TransitionNodeData } from "@/types/workflow";
+import type { StateNodeData, TransitionNodeData } from "@symflow/core/react-flow";
 import { uid, uniqueName } from "@/lib/utils";
 
 const nodeTypes = {
@@ -46,7 +46,7 @@ function EditorCanvasInner() {
         edges,
         onNodesChange,
         onEdgesChange,
-        onConnect: storeOnConnect,
+        onConnect: _storeOnConnect,
         addNode,
         setSelectedNode,
         setSelectedEdge,

@@ -4,7 +4,7 @@ import { memo } from "react";
 import { getBezierPath, type EdgeProps } from "@xyflow/react";
 import { useSimulatorStore } from "@/stores/simulator";
 import { useEditorStore } from "@/stores/editor";
-import type { TransitionNodeData } from "@/types/workflow";
+import type { TransitionNodeData } from "@symflow/core/react-flow";
 
 /**
  * Simple connector edge with no label — just a line between

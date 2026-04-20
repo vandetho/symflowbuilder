@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@symflowbuilder/db";
 import type { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {

@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import { EditorCanvas } from "@/components/editor/EditorCanvas";
 import { useEditorStore } from "@/stores/editor";
 import { useAutosave } from "@/hooks/use-autosave";
-import type { WorkflowMeta } from "@/types/workflow";
+import type { WorkflowMeta } from "@symflow/core";
 import type { Node, Edge } from "@xyflow/react";
 
 export default function EditWorkflowPage({

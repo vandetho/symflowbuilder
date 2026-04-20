@@ -10,32 +10,18 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useEditorStore } from "@/stores/editor";
-import type {
-    StateNodeData,
-    TransitionNodeData,
-    TransitionListener,
-} from "@/types/workflow";
+import type { TransitionListener } from "@symflow/core";
+import type { StateNodeData, TransitionNodeData } from "@symflow/core/react-flow";
 
 const PLACE_STYLING_KEYS = ["bg_color", "description"];
 const TRANSITION_STYLING_KEYS = ["label", "color", "arrow_color"];
 
 export function PropertiesPanel() {
-    const {
-        nodes,
-        edges,
-        selectedNodeId,
-        selectedEdgeId,
-        updateNodeData,
-        updateEdgeData,
-        setSelectedNode,
-        setSelectedEdge,
-    } = useEditorStore();
+    const { nodes, edges, selectedNodeId, updateNodeData, setSelectedNode } =
+        useEditorStore();
 
     const selectedNode = selectedNodeId
         ? nodes.find((n) => n.id === selectedNodeId)
-        : null;
-    const selectedEdge = selectedEdgeId
-        ? edges.find((e) => e.id === selectedEdgeId)
         : null;
 
     if (!selectedNode) return null;

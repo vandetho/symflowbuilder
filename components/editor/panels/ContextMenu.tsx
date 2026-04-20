@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { Trash2, Copy, CircleDot, FlagOff, Play, Square, Plus } from "lucide-react";
 import { useReactFlow } from "@xyflow/react";
 import { useEditorStore } from "@/stores/editor";
-import type { StateNodeData } from "@/types/workflow";
+import type { StateNodeData } from "@symflow/core/react-flow";
 import { uid, uniqueName } from "@/lib/utils";
 
 export interface ContextMenuState {

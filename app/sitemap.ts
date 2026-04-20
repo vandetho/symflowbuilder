@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@symflowbuilder/db";
 
 export const dynamic = "force-dynamic";
 

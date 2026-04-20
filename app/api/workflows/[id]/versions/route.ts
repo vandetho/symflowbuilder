@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@symflowbuilder/db";
 import { getWorkflowAccess, canView, canEdit } from "@/lib/workflow-auth";
 import type { NextRequest } from "next/server";
 

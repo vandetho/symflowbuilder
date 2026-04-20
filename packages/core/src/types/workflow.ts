@@ -2,31 +2,9 @@ export type SymfonyVersion = "5.4" | "6.4" | "7.4" | "8.0";
 export type WorkflowType = "workflow" | "state_machine";
 export type MarkingStoreType = "method" | "property";
 
-export interface StateNodeData {
-    label: string;
-    isInitial: boolean;
-    isFinal: boolean;
-    metadata: Record<string, string>;
-}
-
 export interface TransitionListener {
     event: string;
     service: string;
-}
-
-export interface TransitionNodeData {
-    label: string;
-    guard?: string;
-    listeners: TransitionListener[];
-    metadata: Record<string, string>;
-}
-
-/** @deprecated Use TransitionNodeData — transitions are now nodes, not edges */
-export interface TransitionEdgeData {
-    label: string;
-    guard?: string;
-    listeners: TransitionListener[];
-    metadata: Record<string, string>;
 }
 
 export interface WorkflowMeta {
@@ -37,19 +15,6 @@ export interface WorkflowMeta {
     initial_marking: string[];
     supports: string;
     property: string;
-}
-
-import type { Node, Edge } from "@xyflow/react";
-
-export interface GraphJson {
-    nodes: Node[];
-    edges: Edge[];
-    meta: WorkflowMeta;
-}
-
-export interface Snapshot {
-    nodes: Node[];
-    edges: Edge[];
 }
 
 export const STATE_NAME_REGEX = /^[a-z][a-z0-9_]*$/;

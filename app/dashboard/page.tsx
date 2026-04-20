@@ -6,7 +6,7 @@ import { WorkflowActions } from "@/components/dashboard/workflow-actions";
 import { LeaveWorkflowButton } from "@/components/dashboard/leave-workflow-button";
 import { ExportWorkflowButton } from "@/components/dashboard/export-workflow-button";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@symflowbuilder/db";
 import { Button } from "@/components/ui/button";
 import {
     Card,
