@@ -35,6 +35,7 @@
         "@symflowbuilder/db": "workspace:*",
         "@tanstack/react-hotkeys": "^0.9.1",
         "@xyflow/react": "^12.10.2",
+        "bcryptjs": "^3.0.3",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "date-fns": "^4.1.0",
@@ -54,6 +55,7 @@
     },
     "devDependencies": {
         "@tailwindcss/postcss": "^4.2.2",
+        "@types/bcryptjs": "^3.0.0",
         "@types/js-yaml": "^4.0.9",
         "@types/node": "^20.19.39",
         "@types/react": "^19.2.14",

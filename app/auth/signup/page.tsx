@@ -4,7 +4,7 @@ import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Mail } from "lucide-react";
+import { ArrowLeft, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,29 +12,51 @@ import { Label } from "@/components/ui/label";
 import { LogoWithText } from "@/components/ui/logo";
 import { toast } from "sonner";
 
-function SignInContent() {
+function SignUpContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleCredentials = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
-        const result = await signIn("credentials", {
-            email,
-            password,
-            redirect: false,
-        });
+        try {
+            const res = await fetch("/api/auth/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, password }),
+            });
 
-        if (result?.error) {
-            toast.error("Invalid email or password");
+            if (!res.ok) {
+                const data = await res.json();
+                toast.error(data.error ?? "Failed to create account");
+                setLoading(false);
+                return;
+            }
+
+            const result = await signIn("credentials", {
+                email,
+                password,
+                redirect: false,
+            });
+
+            if (result?.error) {
+                toast.error(
+                    "Account created but sign-in failed. Please sign in manually."
+                );
+                router.push("/auth/signin");
+            } else {
+                toast.success("Account created");
+                router.push(callbackUrl);
+            }
+        } catch {
+            toast.error("Something went wrong");
             setLoading(false);
-        } else {
-            router.push(callbackUrl);
         }
     };
 
@@ -48,11 +70,64 @@ function SignInContent() {
 
                     <div className="text-center">
                         <h1 className="text-lg font-medium text-[var(--text-primary)]">
-                            Welcome back
+                            Create an account
                         </h1>
                         <p className="text-sm text-[var(--text-secondary)] mt-1">
-                            Sign in to save and share your workflows
+                            Sign up to save and share your workflows
                         </p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full">
+                        <div className="flex flex-col gap-1.5">
+                            <Label>Name</Label>
+                            <Input
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Your name"
+                                required
+                            />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <Label>Email</Label>
+                            <Input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="you@example.com"
+                                required
+                            />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <Label>Password</Label>
+                            <Input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="At least 8 characters"
+                                required
+                                minLength={8}
+                            />
+                        </div>
+                        <Button type="submit" className="w-full gap-2" disabled={loading}>
+                            <UserPlus className="w-4 h-4" />
+                            {loading ? "Creating account..." : "Create account"}
+                        </Button>
+                    </form>
+
+                    <p className="text-xs text-[var(--text-secondary)]">
+                        Already have an account?{" "}
+                        <Link
+                            href={`/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+                            className="text-[var(--accent-bright)] hover:underline"
+                        >
+                            Sign in
+                        </Link>
+                    </p>
+
+                    <div className="flex items-center gap-3 w-full">
+                        <div className="flex-1 h-px bg-[var(--glass-border)]" />
+                        <span className="text-[10px] text-[var(--text-muted)]">or</span>
+                        <div className="flex-1 h-px bg-[var(--glass-border)]" />
                     </div>
 
                     <div className="flex flex-col gap-3 w-full">
@@ -97,58 +172,6 @@ function SignInContent() {
                             Continue with Google
                         </Button>
                     </div>
-
-                    <div className="flex items-center gap-3 w-full">
-                        <div className="flex-1 h-px bg-[var(--glass-border)]" />
-                        <span className="text-[10px] text-[var(--text-muted)]">or</span>
-                        <div className="flex-1 h-px bg-[var(--glass-border)]" />
-                    </div>
-
-                    <form
-                        onSubmit={handleCredentials}
-                        className="flex flex-col gap-3 w-full"
-                    >
-                        <div className="flex flex-col gap-1.5">
-                            <Label>Email</Label>
-                            <Input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="you@example.com"
-                                required
-                            />
-                        </div>
-                        <div className="flex flex-col gap-1.5">
-                            <Label>Password</Label>
-                            <Input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="At least 8 characters"
-                                required
-                                minLength={8}
-                            />
-                        </div>
-                        <Button type="submit" className="w-full gap-2" disabled={loading}>
-                            <Mail className="w-4 h-4" />
-                            {loading ? "Signing in..." : "Sign in with Email"}
-                        </Button>
-                    </form>
-
-                    <p className="text-xs text-[var(--text-secondary)]">
-                        Don&apos;t have an account?{" "}
-                        <Link
-                            href={`/auth/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-                            className="text-[var(--accent-bright)] hover:underline"
-                        >
-                            Sign up
-                        </Link>
-                    </p>
-
-                    <p className="text-[10px] text-[var(--text-muted)] text-center">
-                        The editor works without an account. Sign in unlocks cloud save
-                        &amp; sharing.
-                    </p>
                 </CardContent>
             </Card>
             <Link href="/">
@@ -161,10 +184,10 @@ function SignInContent() {
     );
 }
 
-export default function SignInPage() {
+export default function SignUpPage() {
     return (
         <Suspense>
-            <SignInContent />
+            <SignUpContent />
         </Suspense>
     );
 }
