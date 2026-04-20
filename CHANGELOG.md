@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.31.1](https://github.com/vandetho/symflowbuilder/compare/v1.31.0...v1.31.1) (2026-04-20)
+
+
+### Bug Fixes
+
+* fallback to static blog data when BlogPost table doesn't exist ([f46d39f](https://github.com/vandetho/symflowbuilder/commit/f46d39fbba9201d2a8677abd037e64ca0e166193))
+* make seed script self-contained (no cross-package ESM import) ([2d35c17](https://github.com/vandetho/symflowbuilder/commit/2d35c17b115ab505e5026e6e05f523db486def13))
+
 ## [1.31.0](https://github.com/vandetho/symflowbuilder/compare/v1.30.0...v1.31.0) (2026-04-20)
 
 
