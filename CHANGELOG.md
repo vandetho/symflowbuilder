@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.0](https://github.com/vandetho/symflowbuilder/compare/v1.26.0...v1.27.0) (2026-04-20)
+
+
+### Features
+
+* add JSON and TypeScript export to editor toolbar ([0b56f56](https://github.com/vandetho/symflowbuilder/commit/0b56f56d63c9508e62f6da3da837b0640742476c))
+
 ## [1.26.0](https://github.com/vandetho/symflowbuilder/compare/v1.25.7...v1.26.0) (2026-04-20)
 
 
