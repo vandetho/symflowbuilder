@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.2](https://github.com/vandetho/symflowbuilder/compare/v1.29.1...v1.29.2) (2026-04-20)
+
+
+### Bug Fixes
+
+* dropdowns open one at a time, close on click outside ([6b37e03](https://github.com/vandetho/symflowbuilder/commit/6b37e03f7b97557c2b560219fd5ce08b83a9fd54))
+
 ## [1.29.1](https://github.com/vandetho/symflowbuilder/compare/v1.29.0...v1.29.1) (2026-04-20)
 
 
