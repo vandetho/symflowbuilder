@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.4](https://github.com/vandetho/symflowbuilder/compare/v1.25.3...v1.25.4) (2026-04-20)
+
+
+### Bug Fixes
+
+* use next dist binary path in PM2 config for pnpm compatibility ([98f28d6](https://github.com/vandetho/symflowbuilder/commit/98f28d6e06a52b3e1fe712df55dc84ddb3a904fc))
+
 ## [1.25.3](https://github.com/vandetho/symflowbuilder/compare/v1.25.2...v1.25.3) (2026-04-20)
 
 
