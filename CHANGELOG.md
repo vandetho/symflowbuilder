@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.31.0](https://github.com/vandetho/symflowbuilder/compare/v1.30.0...v1.31.0) (2026-04-20)
+
+
+### Features
+
+* add email/password authentication ([cdd41c9](https://github.com/vandetho/symflowbuilder/commit/cdd41c942ab8e913213a35973436ed6de1c49a28))
+
 ## [1.30.0](https://github.com/vandetho/symflowbuilder/compare/v1.29.3...v1.30.0) (2026-04-20)
 
 
