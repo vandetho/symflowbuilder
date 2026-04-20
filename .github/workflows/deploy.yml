@@ -57,6 +57,8 @@ jobs:
 
                       echo "==> Restarting service..."
                       export PM2_HOME=/home/debian/.pm2
-                      pm2 restart symflowbuilder || pm2 start ecosystem.config.cjs
+                      pm2 delete symflowbuilder 2>/dev/null || true
+                      pm2 start ecosystem.config.cjs
+                      pm2 save
 
                       echo "==> Deploy complete! (${{ github.event.release.tag_name }})"
