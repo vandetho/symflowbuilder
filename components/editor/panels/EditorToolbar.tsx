@@ -441,12 +441,12 @@ export function EditorToolbar() {
                         </Button>
                     </Link>
 
-                    <div className="relative">
+                    <div className="relative flex items-center">
                         <Button
                             variant="ghost"
                             size="sm"
                             onClick={handleImportFile}
-                            className="rounded-r-none"
+                            className="rounded-r-none border-r-0"
                         >
                             <Upload className="w-3.5 h-3.5" />
                             Import
@@ -454,7 +454,7 @@ export function EditorToolbar() {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="rounded-l-none px-1.5"
+                            className="rounded-l-none px-1.5 h-full"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setOpenDropdown(
@@ -472,7 +472,7 @@ export function EditorToolbar() {
                             </svg>
                         </Button>
                         {openDropdown === "import" && (
-                            <div className="absolute top-full right-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[160px] z-50">
+                            <div className="absolute top-full left-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[180px] z-50">
                                 <button
                                     className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
                                     onClick={() => {
@@ -497,12 +497,12 @@ export function EditorToolbar() {
                         )}
                     </div>
 
-                    <div className="relative">
+                    <div className="relative flex items-center">
                         <Button
                             variant="default"
                             size="sm"
                             onClick={handleExport}
-                            className="rounded-r-none"
+                            className="rounded-r-none border-r-0"
                         >
                             <Download className="w-3.5 h-3.5" />
                             Export
@@ -510,7 +510,7 @@ export function EditorToolbar() {
                         <Button
                             variant="default"
                             size="sm"
-                            className="rounded-l-none border-l border-white/20 px-1.5"
+                            className="rounded-l-none border-l border-white/20 px-1.5 h-full"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setOpenDropdown(
@@ -528,7 +528,7 @@ export function EditorToolbar() {
                             </svg>
                         </Button>
                         {openDropdown === "export" && (
-                            <div className="absolute top-full right-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[140px] z-50">
+                            <div className="absolute top-full left-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[140px] z-50">
                                 <button
                                     className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
                                     onClick={() => {
