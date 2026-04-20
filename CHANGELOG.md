@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.23.1](https://github.com/vandetho/symflowbuilder/compare/v1.23.0...v1.23.1) (2026-04-20)
+
+
+### Bug Fixes
+
+* use pnpm dlx for prisma generate in CI ([4fe13b5](https://github.com/vandetho/symflowbuilder/commit/4fe13b577e3e53345853ca4ce3e34bd7e6663d7f))
+
 ## [1.23.0](https://github.com/vandetho/symflowbuilder/compare/v1.22.1...v1.23.0) (2026-04-19)
 
 
