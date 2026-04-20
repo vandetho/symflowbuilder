@@ -31,17 +31,25 @@ jobs:
                       echo "==> Checking out ${{ github.event.release.tag_name }}..."
                       git checkout ${{ github.event.release.tag_name }}
 
+                      echo "==> Ensuring pnpm is available..."
+                      export COREPACK_ENABLE_STRICT=0
+                      if ! command -v pnpm &>/dev/null || ! pnpm --version &>/dev/null; then
+                          curl -fsSL https://get.pnpm.io/install.sh | sh -
+                          export PNPM_HOME="$HOME/.local/share/pnpm"
+                          export PATH="$PNPM_HOME:$PATH"
+                      fi
+
                       echo "==> Installing dependencies..."
-                      npm ci
+                      pnpm install --frozen-lockfile
 
                       echo "==> Generating Prisma client..."
-                      npx prisma generate
+                      pnpm dlx prisma generate
 
                       echo "==> Running migrations..."
-                      npx prisma migrate deploy
+                      pnpm dlx prisma migrate deploy
 
                       echo "==> Building..."
-                      npm run build
+                      pnpm run build
 
                       echo "==> Ensuring logs directory..."
                       mkdir -p /var/www/symflowbuilder/logs
