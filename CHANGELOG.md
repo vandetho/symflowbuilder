@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.3](https://github.com/vandetho/symflowbuilder/compare/v1.25.2...v1.25.3) (2026-04-20)
+
+
+### Bug Fixes
+
+* use pnpm --filter for prisma commands so prisma.config.ts loads env ([2e66eb0](https://github.com/vandetho/symflowbuilder/commit/2e66eb0a6bf2a987b02df0567ff2f4feb9348617))
+
 ## [1.25.2](https://github.com/vandetho/symflowbuilder/compare/v1.25.1...v1.25.2) (2026-04-20)
 
 
