@@ -1,11 +1,18 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
+import dotenv from "dotenv";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const workspaceRoot = resolve(__dirname, "..", "..", "..");
 
-const prisma = new PrismaClient();
+dotenv.config({ path: resolve(workspaceRoot, ".env.local") });
+dotenv.config({ path: resolve(workspaceRoot, ".env") });
+
+const adapter = new PrismaPg(process.env.DATABASE_URL!);
+const prisma = new PrismaClient({ adapter });
 
 interface BlogPostData {
     slug: string;
