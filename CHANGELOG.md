@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.1](https://github.com/vandetho/symflowbuilder/compare/v1.24.0...v1.24.1) (2026-04-20)
+
+
+### Bug Fixes
+
+* point prisma generate/migrate to packages/db/prisma/schema.prisma ([f49299d](https://github.com/vandetho/symflowbuilder/commit/f49299da2c554c7a3e3b1e6122265fcba3c15443))
+
 ## [1.24.0](https://github.com/vandetho/symflowbuilder/compare/v1.23.3...v1.24.0) (2026-04-20)
 
 
