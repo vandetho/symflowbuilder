@@ -15,6 +15,8 @@ import {
     Play,
     Square,
     Globe,
+    FileJson,
+    FileCode,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
@@ -252,43 +254,66 @@ function SignInButton() {
     );
 }
 
+type ExportFormat = "yaml" | "json" | "typescript";
+
+const FORMAT_CONFIG: Record<ExportFormat, { label: string; ext: string; mime: string }> =
+    {
+        yaml: { label: "YAML", ext: "yaml", mime: "text/yaml" },
+        json: { label: "JSON", ext: "json", mime: "application/json" },
+        typescript: { label: "TypeScript", ext: "ts", mime: "text/typescript" },
+    };
+
 export function EditorToolbar() {
     const {
         workflowMeta,
         updateMeta,
         exportYaml,
+        exportJson,
+        exportTs,
         importYaml,
         setSelectedNode,
         setSelectedEdge,
     } = useEditorStore();
-    const [showYaml, setShowYaml] = useState(false);
+    const [showExport, setShowExport] = useState(false);
     const [showConfig, setShowConfig] = useState(false);
-    const [yamlOutput, setYamlOutput] = useState("");
+    const [exportOutput, setExportOutput] = useState("");
+    const [exportFormat, setExportFormat] = useState<ExportFormat>("yaml");
 
-    const handleExport = useCallback(() => {
-        const output = exportYaml();
-        setYamlOutput(output);
-        setShowYaml(true);
-        // Close properties panel to avoid overlap
-        setSelectedNode(null);
-        setSelectedEdge(null);
-    }, [exportYaml, setSelectedNode, setSelectedEdge]);
+    const doExport = useCallback(
+        (format: ExportFormat) => {
+            const output =
+                format === "yaml"
+                    ? exportYaml()
+                    : format === "json"
+                      ? exportJson()
+                      : exportTs();
+            setExportOutput(output);
+            setExportFormat(format);
+            setShowExport(true);
+            setSelectedNode(null);
+            setSelectedEdge(null);
+        },
+        [exportYaml, exportJson, exportTs, setSelectedNode, setSelectedEdge]
+    );
+
+    const handleExport = useCallback(() => doExport("yaml"), [doExport]);
 
     const handleCopy = useCallback(() => {
-        navigator.clipboard.writeText(yamlOutput);
-        toast.success("YAML copied to clipboard");
-    }, [yamlOutput]);
+        navigator.clipboard.writeText(exportOutput);
+        toast.success(`${FORMAT_CONFIG[exportFormat].label} copied to clipboard`);
+    }, [exportOutput, exportFormat]);
 
     const handleDownload = useCallback(() => {
-        const blob = new Blob([yamlOutput], { type: "text/yaml" });
+        const cfg = FORMAT_CONFIG[exportFormat];
+        const blob = new Blob([exportOutput], { type: cfg.mime });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `${workflowMeta.name}.yaml`;
+        a.download = `${workflowMeta.name}.${cfg.ext}`;
         a.click();
         URL.revokeObjectURL(url);
-        toast.success("YAML file downloaded");
-    }, [yamlOutput, workflowMeta.name]);
+        toast.success(`${cfg.label} file downloaded`);
+    }, [exportOutput, exportFormat, workflowMeta.name]);
 
     const handleImport = useCallback(() => {
         const input = document.createElement("input");
@@ -383,10 +408,59 @@ export function EditorToolbar() {
                         Import
                     </Button>
 
-                    <Button variant="default" size="sm" onClick={handleExport}>
-                        <Download className="w-3.5 h-3.5" />
-                        Export YAML
-                    </Button>
+                    <div className="relative group">
+                        <Button
+                            variant="default"
+                            size="sm"
+                            onClick={handleExport}
+                            className="rounded-r-none"
+                        >
+                            <Download className="w-3.5 h-3.5" />
+                            Export
+                        </Button>
+                        <Button
+                            variant="default"
+                            size="sm"
+                            className="rounded-l-none border-l border-white/20 px-1.5"
+                            onClick={(e) => {
+                                const menu = e.currentTarget
+                                    .nextElementSibling as HTMLElement;
+                                menu.classList.toggle("hidden");
+                            }}
+                        >
+                            <svg
+                                width="8"
+                                height="5"
+                                viewBox="0 0 8 5"
+                                fill="currentColor"
+                            >
+                                <path d="M0 0l4 5 4-5z" />
+                            </svg>
+                        </Button>
+                        <div className="hidden absolute top-full right-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[140px] z-50">
+                            <button
+                                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                onClick={() => doExport("yaml")}
+                            >
+                                <FileDown className="w-3.5 h-3.5" />
+                                YAML
+                            </button>
+                            <button
+                                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                onClick={() => doExport("json")}
+                            >
+                                <FileJson className="w-3.5 h-3.5" />
+                                JSON
+                            </button>
+                            <button
+                                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                onClick={() => doExport("typescript")}
+                            >
+                                <FileCode className="w-3.5 h-3.5" />
+                                TypeScript
+                            </button>
+                        </div>
+                    </div>
 
                     <SimulateButton />
                     <SaveButton />
@@ -493,13 +567,32 @@ export function EditorToolbar() {
                 </DialogContent>
             </Dialog>
 
-            {/* YAML Preview Drawer */}
-            {showYaml && (
+            {/* Export Preview Drawer */}
+            {showExport && (
                 <div className="absolute top-0 right-0 bottom-0 z-30 w-[480px] bg-[#12121f] border-l border-[var(--glass-border)] rounded-l-[18px] flex flex-col shadow-[0_0_64px_rgba(0,0,0,0.5)]">
                     <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--glass-border)]">
-                        <span className="text-sm font-medium text-[var(--text-primary)]">
-                            YAML Output
-                        </span>
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-[var(--text-primary)]">
+                                {FORMAT_CONFIG[exportFormat].label} Output
+                            </span>
+                            <div className="flex items-center gap-1">
+                                {(["yaml", "json", "typescript"] as ExportFormat[]).map(
+                                    (f) => (
+                                        <button
+                                            key={f}
+                                            onClick={() => doExport(f)}
+                                            className={`px-2 py-0.5 rounded-md text-[10px] transition-colors ${
+                                                exportFormat === f
+                                                    ? "bg-[var(--accent-dim)] text-[var(--accent-bright)]"
+                                                    : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+                                            }`}
+                                        >
+                                            {FORMAT_CONFIG[f].label}
+                                        </button>
+                                    )
+                                )}
+                            </div>
+                        </div>
                         <div className="flex items-center gap-2">
                             <Tooltip>
                                 <TooltipTrigger>
@@ -523,14 +616,16 @@ export function EditorToolbar() {
                                         <FileDown className="w-4 h-4" />
                                     </Button>
                                 </TooltipTrigger>
-                                <TooltipContent side="bottom">Download</TooltipContent>
+                                <TooltipContent side="bottom">
+                                    Download .{FORMAT_CONFIG[exportFormat].ext}
+                                </TooltipContent>
                             </Tooltip>
                             <Tooltip>
                                 <TooltipTrigger>
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() => setShowYaml(false)}
+                                        onClick={() => setShowExport(false)}
                                     >
                                         <X className="w-4 h-4" />
                                     </Button>
@@ -541,7 +636,7 @@ export function EditorToolbar() {
                     </div>
                     <div className="flex-1 overflow-auto p-4">
                         <pre className="text-[12px] font-mono text-[var(--text-secondary)] whitespace-pre leading-relaxed">
-                            {yamlOutput}
+                            {exportOutput}
                         </pre>
                     </div>
                 </div>

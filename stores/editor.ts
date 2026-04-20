@@ -19,6 +19,8 @@ import type {
 } from "@symflow/core/react-flow";
 import {
     exportGraphToYaml,
+    exportGraphToJson,
+    exportGraphToTs,
     importWorkflowYamlToGraph,
     migrateGraphData,
 } from "@symflow/core/react-flow";
@@ -61,6 +63,8 @@ interface EditorStore {
 
     // Import/Export
     exportYaml: () => string;
+    exportJson: () => string;
+    exportTs: () => string;
     importYaml: (yamlString: string) => void;
     loadFromJson: (data: { nodes: Node[]; edges: Edge[]; meta: WorkflowMeta }) => void;
     reset: () => void;
@@ -209,6 +213,21 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
     exportYaml: () => {
         const { nodes, edges, workflowMeta } = get();
         return exportGraphToYaml({ nodes, edges, meta: workflowMeta });
+    },
+
+    exportJson: () => {
+        const { nodes, edges, workflowMeta } = get();
+        return exportGraphToJson({ nodes, edges, meta: workflowMeta });
+    },
+
+    exportTs: () => {
+        const { nodes, edges, workflowMeta } = get();
+        return exportGraphToTs({
+            nodes,
+            edges,
+            meta: workflowMeta,
+            exportName: workflowMeta.name.replace(/[^a-zA-Z0-9]/g, "_"),
+        });
     },
 
     importYaml: (yamlString) => {
