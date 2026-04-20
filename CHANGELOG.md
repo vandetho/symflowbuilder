@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.24.0](https://github.com/vandetho/symflowbuilder/compare/v1.23.3...v1.24.0) (2026-04-20)
+
+
+### Features
+
+* add optional collab integration point for proprietary package ([711f4ff](https://github.com/vandetho/symflowbuilder/commit/711f4ff06e42ac3d822cf970914c68e31c7609d1))
+* expand collab loader with Yjs sync and UI component types ([ac1e1c6](https://github.com/vandetho/symflowbuilder/commit/ac1e1c6d914aafab5aa63a7680d5e00083b6d7f6))
+
+
+### Bug Fixes
+
+* suppress TS error for optional collab package import ([c6c86ab](https://github.com/vandetho/symflowbuilder/commit/c6c86abe8c05b6a249c6fa4cebec66363e15b350))
+
 ## [1.23.3](https://github.com/vandetho/symflowbuilder/compare/v1.23.2...v1.23.3) (2026-04-20)
 
 
