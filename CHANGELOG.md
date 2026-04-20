@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.0](https://github.com/vandetho/symflowbuilder/compare/v1.28.0...v1.29.0) (2026-04-20)
+
+
+### Features
+
+* add JSON import and import-from-URL to editor ([0ca5504](https://github.com/vandetho/symflowbuilder/commit/0ca550439417a9c4f3650b3c4238b34d6b43af86))
+
 ## [1.28.0](https://github.com/vandetho/symflowbuilder/compare/v1.27.0...v1.28.0) (2026-04-20)
 
 
