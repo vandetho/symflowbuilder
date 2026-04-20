@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.29.3](https://github.com/vandetho/symflowbuilder/compare/v1.29.2...v1.29.3) (2026-04-20)
+
+
+### Bug Fixes
+
+* align split button dropdowns properly ([5997642](https://github.com/vandetho/symflowbuilder/commit/5997642f687c6f1bf15d7b5fc5a817b9ce9c8ce0))
+* hide Share button for anonymous users ([c82ba58](https://github.com/vandetho/symflowbuilder/commit/c82ba586f6c889853e69e8767da3447a3edc38c9))
+
 ## [1.29.2](https://github.com/vandetho/symflowbuilder/compare/v1.29.1...v1.29.2) (2026-04-20)
 
 
