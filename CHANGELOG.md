@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.1](https://github.com/vandetho/symflowbuilder/compare/v1.29.0...v1.29.1) (2026-04-20)
+
+
+### Bug Fixes
+
+* rename @symflow/core to symflow across blog, engine page, and README ([bf44b64](https://github.com/vandetho/symflowbuilder/commit/bf44b64edbf8d333f16a8592d605a0ef8f8fb07c))
+
 ## [1.29.0](https://github.com/vandetho/symflowbuilder/compare/v1.28.0...v1.29.0) (2026-04-20)
 
 
