@@ -9,6 +9,111 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
     {
+        slug: "import-workflows-from-url",
+        title: "Import Workflows from Any URL — YAML and JSON",
+        date: "2026-04-20",
+        excerpt:
+            "Paste a GitHub raw URL, a Gist link, or any public YAML/JSON endpoint and SymFlowBuilder imports it instantly. No download, no copy-paste.",
+        tags: ["feature", "import"],
+        content: `## Import from URL
+
+The editor now supports importing workflow configurations directly from a URL. Click the arrow next to the **Import** button and choose **From URL**.
+
+Paste any public URL that serves a YAML or JSON workflow config:
+
+- GitHub raw files: \`https://raw.githubusercontent.com/user/repo/main/config/workflows/order.yaml\`
+- GitHub Gists
+- Any HTTP endpoint returning Symfony workflow YAML or symflow JSON
+
+The editor auto-detects the format based on the file extension or content. \`.json\` files and content starting with \`{\` are parsed as JSON; everything else is parsed as YAML.
+
+## YAML and JSON File Import
+
+The file import now accepts both formats too. Click **Import** (or use the dropdown) and pick a \`.yaml\`, \`.yml\`, or \`.json\` file from your machine.
+
+### Symfony YAML
+
+Standard Symfony workflow configs work out of the box, including \`!php/const\` and \`!php/enum\` tags:
+
+\`\`\`yaml
+framework:
+    workflows:
+        order:
+            type: state_machine
+            marking_store:
+                type: method
+                property: currentState
+            supports: [App\\Entity\\Order]
+            initial_marking: draft
+            places: [draft, submitted, approved]
+            transitions:
+                submit:
+                    from: draft
+                    to: submitted
+                approve:
+                    from: submitted
+                    to: approved
+\`\`\`
+
+### symflow JSON
+
+The JSON format exported by SymFlowBuilder and the \`symflow\` npm package:
+
+\`\`\`json
+{
+    "definition": {
+        "name": "order",
+        "type": "state_machine",
+        "places": [
+            { "name": "draft" },
+            { "name": "submitted" },
+            { "name": "approved" }
+        ],
+        "transitions": [
+            { "name": "submit", "froms": ["draft"], "tos": ["submitted"] },
+            { "name": "approve", "froms": ["submitted"], "tos": ["approved"] }
+        ],
+        "initialMarking": ["draft"]
+    },
+    "meta": {
+        "name": "order",
+        "type": "state_machine",
+        "symfonyVersion": "8.0",
+        "marking_store": "method",
+        "property": "currentState",
+        "initial_marking": ["draft"],
+        "supports": "App\\\\Entity\\\\Order"
+    }
+}
+\`\`\`
+
+## Export Formats
+
+While we were at it, we also added JSON and TypeScript export alongside the existing YAML export.
+
+Click **Export** for YAML (the default), or use the dropdown arrow to choose:
+
+- **YAML** — production-ready Symfony workflow config
+- **JSON** — the \`{ definition, meta }\` format used by the \`symflow\` npm package
+- **TypeScript** — a typed module you can import directly in your Node.js project
+
+\`\`\`typescript
+import type { WorkflowDefinition, WorkflowMeta } from "symflow";
+
+export const orderDefinition: WorkflowDefinition = { ... };
+export const orderMeta: WorkflowMeta = { ... };
+\`\`\`
+
+The preview drawer lets you switch between formats with tabs, copy to clipboard, or download as a file — all without closing the panel.
+
+## Try It
+
+1. Open the [editor](https://symflowbuilder.com/editor)
+2. Click the arrow next to **Import**
+3. Choose **From URL** and paste a GitHub raw URL to any Symfony workflow YAML
+4. The workflow renders instantly with auto-layout`,
+    },
+    {
         slug: "symflowbuilder-design-symfony-workflows-visually",
         title: "SymFlowBuilder: Design Symfony Workflows Visually, Export Production-Ready YAML",
         date: "2026-04-20",
