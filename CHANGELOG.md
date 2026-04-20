@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.6](https://github.com/vandetho/symflowbuilder/compare/v1.25.5...v1.25.6) (2026-04-20)
+
+
+### Documentation
+
+* add symflow npm package to README, landing page, and features page ([7557935](https://github.com/vandetho/symflowbuilder/commit/75579352651f3323cd5997c4e18b5f28d75418b3))
+
 ## [1.25.5](https://github.com/vandetho/symflowbuilder/compare/v1.25.4...v1.25.5) (2026-04-20)
 
 
