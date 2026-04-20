@@ -12,6 +12,7 @@ import {
     AlertTriangle,
     GitFork,
     Palette,
+    Package,
 } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/icons";
 import { Logo } from "@/components/ui/logo";
@@ -86,6 +87,12 @@ const FEATURES = [
         title: "Shareable Links",
         description:
             "Generate read-only public links to share your workflow designs with teammates. No account required to view.",
+    },
+    {
+        icon: Package,
+        title: "Node.js Engine",
+        description:
+            "The workflow engine is available as a standalone npm package — symflow. Run the same Symfony semantics in any Node.js, serverless, or browser project.",
     },
 ];
 

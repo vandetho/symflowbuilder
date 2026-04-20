@@ -15,7 +15,7 @@ Design state machines graphically, then export production-ready YAML.
 - **YAML Import** -- Drop in existing YAML files to visualize and edit them with auto-layout
 - **Workflow Simulator** -- Step through transitions visually with guard toggles, Symfony event log, auto-play, history, and step-back
 - **Workflow Validation** -- Detect unreachable states, dead transitions, and orphan places before exporting
-- **Workflow Engine** -- TypeScript runtime mirroring Symfony's Workflow component with marking, transitions, guards, and events
+- **Workflow Engine** -- TypeScript runtime mirroring Symfony's Workflow component with marking, transitions, guards, and events. Available as a standalone npm package: [`symflow`](https://www.npmjs.com/package/symflow)
 - **Guards & Metadata** -- Configure guard expressions, transition listeners, and metadata visually
 - **Styling Metadata** -- Set `bg_color`, `description`, `color`, `arrow_color` with a built-in color picker
 - **Undo / Redo** -- 50-step history with Cmd+Z / Cmd+Shift+Z
@@ -141,6 +141,29 @@ Signing in (GitHub or Google) unlocks:
 - Dashboard with workflow management
 
 Guest drafts are saved to `localStorage` and automatically migrated to the cloud on sign-in.
+
+## Standalone Engine: `symflow`
+
+The workflow engine that powers SymFlowBuilder is published as a standalone npm package. Use it in any Node.js, serverless, or browser project — no PHP required.
+
+```bash
+npm install symflow
+```
+
+```ts
+import { WorkflowEngine } from "symflow/engine";
+import { importWorkflowYaml } from "symflow/yaml";
+
+const { definition } = importWorkflowYaml(yamlString);
+const engine = new WorkflowEngine(definition);
+
+engine.apply("submit");
+engine.getActivePlaces(); // ["submitted"]
+```
+
+Features: state machines, Petri nets, guards, Symfony event order, validation, pattern analysis, YAML/JSON/TypeScript import/export, `!php/const` support, subject-driven API with marking stores.
+
+[npm](https://www.npmjs.com/package/symflow) · [GitHub](https://github.com/vandetho/symflow) · [Blog Post](/blog/symflow-core-workflow-engine-for-nodejs)
 
 ## Documentation
 

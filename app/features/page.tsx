@@ -12,6 +12,8 @@ import {
     Eye,
     Cloud,
     Users,
+    Package,
+    Cpu,
     type LucideIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -93,6 +95,29 @@ const CATEGORIES: { title: string; features: Feature[] }[] = [
                 title: "Validation",
                 description:
                     "Detect unreachable states, dead transitions, orphan places, and invalid references before exporting. Catch structural errors in the editor, not in production.",
+            },
+        ],
+    },
+    {
+        title: "Standalone Engine — symflow",
+        features: [
+            {
+                icon: Package,
+                title: "npm Package",
+                description:
+                    "The workflow engine that powers SymFlowBuilder is published as symflow on npm. Install it in any Node.js, serverless, or browser project. Zero framework dependencies.",
+            },
+            {
+                icon: Cpu,
+                title: "Symfony-Compatible Runtime",
+                description:
+                    "State machines and Petri net workflows with the same semantics as Symfony's Workflow component. Guards, events in Symfony order (guard, leave, transition, enter, entered, completed, announce), marking stores, and validation.",
+            },
+            {
+                icon: FileCode2,
+                title: "Import & Export Formats",
+                description:
+                    "Round-trip YAML, JSON, and TypeScript. Import existing Symfony configs — including !php/const tags — and run them directly. Export TypeScript codegen for type-safe workflow definitions.",
             },
         ],
     },
