@@ -9,6 +9,251 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
     {
+        slug: "symflow-core-workflow-engine-for-nodejs",
+        title: "Introducing @symflow/core: A Symfony-Compatible Workflow Engine for Node.js",
+        date: "2026-04-19",
+        excerpt:
+            "We built a TypeScript workflow engine that mirrors Symfony's Workflow component. Use it in any Node.js app to manage state machines, Petri nets, guards, and events — no PHP required.",
+        tags: ["announcement", "engine", "nodejs"],
+        content: `## Why We Built Our Own Engine
+
+SymFlowBuilder started as a visual editor that exports YAML for Symfony. But we needed something to power the [simulator](/blog/introducing-workflow-simulator) — a runtime that could fire transitions, track markings, evaluate guards, and emit events in the exact same order Symfony does.
+
+So we built \`@symflow/core\`: a standalone TypeScript workflow engine with zero framework dependencies. It runs anywhere JavaScript runs — Node.js backends, serverless functions, CLI tools, or the browser.
+
+## Installation
+
+\`\`\`bash
+npm install @symflow/core
+\`\`\`
+
+The package ships ESM and CJS builds with full TypeScript types.
+
+## Defining a Workflow
+
+A workflow definition is a plain object — no decorators, no config files:
+
+\`\`\`typescript
+import type { WorkflowDefinition } from "@symflow/core";
+
+const orderWorkflow: WorkflowDefinition = {
+    name: "order",
+    type: "state_machine",
+    places: [
+        { name: "draft" },
+        { name: "submitted" },
+        { name: "approved" },
+        { name: "rejected" },
+        { name: "fulfilled" },
+    ],
+    transitions: [
+        { name: "submit", froms: ["draft"], tos: ["submitted"] },
+        { name: "approve", froms: ["submitted"], tos: ["approved"], guard: "subject.total < 10000" },
+        { name: "reject", froms: ["submitted"], tos: ["rejected"] },
+        { name: "fulfill", froms: ["approved"], tos: ["fulfilled"] },
+    ],
+    initialMarking: ["draft"],
+};
+\`\`\`
+
+Two types are supported:
+- **\`state_machine\`** — exactly one active place at a time (linear or branching flows)
+- **\`workflow\`** — multiple places can be active simultaneously (Petri net with AND-split / AND-join)
+
+## Using the Standalone Engine
+
+The \`WorkflowEngine\` class manages a marking (the current state) directly:
+
+\`\`\`typescript
+import { WorkflowEngine } from "@symflow/core";
+
+const engine = new WorkflowEngine(orderWorkflow);
+
+// Check the current state
+engine.getActivePlaces();        // ["draft"]
+engine.getEnabledTransitions();  // [{ name: "submit", ... }]
+
+// Check if a transition can fire
+const result = engine.can("submit");
+result.allowed;   // true
+result.blockers;  // []
+
+// Fire a transition
+engine.apply("submit");
+engine.getActivePlaces();  // ["submitted"]
+
+// Reset to initial marking
+engine.reset();
+\`\`\`
+
+If a transition cannot fire, \`apply()\` throws with a descriptive error. Use \`can()\` first to check safely — it returns structured blockers explaining why:
+
+\`\`\`typescript
+const result = engine.can("fulfill");
+// { allowed: false, blockers: [{ code: "not_in_place", message: "..." }] }
+\`\`\`
+
+## Subject-Driven Workflows (Like Symfony)
+
+For real applications you typically want the workflow state stored on your domain objects. The \`Workflow\` class mirrors Symfony's \`Workflow\` service — pass your entity to \`can()\` and \`apply()\`, and the marking is read from and written back to the subject automatically:
+
+\`\`\`typescript
+import { createWorkflow, propertyMarkingStore } from "@symflow/core";
+
+interface Order {
+    id: string;
+    total: number;
+    status: string;
+}
+
+const workflow = createWorkflow<Order>(orderWorkflow, {
+    markingStore: propertyMarkingStore("status"),
+});
+
+const order: Order = { id: "ord_123", total: 5000, status: "draft" };
+
+workflow.can(order, "submit");    // { allowed: true, blockers: [] }
+workflow.apply(order, "submit");
+console.log(order.status);        // "submitted"
+\`\`\`
+
+### Marking Stores
+
+Two built-in marking stores match Symfony's options:
+
+- **\`propertyMarkingStore("field")\`** — reads/writes a property directly (string for single place, string[] for parallel)
+- **\`methodMarkingStore()\`** — calls \`subject.getMarking()\` / \`subject.setMarking()\`, configurable via options
+
+## Guards
+
+Guards are expressions attached to transitions. You provide an evaluator function that decides whether the expression passes:
+
+\`\`\`typescript
+const workflow = createWorkflow<Order>(orderWorkflow, {
+    markingStore: propertyMarkingStore("status"),
+    guardEvaluator: (expression, { subject }) => {
+        if (expression === "subject.total < 10000") {
+            return subject.total < 10000;
+        }
+        return true;
+    },
+});
+
+const bigOrder: Order = { id: "ord_456", total: 50000, status: "submitted" };
+workflow.can(bigOrder, "approve");
+// { allowed: false, blockers: [{ code: "guard_blocked", message: "..." }] }
+\`\`\`
+
+The evaluator is fully pluggable — you can integrate role checks, feature flags, or any custom logic.
+
+## Events
+
+The engine fires events in the exact same order as Symfony's Workflow component:
+
+1. **guard** — is the transition allowed?
+2. **leave** — per source place, before tokens are removed
+3. **transition** — after tokens are removed from source places
+4. **enter** — per target place, before marking is updated
+5. **entered** — after marking is updated
+6. **completed** — after the full transition is done
+7. **announce** — per newly enabled transition
+
+\`\`\`typescript
+workflow.on("entered", (event) => {
+    console.log(\`Order \${event.subject.id} entered via "\${event.transition.name}"\`);
+    console.log("New marking:", event.marking);
+});
+
+workflow.on("guard", (event) => {
+    console.log(\`Checking guard for "\${event.transition.name}"\`);
+});
+\`\`\`
+
+Each listener receives the event type, the transition, the current marking, the workflow name, and (for subject-driven workflows) the subject itself.
+
+## Validation
+
+Validate your definition before creating an engine to catch structural problems early:
+
+\`\`\`typescript
+import { validateDefinition } from "@symflow/core";
+
+const result = validateDefinition(orderWorkflow);
+if (!result.valid) {
+    for (const error of result.errors) {
+        console.error(\`[\${error.type}] \${error.message}\`);
+    }
+}
+\`\`\`
+
+The validator catches:
+- Missing or invalid initial markings
+- Transitions referencing non-existent places
+- Unreachable places (BFS from initial marking)
+- Dead transitions (source places are unreachable)
+- Orphan places (no incoming or outgoing transitions)
+
+## Parallel Workflows (Petri Net)
+
+Switch to \`type: "workflow"\` to enable AND-split and AND-join patterns:
+
+\`\`\`typescript
+const reviewWorkflow: WorkflowDefinition = {
+    name: "article_review",
+    type: "workflow",
+    places: [
+        { name: "draft" },
+        { name: "checking_content" },
+        { name: "checking_spelling" },
+        { name: "content_approved" },
+        { name: "spelling_approved" },
+        { name: "published" },
+    ],
+    transitions: [
+        { name: "start_review", froms: ["draft"], tos: ["checking_content", "checking_spelling"] },
+        { name: "approve_content", froms: ["checking_content"], tos: ["content_approved"] },
+        { name: "approve_spelling", froms: ["checking_spelling"], tos: ["spelling_approved"] },
+        { name: "publish", froms: ["content_approved", "spelling_approved"], tos: ["published"] },
+    ],
+    initialMarking: ["draft"],
+};
+
+const engine = new WorkflowEngine(reviewWorkflow);
+
+engine.apply("start_review");
+engine.getActivePlaces();  // ["checking_content", "checking_spelling"]
+
+engine.apply("approve_content");
+engine.can("publish");     // { allowed: false } — spelling not approved yet
+
+engine.apply("approve_spelling");
+engine.can("publish");     // { allowed: true } — both paths complete
+engine.apply("publish");
+engine.getActivePlaces();  // ["published"]
+\`\`\`
+
+## YAML / JSON Import and Export
+
+The package also includes utilities to convert between workflow definitions and Symfony-compatible YAML or JSON:
+
+\`\`\`typescript
+import { exportYaml, importYaml } from "@symflow/core/yaml";
+import { exportJson, importJson } from "@symflow/core/json";
+
+// Export to Symfony YAML
+const yaml = exportYaml(orderWorkflow);
+
+// Import from existing Symfony config
+const definition = importYaml(yamlString);
+\`\`\`
+
+## What This Means for You
+
+If you are building a Node.js application that needs structured state management — order pipelines, approval flows, content publishing, onboarding funnels — you can now use the same workflow semantics as Symfony without running PHP.
+
+Design your workflow visually in [SymFlowBuilder](https://symflowbuilder.com/editor), test it with the simulator, then use \`@symflow/core\` to run it in production.`,
+    },
+    {
         slug: "guard-toggles-and-event-log",
         title: "Testing Guards and Watching Events Fire",
         date: "2026-04-18",
