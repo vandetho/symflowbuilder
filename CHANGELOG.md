@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.23.2](https://github.com/vandetho/symflowbuilder/compare/v1.23.1...v1.23.2) (2026-04-20)
+
+
+### Bug Fixes
+
+* resolve CI failures for workspace packages ([7dff316](https://github.com/vandetho/symflowbuilder/commit/7dff316d25b86cbefc302824ea7607baf70f0e91))
+
+
+### Refactoring
+
+* split framework-agnostic logic into @symflowbuilder/core and @symflowbuilder/db ([57aa913](https://github.com/vandetho/symflowbuilder/commit/57aa913e8ffbb2a739967e217752ccbc8a4b5154))
+
 ## [1.23.1](https://github.com/vandetho/symflowbuilder/compare/v1.23.0...v1.23.1) (2026-04-20)
 
 
