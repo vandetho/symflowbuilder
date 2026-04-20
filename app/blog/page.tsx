@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -49,37 +50,36 @@ export default async function BlogPage() {
             <section className="flex-1 px-6 pb-16">
                 <div className="max-w-3xl mx-auto flex flex-col gap-4">
                     {sortedPosts.map((post) => (
-                        <Card
-                            key={post.slug}
-                            className="hover:border-[var(--glass-border-hover)] transition-colors"
-                        >
-                            <CardContent className="p-5 flex flex-col gap-2">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-[10px] text-[var(--text-muted)] font-mono">
-                                        {formatDistanceToNow(new Date(post.date), {
-                                            addSuffix: true,
-                                        })}
-                                    </span>
-                                    <div className="flex gap-1">
-                                        {post.tags.map((tag) => (
-                                            <Badge
-                                                key={tag}
-                                                variant="outline"
-                                                className="text-[9px] px-1.5"
-                                            >
-                                                {tag}
-                                            </Badge>
-                                        ))}
+                        <Link key={post.slug} href={`/blog/${post.slug}`}>
+                            <Card className="hover:border-[var(--glass-border-hover)] transition-colors cursor-pointer">
+                                <CardContent className="p-5 flex flex-col gap-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[10px] text-[var(--text-muted)] font-mono">
+                                            {formatDistanceToNow(new Date(post.date), {
+                                                addSuffix: true,
+                                            })}
+                                        </span>
+                                        <div className="flex gap-1">
+                                            {post.tags.map((tag) => (
+                                                <Badge
+                                                    key={tag}
+                                                    variant="outline"
+                                                    className="text-[9px] px-1.5"
+                                                >
+                                                    {tag}
+                                                </Badge>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                                <h2 className="text-base font-medium text-[var(--text-primary)]">
-                                    {post.title}
-                                </h2>
-                                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                                    {post.excerpt}
-                                </p>
-                            </CardContent>
-                        </Card>
+                                    <h2 className="text-base font-medium text-[var(--text-primary)]">
+                                        {post.title}
+                                    </h2>
+                                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                                        {post.excerpt}
+                                    </p>
+                                </CardContent>
+                            </Card>
+                        </Link>
                     ))}
                 </div>
             </section>
