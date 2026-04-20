@@ -43,10 +43,10 @@ jobs:
                       pnpm install --frozen-lockfile
 
                       echo "==> Generating Prisma client..."
-                      pnpm dlx prisma generate
+                      pnpm dlx prisma generate --schema packages/db/prisma/schema.prisma
 
                       echo "==> Running migrations..."
-                      pnpm dlx prisma migrate deploy
+                      pnpm dlx prisma migrate deploy --schema packages/db/prisma/schema.prisma
 
                       echo "==> Building..."
                       pnpm run build
