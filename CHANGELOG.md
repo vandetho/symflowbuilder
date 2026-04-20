@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.26.0](https://github.com/vandetho/symflowbuilder/compare/v1.25.7...v1.26.0) (2026-04-20)
+
+
+### Features
+
+* add standalone /engine page for symflow npm package ([00b9e94](https://github.com/vandetho/symflowbuilder/commit/00b9e94a94ccbd874d4c69180b42149c870f9365))
+
+
+### Bug Fixes
+
+* use symflow npm package instead of GitHub source ([2aec86d](https://github.com/vandetho/symflowbuilder/commit/2aec86df9eb0d54f1c50d401525e5aff8fa46101))
+
+
+### Refactoring
+
+* remove packages/core from monorepo ([b9fff7e](https://github.com/vandetho/symflowbuilder/commit/b9fff7e4fb87fded0bf798f441536ef8a6f9d572))
+
 ## [1.25.7](https://github.com/vandetho/symflowbuilder/compare/v1.25.6...v1.25.7) (2026-04-20)
 
 
