@@ -163,7 +163,7 @@ engine.getActivePlaces(); // ["submitted"]
 
 Features: state machines, Petri nets, guards, Symfony event order, validation, pattern analysis, YAML/JSON/TypeScript import/export, `!php/const` support, subject-driven API with marking stores.
 
-[npm](https://www.npmjs.com/package/symflow) · [GitHub](https://github.com/vandetho/symflow) · [Blog Post](/blog/symflow-core-workflow-engine-for-nodejs)
+[npm](https://www.npmjs.com/package/symflow) · [GitHub](https://github.com/vandetho/symflow) · [Blog Post](/blog/symflow-workflow-engine-for-nodejs)
 
 ## Documentation
 

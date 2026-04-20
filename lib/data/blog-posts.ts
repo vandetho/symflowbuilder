@@ -111,7 +111,7 @@ engine.getActivePlaces();       // ["submitted"]
 
 It runs in Node.js, serverless functions, CLI tools, and the browser. It supports state machines and Petri nets, guards, the full Symfony event order, validation, pattern analysis, YAML / JSON / TypeScript import/export, \`!php/const\` parsing, and a subject-driven API with marking stores that mirrors Symfony's \`Workflow\` service.
 
-Translation: you can prototype the backend of a Node.js service using the exact same workflow definition your Symfony app consumes. See [the engine announcement post](/blog/symflow-core-workflow-engine-for-nodejs) for the full API walkthrough.
+Translation: you can prototype the backend of a Node.js service using the exact same workflow definition your Symfony app consumes. See [the engine announcement post](/blog/symflow-workflow-engine-for-nodejs) for the full API walkthrough.
 
 ## The Stack, Briefly
 
@@ -145,8 +145,8 @@ If you have an existing workflow YAML, import it first and watch the auto-layout
 The project is MIT-licensed and open source on [GitHub](https://github.com/vandetho/symflowbuilder). Issues, PRs, and feedback are welcome.`,
     },
     {
-        slug: "symflow-core-workflow-engine-for-nodejs",
-        title: "Introducing @symflow/core: A Symfony-Compatible Workflow Engine for Node.js",
+        slug: "symflow-workflow-engine-for-nodejs",
+        title: "Introducing symflow: A Symfony-Compatible Workflow Engine for Node.js",
         date: "2026-04-19",
         excerpt:
             "We built a TypeScript workflow engine that mirrors Symfony's Workflow component. Use it in any Node.js app to manage state machines, Petri nets, guards, and events — no PHP required.",
@@ -155,12 +155,12 @@ The project is MIT-licensed and open source on [GitHub](https://github.com/vande
 
 SymFlowBuilder started as a visual editor that exports YAML for Symfony. But we needed something to power the [simulator](/blog/introducing-workflow-simulator) — a runtime that could fire transitions, track markings, evaluate guards, and emit events in the exact same order Symfony does.
 
-So we built \`@symflow/core\`: a standalone TypeScript workflow engine with zero framework dependencies. It runs anywhere JavaScript runs — Node.js backends, serverless functions, CLI tools, or the browser.
+So we built \`symflow\`: a standalone TypeScript workflow engine with zero framework dependencies. It runs anywhere JavaScript runs — Node.js backends, serverless functions, CLI tools, or the browser.
 
 ## Installation
 
 \`\`\`bash
-npm install @symflow/core
+npm install symflow
 \`\`\`
 
 The package ships ESM and CJS builds with full TypeScript types.
@@ -170,7 +170,7 @@ The package ships ESM and CJS builds with full TypeScript types.
 A workflow definition is a plain object — no decorators, no config files:
 
 \`\`\`typescript
-import type { WorkflowDefinition } from "@symflow/core";
+import type { WorkflowDefinition } from "symflow/engine";
 
 const orderWorkflow: WorkflowDefinition = {
     name: "order",
@@ -201,7 +201,7 @@ Two types are supported:
 The \`WorkflowEngine\` class manages a marking (the current state) directly:
 
 \`\`\`typescript
-import { WorkflowEngine } from "@symflow/core";
+import { WorkflowEngine } from "symflow/engine";
 
 const engine = new WorkflowEngine(orderWorkflow);
 
@@ -234,7 +234,7 @@ const result = engine.can("fulfill");
 For real applications you typically want the workflow state stored on your domain objects. The \`Workflow\` class mirrors Symfony's \`Workflow\` service — pass your entity to \`can()\` and \`apply()\`, and the marking is read from and written back to the subject automatically:
 
 \`\`\`typescript
-import { createWorkflow, propertyMarkingStore } from "@symflow/core";
+import { createWorkflow, propertyMarkingStore } from "symflow/subject";
 
 interface Order {
     id: string;
@@ -312,7 +312,7 @@ Each listener receives the event type, the transition, the current marking, the 
 Validate your definition before creating an engine to catch structural problems early:
 
 \`\`\`typescript
-import { validateDefinition } from "@symflow/core";
+import { validateDefinition } from "symflow/engine";
 
 const result = validateDefinition(orderWorkflow);
 if (!result.valid) {
@@ -373,8 +373,8 @@ engine.getActivePlaces();  // ["published"]
 The package also includes utilities to convert between workflow definitions and Symfony-compatible YAML or JSON:
 
 \`\`\`typescript
-import { exportYaml, importYaml } from "@symflow/core/yaml";
-import { exportJson, importJson } from "@symflow/core/json";
+import { exportWorkflowYaml, importWorkflowYaml } from "symflow/yaml";
+import { exportWorkflowJson, importWorkflowJson } from "symflow/json";
 
 // Export to Symfony YAML
 const yaml = exportYaml(orderWorkflow);
@@ -486,7 +486,7 @@ From \`CHECKING_CONTENT\`, the blog can go to \`NEED_REVIEW\` (valid) or \`NEED_
 
 If you are building a Node.js application that needs structured state management — order pipelines, approval flows, content publishing, onboarding funnels — you can now use the same workflow semantics as Symfony without running PHP.
 
-Design your workflow visually in [SymFlowBuilder](https://symflowbuilder.com/editor), test it with the simulator, then use \`@symflow/core\` to run it in production.`,
+Design your workflow visually in [SymFlowBuilder](https://symflowbuilder.com/editor), test it with the simulator, then use \`symflow\` to run it in production.`,
     },
     {
         slug: "guard-toggles-and-event-log",

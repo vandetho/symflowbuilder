@@ -399,7 +399,7 @@ export default async function EnginePage() {
                                         <ArrowRight className="w-4 h-4" />
                                     </Button>
                                 </Link>
-                                <Link href="/blog/symflow-core-workflow-engine-for-nodejs">
+                                <Link href="/blog/symflow-workflow-engine-for-nodejs">
                                     <Button variant="outline" size="lg" className="gap-2">
                                         Read the Blog Post
                                     </Button>
