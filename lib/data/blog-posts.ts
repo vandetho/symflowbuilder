@@ -247,6 +247,75 @@ const yaml = exportYaml(orderWorkflow);
 const definition = importYaml(yamlString);
 \`\`\`
 
+## Real-World Example: Symfony Article Workflow
+
+Here is a real Symfony workflow YAML — the classic article review pipeline:
+
+\`\`\`yaml
+framework:
+    workflows:
+        article_workflow:
+            type: 'workflow'
+            marking_store:
+                type: 'method'
+                property: 'marking'
+            supports:
+                - App\\Entity\\Article
+            initial_marking: NEW_ARTICLE
+            places:
+                NEW_ARTICLE:
+                CHECKING_CONTENT:
+                    metadata:
+                        bg_color: ORANGE
+                CONTENT_APPROVED:
+                    metadata:
+                        bg_color: DeepSkyBlue
+                CHECKING_SPELLING:
+                    metadata:
+                        bg_color: ORANGE
+                SPELLING_APPROVED:
+                    metadata:
+                        bg_color: DeepSkyBlue
+                PUBLISHED:
+                    metadata:
+                        bg_color: Lime
+            transitions:
+                CREATE_ARTICLE:
+                    from: [NEW_ARTICLE]
+                    to: [CHECKING_CONTENT, CHECKING_SPELLING]
+                APPROVE_CONTENT:
+                    from: [CHECKING_CONTENT]
+                    to: [CONTENT_APPROVED]
+                APPROVE_SPELLING:
+                    from: [CHECKING_SPELLING]
+                    to: [SPELLING_APPROVED]
+                PUBLISH:
+                    from: [CONTENT_APPROVED, SPELLING_APPROVED]
+                    to: [PUBLISHED]
+\`\`\`
+
+Import it directly with \`symflow\` and run the engine:
+
+\`\`\`typescript
+import { readFileSync } from "fs";
+import { importWorkflowYaml } from "symflow/yaml";
+import { WorkflowEngine } from "symflow/engine";
+
+const yaml = readFileSync("article_workflow.yaml", "utf8");
+const { definition } = importWorkflowYaml(yaml);
+const engine = new WorkflowEngine(definition);
+
+engine.apply("CREATE_ARTICLE");
+engine.getActivePlaces();  // ["CHECKING_CONTENT", "CHECKING_SPELLING"]
+
+engine.apply("APPROVE_CONTENT");
+engine.apply("APPROVE_SPELLING");
+engine.apply("PUBLISH");
+engine.getActivePlaces();  // ["PUBLISHED"]
+\`\`\`
+
+\`CREATE_ARTICLE\` is an AND-split — it forks into two parallel checks. \`PUBLISH\` is an AND-join — both content and spelling must be approved before the article can go live.
+
 ## What This Means for You
 
 If you are building a Node.js application that needs structured state management — order pipelines, approval flows, content publishing, onboarding funnels — you can now use the same workflow semantics as Symfony without running PHP.
