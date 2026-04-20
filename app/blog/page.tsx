@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { auth } from "@/auth";
 import { prisma } from "@symflowbuilder/db";
+import { blogPosts as staticPosts } from "@/lib/data/blog-posts";
 import { formatDistanceToNow } from "date-fns";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -16,17 +17,32 @@ export const metadata = {
 
 export default async function BlogPage() {
     const session = await auth();
-    const posts = await prisma.blogPost.findMany({
-        where: { published: true },
-        orderBy: { date: "desc" },
-        select: {
-            slug: true,
-            title: true,
-            date: true,
-            excerpt: true,
-            tags: true,
-        },
-    });
+
+    let posts: {
+        slug: string;
+        title: string;
+        date: Date;
+        excerpt: string;
+        tags: string[];
+    }[];
+    try {
+        posts = await prisma.blogPost.findMany({
+            where: { published: true },
+            orderBy: { date: "desc" },
+            select: {
+                slug: true,
+                title: true,
+                date: true,
+                excerpt: true,
+                tags: true,
+            },
+        });
+    } catch {
+        // Fallback to static data if table doesn't exist yet
+        posts = [...staticPosts]
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .map((p) => ({ ...p, date: new Date(p.date) }));
+    }
 
     return (
         <div className="flex flex-col min-h-screen">

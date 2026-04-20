@@ -7,8 +7,29 @@ import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { prisma } from "@symflowbuilder/db";
+import { getPostBySlug } from "@/lib/data/blog-posts";
 import { auth } from "@/auth";
 import { format } from "date-fns";
+
+async function findPost(slug: string) {
+    try {
+        return await prisma.blogPost.findUnique({
+            where: { slug, published: true },
+        });
+    } catch {
+        // Fallback to static data if table doesn't exist yet
+        const staticPost = getPostBySlug(slug);
+        if (!staticPost) return null;
+        return {
+            ...staticPost,
+            date: new Date(staticPost.date),
+            published: true,
+            id: slug,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+    }
+}
 
 export async function generateMetadata({
     params,
@@ -16,10 +37,7 @@ export async function generateMetadata({
     params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
     const { slug } = await params;
-    const post = await prisma.blogPost.findUnique({
-        where: { slug },
-        select: { title: true, excerpt: true },
-    });
+    const post = await findPost(slug);
     if (!post) return { title: "Post Not Found" };
 
     return {
@@ -34,9 +52,7 @@ export default async function BlogPostPage({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    const post = await prisma.blogPost.findUnique({
-        where: { slug, published: true },
-    });
+    const post = await findPost(slug);
     if (!post) notFound();
 
     const session = await auth();
