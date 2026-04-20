@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.23.3](https://github.com/vandetho/symflowbuilder/compare/v1.23.2...v1.23.3) (2026-04-20)
+
+
+### Bug Fixes
+
+* switch deploy to pnpm — npm can't handle workspace:* protocol ([cf920d4](https://github.com/vandetho/symflowbuilder/commit/cf920d4cd2e867b8d8884a72d047b031d6641c3e))
+
 ## [1.23.2](https://github.com/vandetho/symflowbuilder/compare/v1.23.1...v1.23.2) (2026-04-20)
 
 
