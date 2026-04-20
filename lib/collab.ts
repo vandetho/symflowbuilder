@@ -5,15 +5,18 @@
  * in the open source repository. The app works fully without it.
  *
  * When available, it provides:
- * - Real-time multiplayer editing
- * - Live cursor positions
+ * - Real-time multiplayer editing via WebSocket + Yjs
+ * - Live cursor positions on the canvas
  * - Presence indicators (who's online)
- * - Conflict-free change broadcasting
+ * - Conflict-free concurrent editing
  */
 
 export interface CollabModule {
     CollabClient: unknown;
     useCollabStore: unknown;
+    bindYjsToEditorStore: unknown;
+    CursorOverlay: React.ComponentType;
+    PresenceBar: React.ComponentType;
 }
 
 let collabModule: CollabModule | null = null;
@@ -28,9 +31,9 @@ export async function loadCollab(): Promise<CollabModule | null> {
     loadAttempted = true;
 
     try {
-        collabModule = await import("@symflowbuilder/collab");
+        collabModule =
+            (await import("@symflowbuilder/collab")) as unknown as CollabModule;
     } catch {
-        // Package not installed — this is expected in the open source version
         collabModule = null;
     }
 
