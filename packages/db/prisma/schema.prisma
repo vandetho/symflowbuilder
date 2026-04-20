@@ -101,3 +101,16 @@ model WorkflowCollaborator {
   @@unique([workflowId, userId])
   @@index([userId])
 }
+
+model BlogPost {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  date      DateTime
+  excerpt   String
+  tags      String[]
+  content   String
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

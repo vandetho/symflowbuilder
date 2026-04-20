@@ -3,7 +3,7 @@ import { BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { auth } from "@/auth";
-import { blogPosts } from "@/lib/data/blog-posts";
+import { prisma } from "@symflowbuilder/db";
 import { formatDistanceToNow } from "date-fns";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -16,9 +16,17 @@ export const metadata = {
 
 export default async function BlogPage() {
     const session = await auth();
-    const sortedPosts = [...blogPosts].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+    const posts = await prisma.blogPost.findMany({
+        where: { published: true },
+        orderBy: { date: "desc" },
+        select: {
+            slug: true,
+            title: true,
+            date: true,
+            excerpt: true,
+            tags: true,
+        },
+    });
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -49,7 +57,7 @@ export default async function BlogPage() {
 
             <section className="flex-1 px-6 pb-16">
                 <div className="max-w-3xl mx-auto flex flex-col gap-4">
-                    {sortedPosts.map((post) => (
+                    {posts.map((post) => (
                         <Link key={post.slug} href={`/blog/${post.slug}`}>
                             <Card className="hover:border-[var(--glass-border-hover)] transition-colors cursor-pointer">
                                 <CardContent className="p-5 flex flex-col gap-2">

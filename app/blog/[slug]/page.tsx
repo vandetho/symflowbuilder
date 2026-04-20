@@ -6,13 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { blogPosts, getPostBySlug } from "@/lib/data/blog-posts";
+import { prisma } from "@symflowbuilder/db";
 import { auth } from "@/auth";
 import { format } from "date-fns";
-
-export async function generateStaticParams() {
-    return blogPosts.map((post) => ({ slug: post.slug }));
-}
 
 export async function generateMetadata({
     params,
@@ -20,7 +16,10 @@ export async function generateMetadata({
     params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
     const { slug } = await params;
-    const post = getPostBySlug(slug);
+    const post = await prisma.blogPost.findUnique({
+        where: { slug },
+        select: { title: true, excerpt: true },
+    });
     if (!post) return { title: "Post Not Found" };
 
     return {
@@ -35,7 +34,9 @@ export default async function BlogPostPage({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    const post = getPostBySlug(slug);
+    const post = await prisma.blogPost.findUnique({
+        where: { slug, published: true },
+    });
     if (!post) notFound();
 
     const session = await auth();
@@ -51,7 +52,6 @@ export default async function BlogPostPage({
 
         // Code block
         if (line.startsWith("```")) {
-            const lang = line.slice(3).trim();
             const codeLines: string[] = [];
             i++;
             while (i < lines.length && !lines[i].startsWith("```")) {
@@ -276,14 +276,10 @@ function renderInline(text: string): React.ReactNode {
     let partKey = 0;
 
     while (remaining.length > 0) {
-        // Bold
         const boldMatch = remaining.match(/\*\*(.+?)\*\*/);
-        // Inline code
         const codeMatch = remaining.match(/`(.+?)`/);
-        // Link
         const linkMatch = remaining.match(/\[(.+?)\]\((.+?)\)/);
 
-        // Find earliest match
         const matches = [
             boldMatch
                 ? { type: "bold", index: boldMatch.index!, match: boldMatch }
@@ -317,7 +313,6 @@ function renderInline(text: string): React.ReactNode {
                     {first.match[1]}
                 </strong>
             );
-            remaining = remaining.slice(first.index + first.match[0].length);
         } else if (first.type === "code") {
             parts.push(
                 <code
@@ -327,7 +322,6 @@ function renderInline(text: string): React.ReactNode {
                     {first.match[1]}
                 </code>
             );
-            remaining = remaining.slice(first.index + first.match[0].length);
         } else if (first.type === "link") {
             parts.push(
                 <a
@@ -344,8 +338,8 @@ function renderInline(text: string): React.ReactNode {
                     {first.match[1]}
                 </a>
             );
-            remaining = remaining.slice(first.index + first.match[0].length);
         }
+        remaining = remaining.slice(first.index + first.match[0].length);
     }
 
     return parts.length === 1 ? parts[0] : parts;

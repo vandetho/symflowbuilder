@@ -23,5 +23,6 @@ export type {
     Workflow,
     WorkflowVersion,
     WorkflowCollaborator,
+    BlogPost,
     Prisma,
 } from "@prisma/client";

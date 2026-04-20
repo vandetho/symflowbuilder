@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@symflowbuilder/db";
-import { blogPosts } from "@/lib/data/blog-posts";
 
 export const dynamic = "force-dynamic";
 
@@ -75,12 +74,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         // DB unavailable at build time (CI) — skip dynamic entries
     }
 
-    const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
-        url: `${siteUrl}/blog/${post.slug}`,
-        lastModified: new Date(post.date),
-        changeFrequency: "monthly" as const,
-        priority: 0.6,
-    }));
+    let blogPages: MetadataRoute.Sitemap = [];
+    try {
+        const posts = await prisma.blogPost.findMany({
+            where: { published: true },
+            select: { slug: true, date: true },
+        });
+        blogPages = posts.map((post) => ({
+            url: `${siteUrl}/blog/${post.slug}`,
+            lastModified: post.date,
+            changeFrequency: "monthly" as const,
+            priority: 0.6,
+        }));
+    } catch {
+        // DB unavailable at build time (CI) — skip blog entries
+    }
 
     return [...staticPages, ...blogPages, ...workflowPages];
 }
