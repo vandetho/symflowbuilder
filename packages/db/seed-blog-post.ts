@@ -1,5 +1,12 @@
-import "dotenv/config";
-import { prisma } from "./src/index.js";
+import { config } from "dotenv";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+config({ path: resolve(__dirname, "../../.env") });
+config({ path: resolve(__dirname, "../../.env.local"), override: true });
+
+const { prisma } = await import("./src/index.js");
 
 const post = {
     slug: "mermaid-export-and-workflow-composition",
