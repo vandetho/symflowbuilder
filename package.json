@@ -14,6 +14,7 @@
         "typecheck": "tsc --noEmit",
         "prisma:generate": "pnpm --filter @symflowbuilder/db prisma:generate",
         "prisma:migrate": "pnpm --filter @symflowbuilder/db prisma:migrate",
+        "prisma:seed": "pnpm --filter @symflowbuilder/db prisma:seed",
         "prisma:studio": "pnpm --filter @symflowbuilder/db prisma:studio",
         "prepare": "husky"
     },

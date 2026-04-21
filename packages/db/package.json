@@ -11,6 +11,7 @@
     "scripts": {
         "prisma:generate": "prisma generate",
         "prisma:migrate": "prisma migrate deploy",
+        "prisma:seed": "tsx seed-blog-post.ts",
         "prisma:studio": "prisma studio",
         "typecheck": "tsc --noEmit"
     },
