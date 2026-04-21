@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.31.3](https://github.com/vandetho/symflowbuilder/compare/v1.31.2...v1.31.3) (2026-04-21)
+
+
+### Bug Fixes
+
+* seed parser handles escaped backticks in template literals ([b8e89ef](https://github.com/vandetho/symflowbuilder/commit/b8e89efeed2e6f2d883d36ee2c96cbf42ad8fbca))
+
 ## [1.31.2](https://github.com/vandetho/symflowbuilder/compare/v1.31.1...v1.31.2) (2026-04-20)
 
 
