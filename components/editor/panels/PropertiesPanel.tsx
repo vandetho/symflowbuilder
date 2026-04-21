@@ -12,8 +12,8 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectItem } from "@/components/ui/select";
 import { useEditorStore } from "@/stores/editor";
-import type { TransitionListener } from "@symflow/core";
-import type { StateNodeData, TransitionNodeData } from "@symflow/core/react-flow";
+import type { TransitionListener } from "symflow";
+import type { StateNodeData, TransitionNodeData } from "symflow/react-flow";
 import type { SubWorkflowNodeData } from "@/types/subworkflow";
 
 const PLACE_STYLING_KEYS = ["bg_color", "description"];

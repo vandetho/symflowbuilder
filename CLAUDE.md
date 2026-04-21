@@ -56,7 +56,7 @@ If a component doesn't exist, build it in `/components/ui/` using Radix primitiv
 - Sub-workflow nodes act as place nodes (can connect to/from transitions like state nodes)
 - Simulator state lives in a separate store (`stores/simulator.ts`)
 - Do NOT use `react-dnd`, `dnd-kit`, `mermaid.js`, or `d3` — React Flow covers everything
-- Node data types: `StateNodeData`, `TransitionNodeData` (from `@symflow/core/react-flow`), `SubWorkflowNodeData` (from `types/subworkflow.ts`)
+- Node data types: `StateNodeData`, `TransitionNodeData` (from `symflow/react-flow`), `SubWorkflowNodeData` (from `types/subworkflow.ts`)
 - When casting React Flow `node.data`, always use `as unknown as XNodeData` (double cast)
 
 ### YAML Export
@@ -69,8 +69,8 @@ If a component doesn't exist, build it in `/components/ui/` using Radix primitiv
 
 ### Mermaid Export
 
-- Pure function in `@symflow/core` (`src/mermaid/export.ts`) — engine-level, same pattern as YAML/JSON/TS
-- React Flow adapter: `exportGraphToMermaid()` from `@symflow/core/react-flow`
+- Pure function in `symflow` (`src/mermaid/export.ts`) — engine-level, same pattern as YAML/JSON/TS
+- React Flow adapter: `exportGraphToMermaid()` from `symflow/react-flow`
 - No `mermaid.js` dependency — only generates text output (string building)
 - Generates `stateDiagram-v2` syntax with `direction LR`
 - Final states auto-detected (places with no outgoing transitions)

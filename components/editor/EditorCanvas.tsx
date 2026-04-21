@@ -29,7 +29,7 @@ import { EditorControls } from "./panels/EditorControls";
 import { PropertiesPanel } from "./panels/PropertiesPanel";
 import { SimulatorPanel } from "./panels/SimulatorPanel";
 import { ContextMenu, type ContextMenuState } from "./panels/ContextMenu";
-import type { StateNodeData, TransitionNodeData } from "@symflow/core/react-flow";
+import type { StateNodeData, TransitionNodeData } from "symflow/react-flow";
 import type { SubWorkflowNodeData } from "@/types/subworkflow";
 import { uid, uniqueName } from "@/lib/utils";
 

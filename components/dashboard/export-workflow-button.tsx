@@ -5,9 +5,9 @@ import { Download, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import type { WorkflowMeta } from "@symflow/core";
-import { exportGraphToYaml } from "@symflow/core/react-flow";
-import { exportGraphToMermaid } from "@symflow/core/react-flow";
+import type { WorkflowMeta } from "symflow";
+import { exportGraphToYaml } from "symflow/react-flow";
+import { exportGraphToMermaid } from "symflow/react-flow";
 import type { Node, Edge } from "@xyflow/react";
 
 type DashboardExportFormat = "yaml" | "mermaid";

@@ -5,7 +5,7 @@ import { EditorCanvas } from "@/components/editor/EditorCanvas";
 import { useAutosave } from "@/hooks/use-autosave";
 import { useEditorStore } from "@/stores/editor";
 import { useSession } from "next-auth/react";
-import type { GraphJson } from "@symflow/core/react-flow";
+import type { GraphJson } from "symflow/react-flow";
 
 export default function EditorPage() {
     const { data: session } = useSession();

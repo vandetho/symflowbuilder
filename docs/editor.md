@@ -27,7 +27,7 @@ components/editor/
 
 ## Workflow Engine ([`symflow`](https://www.npmjs.com/package/symflow))
 
-The engine is published as the `symflow` npm package and imported via `@symflow/core` workspace alias. See [workflow-engine.md](workflow-engine.md) for the full API.
+The engine is published as the [`symflow`](https://www.npmjs.com/package/symflow) npm package. See [workflow-engine.md](workflow-engine.md) for the full API.
 
 - `symflow/engine` — `WorkflowEngine`, `validateDefinition`, `analyzeWorkflow`
 - `symflow/subject` — Subject-driven `Workflow<T>` with marking stores

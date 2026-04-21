@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import type { Node, Edge } from "@xyflow/react";
-import type { WorkflowMeta } from "@symflow/core";
+import type { WorkflowMeta } from "symflow";
 import {
     WorkflowEngine,
     validateDefinition,
@@ -10,8 +10,8 @@ import {
     type ValidationResult,
     type WorkflowAnalysis,
     type WorkflowEvent,
-} from "@symflow/core/engine";
-import { buildDefinition } from "@symflow/core/react-flow";
+} from "symflow/engine";
+import { buildDefinition } from "symflow/react-flow";
 
 export interface SimulationStep {
     transitionName: string;

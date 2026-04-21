@@ -23,7 +23,7 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 import { useEditorStore } from "@/stores/editor";
-import { autoLayoutNodes } from "@symflow/core/react-flow";
+import { autoLayoutNodes } from "symflow/react-flow";
 
 const isMac =
     typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.userAgent);

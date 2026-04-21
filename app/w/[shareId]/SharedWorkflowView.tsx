@@ -32,12 +32,12 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-import type { WorkflowMeta } from "@symflow/core";
+import type { WorkflowMeta } from "symflow";
 import {
     migrateGraphData,
     exportGraphToYaml,
     exportGraphToMermaid,
-} from "@symflow/core/react-flow";
+} from "symflow/react-flow";
 
 const nodeTypes = {
     state: StateNode,

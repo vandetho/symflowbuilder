@@ -9,14 +9,14 @@ import {
     applyEdgeChanges,
     addEdge,
 } from "@xyflow/react";
-import type { WorkflowMeta } from "@symflow/core";
-import { DEFAULT_WORKFLOW_META } from "@symflow/core";
+import type { WorkflowMeta } from "symflow";
+import { DEFAULT_WORKFLOW_META } from "symflow";
 import type {
     StateNodeData,
     TransitionNodeData,
     TransitionEdgeData,
     Snapshot,
-} from "@symflow/core/react-flow";
+} from "symflow/react-flow";
 import {
     exportGraphToYaml,
     exportGraphToJson,
@@ -24,11 +24,11 @@ import {
     importWorkflowYamlToGraph,
     importWorkflowJsonToGraph,
     migrateGraphData,
-} from "@symflow/core/react-flow";
+} from "symflow/react-flow";
 import type { AccessLevel } from "@/types/collaboration";
 import type { SubWorkflowNodeData } from "@/types/subworkflow";
 import { uid, uniqueName } from "@/lib/utils";
-import { exportGraphToMermaid } from "@symflow/core/react-flow";
+import { exportGraphToMermaid } from "symflow/react-flow";
 
 interface EditorStore {
     nodes: Node[];
