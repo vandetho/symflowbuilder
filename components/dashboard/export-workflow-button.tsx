@@ -7,7 +7,18 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { WorkflowMeta } from "@symflow/core";
 import { exportGraphToYaml } from "@symflow/core/react-flow";
+import { exportGraphToMermaid } from "@symflow/core/react-flow";
 import type { Node, Edge } from "@xyflow/react";
+
+type DashboardExportFormat = "yaml" | "mermaid";
+
+const FORMAT_CONFIG: Record<
+    DashboardExportFormat,
+    { label: string; ext: string; mime: string }
+> = {
+    yaml: { label: "YAML", ext: "yaml", mime: "text/yaml" },
+    mermaid: { label: "Mermaid", ext: "mmd", mime: "text/plain" },
+};
 
 interface ExportWorkflowButtonProps {
     name: string;
@@ -17,6 +28,7 @@ interface ExportWorkflowButtonProps {
 export function ExportWorkflowButton({ name, graphJson }: ExportWorkflowButtonProps) {
     const [open, setOpen] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [format, setFormat] = useState<DashboardExportFormat>("yaml");
 
     const nodes = (graphJson.nodes as Node[]) ?? [];
     const edges = (graphJson.edges as Edge[]) ?? [];
@@ -30,24 +42,30 @@ export function ExportWorkflowButton({ name, graphJson }: ExportWorkflowButtonPr
         property: "currentState",
     };
 
-    const yamlOutput = open ? exportGraphToYaml({ nodes, edges, meta }) : "";
+    const output = open
+        ? format === "yaml"
+            ? exportGraphToYaml({ nodes, edges, meta })
+            : exportGraphToMermaid({ nodes, edges, meta })
+        : "";
+
+    const cfg = FORMAT_CONFIG[format];
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(yamlOutput);
+        navigator.clipboard.writeText(output);
         setCopied(true);
-        toast.success("YAML copied");
+        toast.success(`${cfg.label} copied`);
         setTimeout(() => setCopied(false), 2000);
     };
 
     const handleDownload = () => {
-        const blob = new Blob([yamlOutput], { type: "text/yaml" });
+        const blob = new Blob([output], { type: cfg.mime });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `${name}.yaml`;
+        a.download = `${name}.${cfg.ext}`;
         a.click();
         URL.revokeObjectURL(url);
-        toast.success("YAML downloaded");
+        toast.success(`${cfg.label} downloaded`);
     };
 
     return (
@@ -65,7 +83,28 @@ export function ExportWorkflowButton({ name, graphJson }: ExportWorkflowButtonPr
                 <DialogContent className="max-w-lg">
                     <DialogHeader>
                         <DialogTitle className="flex items-center justify-between">
-                            <span className="font-mono text-sm">{name}.yaml</span>
+                            <div className="flex items-center gap-2">
+                                <span className="font-mono text-sm">
+                                    {name}.{cfg.ext}
+                                </span>
+                                <div className="flex items-center gap-1">
+                                    {(["yaml", "mermaid"] as DashboardExportFormat[]).map(
+                                        (f) => (
+                                            <button
+                                                key={f}
+                                                onClick={() => setFormat(f)}
+                                                className={`px-2 py-0.5 rounded-md text-[10px] transition-colors ${
+                                                    format === f
+                                                        ? "bg-[var(--accent-dim)] text-[var(--accent-bright)]"
+                                                        : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+                                                }`}
+                                            >
+                                                {FORMAT_CONFIG[f].label}
+                                            </button>
+                                        )
+                                    )}
+                                </div>
+                            </div>
                             <div className="flex items-center gap-2">
                                 <Button
                                     variant="ghost"
@@ -94,7 +133,7 @@ export function ExportWorkflowButton({ name, graphJson }: ExportWorkflowButtonPr
                     </DialogHeader>
                     <div className="mt-2 max-h-[400px] overflow-auto rounded-[10px] bg-[var(--glass-base)] border border-[var(--glass-border)] p-4">
                         <pre className="text-[11px] font-mono text-[var(--text-secondary)] whitespace-pre leading-relaxed">
-                            {yamlOutput}
+                            {output}
                         </pre>
                     </div>
                 </DialogContent>

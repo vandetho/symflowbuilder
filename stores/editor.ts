@@ -26,7 +26,9 @@ import {
     migrateGraphData,
 } from "@symflow/core/react-flow";
 import type { AccessLevel } from "@/types/collaboration";
+import type { SubWorkflowNodeData } from "@/types/subworkflow";
 import { uid, uniqueName } from "@/lib/utils";
+import { exportGraphToMermaid } from "@symflow/core/react-flow";
 
 interface EditorStore {
     nodes: Node[];
@@ -48,7 +50,10 @@ interface EditorStore {
     deleteSelected: () => void;
     updateNodeData: (
         id: string,
-        data: Partial<StateNodeData> | Partial<TransitionNodeData>
+        data:
+            | Partial<StateNodeData>
+            | Partial<TransitionNodeData>
+            | Partial<SubWorkflowNodeData>
     ) => void;
     updateEdgeData: (id: string, data: Partial<TransitionEdgeData>) => void;
     setSelectedNode: (id: string | null) => void;
@@ -66,6 +71,7 @@ interface EditorStore {
     exportYaml: () => string;
     exportJson: () => string;
     exportTs: () => string;
+    exportMermaid: () => string;
     importYaml: (yamlString: string) => void;
     importJson: (jsonString: string) => void;
     importFromUrl: (url: string) => Promise<void>;
@@ -231,6 +237,11 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
             meta: workflowMeta,
             exportName: workflowMeta.name.replace(/[^a-zA-Z0-9]/g, "_"),
         });
+    },
+
+    exportMermaid: () => {
+        const { nodes, edges, workflowMeta } = get();
+        return exportGraphToMermaid({ nodes, edges, meta: workflowMeta });
     },
 
     importYaml: (yamlString) => {

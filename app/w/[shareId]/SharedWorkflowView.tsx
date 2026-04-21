@@ -18,6 +18,7 @@ import { ArrowRight, Settings2, Download, Copy, Check, Play, Square } from "luci
 import { Logo } from "@/components/ui/logo";
 import { StateNode } from "@/components/editor/nodes/StateNode";
 import { TransitionNode } from "@/components/editor/nodes/TransitionNode";
+import { SubWorkflowNode } from "@/components/editor/nodes/SubWorkflowNode";
 import { ConnectorEdge } from "@/components/editor/edges/ConnectorEdge";
 import { SimulatorPanel } from "@/components/editor/panels/SimulatorPanel";
 import { Badge } from "@/components/ui/badge";
@@ -32,11 +33,16 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 import type { WorkflowMeta } from "@symflow/core";
-import { migrateGraphData, exportGraphToYaml } from "@symflow/core/react-flow";
+import {
+    migrateGraphData,
+    exportGraphToYaml,
+    exportGraphToMermaid,
+} from "@symflow/core/react-flow";
 
 const nodeTypes = {
     state: StateNode,
     transition: TransitionNode,
+    subworkflow: SubWorkflowNode,
 };
 
 const edgeTypes = {
@@ -53,8 +59,9 @@ interface Props {
 export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Props) {
     const router = useRouter();
     const [showConfig, setShowConfig] = useState(false);
-    const [showYaml, setShowYaml] = useState(false);
+    const [showExport, setShowExport] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [exportFormat, setExportFormat] = useState<"yaml" | "mermaid">("yaml");
     const simActive = useSimulatorStore((s) => s.active);
     const simInitialize = useSimulatorStore((s) => s.initialize);
     const simActivate = useSimulatorStore((s) => s.activate);
@@ -77,20 +84,27 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
         property: "currentState",
     };
 
-    const yamlOutput = exportGraphToYaml({ nodes, edges, meta });
+    const exportOutput =
+        exportFormat === "yaml"
+            ? exportGraphToYaml({ nodes, edges, meta })
+            : exportGraphToMermaid({ nodes, edges, meta });
 
-    const handleCopyYaml = async () => {
-        await navigator.clipboard.writeText(yamlOutput);
+    const exportExt = exportFormat === "yaml" ? "yaml" : "mmd";
+    const exportMime = exportFormat === "yaml" ? "text/yaml" : "text/plain";
+    const exportLabel = exportFormat === "yaml" ? "YAML" : "Mermaid";
+
+    const handleCopyExport = async () => {
+        await navigator.clipboard.writeText(exportOutput);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const handleDownloadYaml = () => {
-        const blob = new Blob([yamlOutput], { type: "text/yaml" });
+    const handleDownloadExport = () => {
+        const blob = new Blob([exportOutput], { type: exportMime });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `${meta.name}.yaml`;
+        a.download = `${meta.name}.${exportExt}`;
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -125,7 +139,7 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
                         size="sm"
                         variant="ghost"
                         className="gap-1.5"
-                        onClick={() => setShowYaml(!showYaml)}
+                        onClick={() => setShowExport(!showExport)}
                     >
                         <Download className="w-3.5 h-3.5" />
                         Export
@@ -175,19 +189,36 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
             </div>
 
             <div className="flex-1 relative">
-                {/* YAML Export Drawer */}
-                {showYaml && (
+                {/* Export Drawer */}
+                {showExport && (
                     <div className="absolute top-0 right-0 bottom-0 z-30 w-[420px] bg-[#0a0a14]/98 border-l border-[var(--glass-border)] flex flex-col">
                         <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--glass-border)]">
-                            <span className="text-sm font-medium text-[var(--text-primary)]">
-                                YAML Export
-                            </span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium text-[var(--text-primary)]">
+                                    {exportLabel} Export
+                                </span>
+                                <div className="flex items-center gap-1">
+                                    {(["yaml", "mermaid"] as const).map((f) => (
+                                        <button
+                                            key={f}
+                                            onClick={() => setExportFormat(f)}
+                                            className={`px-2 py-0.5 rounded-md text-[10px] transition-colors ${
+                                                exportFormat === f
+                                                    ? "bg-[var(--accent-dim)] text-[var(--accent-bright)]"
+                                                    : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+                                            }`}
+                                        >
+                                            {f === "yaml" ? "YAML" : "Mermaid"}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                             <div className="flex items-center gap-1">
                                 <Button
                                     variant="ghost"
                                     size="icon"
                                     className="h-7 w-7"
-                                    onClick={handleCopyYaml}
+                                    onClick={handleCopyExport}
                                 >
                                     {copied ? (
                                         <Check className="w-3.5 h-3.5 text-[var(--success)]" />
@@ -199,14 +230,14 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
                                     variant="ghost"
                                     size="icon"
                                     className="h-7 w-7"
-                                    onClick={handleDownloadYaml}
+                                    onClick={handleDownloadExport}
                                 >
                                     <Download className="w-3.5 h-3.5" />
                                 </Button>
                             </div>
                         </div>
                         <pre className="flex-1 overflow-auto p-4 text-[11px] font-mono text-[var(--text-secondary)] leading-relaxed whitespace-pre">
-                            {yamlOutput}
+                            {exportOutput}
                         </pre>
                     </div>
                 )}

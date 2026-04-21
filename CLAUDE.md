@@ -52,8 +52,12 @@ If a component doesn't exist, build it in `/components/ui/` using Radix primitiv
 
 - React Flow state is owned by Zustand (`stores/editor.ts`), not local component state
 - Custom nodes always use `memo()` from React
+- Three node types: `state`, `transition`, `subworkflow` — registered in `EditorCanvas.tsx`
+- Sub-workflow nodes act as place nodes (can connect to/from transitions like state nodes)
 - Simulator state lives in a separate store (`stores/simulator.ts`)
 - Do NOT use `react-dnd`, `dnd-kit`, `mermaid.js`, or `d3` — React Flow covers everything
+- Node data types: `StateNodeData`, `TransitionNodeData` (from `@symflow/core/react-flow`), `SubWorkflowNodeData` (from `types/subworkflow.ts`)
+- When casting React Flow `node.data`, always use `as unknown as XNodeData` (double cast)
 
 ### YAML Export
 
@@ -62,6 +66,23 @@ If a component doesn't exist, build it in `/components/ui/` using Radix primitiv
 - `initial_marking`: string when single, array when multiple
 - `places`: string array when no metadata, object when any place has metadata
 - Preserve Symfony styling metadata: `bg_color`, `description`, `color`, `arrow_color`
+
+### Mermaid Export
+
+- Pure function in `@symflow/core` (`src/mermaid/export.ts`) — engine-level, same pattern as YAML/JSON/TS
+- React Flow adapter: `exportGraphToMermaid()` from `@symflow/core/react-flow`
+- No `mermaid.js` dependency — only generates text output (string building)
+- Generates `stateDiagram-v2` syntax with `direction LR`
+- Final states auto-detected (places with no outgoing transitions)
+- Guards shown as `transition_name [guard_expression]` in edge labels
+
+### Workflow Composition (Sub-Workflows)
+
+- `SubWorkflowNodeData` type in `types/subworkflow.ts` with `workflowId` and `workflowName`
+- Sub-workflow nodes reference other saved workflows by CUID
+- Linking requires authentication (fetches from `GET /api/workflows`)
+- In the graph, sub-workflow nodes behave like state/place nodes (same connection rules)
+- Properties panel shows a workflow picker dropdown when a sub-workflow node is selected
 
 ### Database
 
@@ -80,7 +101,7 @@ If a component doesn't exist, build it in `/components/ui/` using Radix primitiv
 - snake*case enforcement on state/transition names: `/^[a-z]a-z0-9*]\*$/`
 - Debounce auto-save 2000ms using `use-debounce`
 - Dates displayed as relative time (`date-fns/formatDistanceToNow`)
-- YAML export is a pure function (no side effects)
+- All export functions are pure (no side effects): YAML, JSON, TypeScript, Mermaid
 
 ### Auth Model
 

@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useState, useMemo } from "react";
-import { X, Plus, Trash2, Palette } from "lucide-react";
+import { useCallback, useState, useMemo, useEffect } from "react";
+import { X, Plus, Trash2, Palette, Workflow, Link2, Unlink } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColorInput } from "@/components/ui/color-input";
@@ -9,9 +10,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectItem } from "@/components/ui/select";
 import { useEditorStore } from "@/stores/editor";
 import type { TransitionListener } from "@symflow/core";
 import type { StateNodeData, TransitionNodeData } from "@symflow/core/react-flow";
+import type { SubWorkflowNodeData } from "@/types/subworkflow";
 
 const PLACE_STYLING_KEYS = ["bg_color", "description"];
 const TRANSITION_STYLING_KEYS = ["label", "color", "arrow_color"];
@@ -154,6 +157,17 @@ export function PropertiesPanel() {
                     />
                 </div>
             </div>
+        );
+    }
+
+    if (selectedNode?.type === "subworkflow") {
+        const data = selectedNode.data as unknown as SubWorkflowNodeData;
+        return (
+            <SubWorkflowPanel
+                nodeId={selectedNode.id}
+                data={data}
+                onClose={() => setSelectedNode(null)}
+            />
         );
     }
 
@@ -360,6 +374,163 @@ export function PropertiesPanel() {
     }
 
     return null;
+}
+
+interface WorkflowOption {
+    id: string;
+    name: string;
+    type: string;
+}
+
+function SubWorkflowPanel({
+    nodeId,
+    data,
+    onClose,
+}: {
+    nodeId: string;
+    data: SubWorkflowNodeData;
+    onClose: () => void;
+}) {
+    const { updateNodeData } = useEditorStore();
+    const { data: session } = useSession();
+    const [workflows, setWorkflows] = useState<WorkflowOption[] | null>(null);
+
+    useEffect(() => {
+        if (!session?.user) return;
+        let cancelled = false;
+        const controller = new AbortController();
+
+        const load = async () => {
+            try {
+                const res = await fetch("/api/workflows", { signal: controller.signal });
+                if (cancelled) return;
+                const data: WorkflowOption[] = res.ok ? await res.json() : [];
+                if (!cancelled) setWorkflows(data);
+            } catch {
+                if (!cancelled) setWorkflows([]);
+            }
+        };
+        load();
+
+        return () => {
+            cancelled = true;
+            controller.abort();
+        };
+    }, [session]);
+
+    const loading = workflows === null;
+
+    const handleLink = useCallback(
+        (workflowId: string) => {
+            const wf = workflows?.find((w) => w.id === workflowId);
+            updateNodeData(nodeId, {
+                workflowId: workflowId || null,
+                workflowName: wf?.name ?? null,
+            });
+        },
+        [nodeId, workflows, updateNodeData]
+    );
+
+    const handleUnlink = useCallback(() => {
+        updateNodeData(nodeId, { workflowId: null, workflowName: null });
+    }, [nodeId, updateNodeData]);
+
+    return (
+        <div className="absolute top-16 right-4 bottom-4 z-20 w-[280px] bg-[#12121f] border border-[var(--glass-border)] rounded-[18px] flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--glass-border)]">
+                <span className="text-sm font-medium text-[var(--text-primary)] flex items-center gap-1.5">
+                    <Workflow className="w-3.5 h-3.5 text-[var(--warning)]" />
+                    Sub-Workflow
+                </span>
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onClose}>
+                    <X className="w-3.5 h-3.5" />
+                </Button>
+            </div>
+
+            <div className="flex-1 overflow-auto p-4 flex flex-col gap-4">
+                <div className="flex flex-col gap-1.5">
+                    <Label>Name</Label>
+                    <Input
+                        value={data.label}
+                        onChange={(e) =>
+                            updateNodeData(nodeId, { label: e.target.value })
+                        }
+                        placeholder="sub_workflow_name"
+                    />
+                    <span className="text-[9px] text-[var(--text-muted)]">
+                        Label for this node in the parent workflow
+                    </span>
+                </div>
+
+                <Separator />
+
+                <div className="flex flex-col gap-1.5">
+                    <Label className="flex items-center gap-1.5">
+                        <Link2 className="w-3 h-3" />
+                        Linked Workflow
+                    </Label>
+                    {session?.user ? (
+                        <>
+                            <Select
+                                value={data.workflowId ?? ""}
+                                onChange={(e) => handleLink(e.target.value)}
+                                className="text-xs"
+                            >
+                                <SelectItem value="">
+                                    {loading ? "Loading..." : "Select a workflow..."}
+                                </SelectItem>
+                                {(workflows ?? []).map((wf) => (
+                                    <SelectItem key={wf.id} value={wf.id}>
+                                        {wf.name} ({wf.type})
+                                    </SelectItem>
+                                ))}
+                            </Select>
+                            {data.workflowId && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="gap-1.5 text-xs self-start"
+                                    onClick={handleUnlink}
+                                >
+                                    <Unlink className="w-3 h-3" />
+                                    Unlink
+                                </Button>
+                            )}
+                        </>
+                    ) : (
+                        <span className="text-[10px] text-[var(--text-muted)]">
+                            Sign in to link saved workflows
+                        </span>
+                    )}
+                </div>
+
+                {data.workflowId && data.workflowName && (
+                    <>
+                        <Separator />
+                        <div className="flex flex-col gap-1">
+                            <Label className="text-[10px] text-[var(--text-muted)]">
+                                Referenced Workflow
+                            </Label>
+                            <Badge
+                                variant="outline"
+                                className="text-[10px] font-mono self-start"
+                            >
+                                {data.workflowName}
+                            </Badge>
+                        </div>
+                    </>
+                )}
+
+                <Separator />
+
+                <MetadataEditor
+                    metadata={data.metadata}
+                    onChange={(metadata) => updateNodeData(nodeId, { metadata })}
+                    excludeKeys={[]}
+                />
+            </div>
+        </div>
+    );
 }
 
 function ListenerEditor({

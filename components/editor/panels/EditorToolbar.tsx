@@ -18,6 +18,7 @@ import {
     FileJson,
     FileCode,
     Link2,
+    GitBranch,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
@@ -246,13 +247,14 @@ function SignInButton() {
     );
 }
 
-type ExportFormat = "yaml" | "json" | "typescript";
+type ExportFormat = "yaml" | "json" | "typescript" | "mermaid";
 
 const FORMAT_CONFIG: Record<ExportFormat, { label: string; ext: string; mime: string }> =
     {
         yaml: { label: "YAML", ext: "yaml", mime: "text/yaml" },
         json: { label: "JSON", ext: "json", mime: "application/json" },
         typescript: { label: "TypeScript", ext: "ts", mime: "text/typescript" },
+        mermaid: { label: "Mermaid", ext: "mmd", mime: "text/plain" },
     };
 
 export function EditorToolbar() {
@@ -262,6 +264,7 @@ export function EditorToolbar() {
         exportYaml,
         exportJson,
         exportTs,
+        exportMermaid,
         importYaml,
         importJson,
         importFromUrl,
@@ -284,19 +287,26 @@ export function EditorToolbar() {
 
     const doExport = useCallback(
         (format: ExportFormat) => {
-            const output =
-                format === "yaml"
-                    ? exportYaml()
-                    : format === "json"
-                      ? exportJson()
-                      : exportTs();
-            setExportOutput(output);
+            const exporters: Record<ExportFormat, () => string> = {
+                yaml: exportYaml,
+                json: exportJson,
+                typescript: exportTs,
+                mermaid: exportMermaid,
+            };
+            setExportOutput(exporters[format]());
             setExportFormat(format);
             setShowExport(true);
             setSelectedNode(null);
             setSelectedEdge(null);
         },
-        [exportYaml, exportJson, exportTs, setSelectedNode, setSelectedEdge]
+        [
+            exportYaml,
+            exportJson,
+            exportTs,
+            exportMermaid,
+            setSelectedNode,
+            setSelectedEdge,
+        ]
     );
 
     const handleExport = useCallback(() => doExport("yaml"), [doExport]);
@@ -550,6 +560,16 @@ export function EditorToolbar() {
                                     <FileCode className="w-3.5 h-3.5" />
                                     TypeScript
                                 </button>
+                                <button
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    onClick={() => {
+                                        setOpenDropdown(null);
+                                        doExport("mermaid");
+                                    }}
+                                >
+                                    <GitBranch className="w-3.5 h-3.5" />
+                                    Mermaid
+                                </button>
                             </div>
                         )}
                     </div>
@@ -700,21 +720,26 @@ export function EditorToolbar() {
                                 {FORMAT_CONFIG[exportFormat].label} Output
                             </span>
                             <div className="flex items-center gap-1">
-                                {(["yaml", "json", "typescript"] as ExportFormat[]).map(
-                                    (f) => (
-                                        <button
-                                            key={f}
-                                            onClick={() => doExport(f)}
-                                            className={`px-2 py-0.5 rounded-md text-[10px] transition-colors ${
-                                                exportFormat === f
-                                                    ? "bg-[var(--accent-dim)] text-[var(--accent-bright)]"
-                                                    : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
-                                            }`}
-                                        >
-                                            {FORMAT_CONFIG[f].label}
-                                        </button>
-                                    )
-                                )}
+                                {(
+                                    [
+                                        "yaml",
+                                        "json",
+                                        "typescript",
+                                        "mermaid",
+                                    ] as ExportFormat[]
+                                ).map((f) => (
+                                    <button
+                                        key={f}
+                                        onClick={() => doExport(f)}
+                                        className={`px-2 py-0.5 rounded-md text-[10px] transition-colors ${
+                                            exportFormat === f
+                                                ? "bg-[var(--accent-dim)] text-[var(--accent-bright)]"
+                                                : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+                                        }`}
+                                    >
+                                        {FORMAT_CONFIG[f].label}
+                                    </button>
+                                ))}
                             </div>
                         </div>
                         <div className="flex items-center gap-2">

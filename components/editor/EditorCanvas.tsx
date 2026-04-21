@@ -21,6 +21,7 @@ import { useEditorStore } from "@/stores/editor";
 import { useSimulatorStore } from "@/stores/simulator";
 import { StateNode } from "./nodes/StateNode";
 import { TransitionNode } from "./nodes/TransitionNode";
+import { SubWorkflowNode } from "./nodes/SubWorkflowNode";
 import { ConnectorEdge } from "./edges/ConnectorEdge";
 import { NodePalette } from "./panels/NodePalette";
 import { EditorToolbar } from "./panels/EditorToolbar";
@@ -29,11 +30,13 @@ import { PropertiesPanel } from "./panels/PropertiesPanel";
 import { SimulatorPanel } from "./panels/SimulatorPanel";
 import { ContextMenu, type ContextMenuState } from "./panels/ContextMenu";
 import type { StateNodeData, TransitionNodeData } from "@symflow/core/react-flow";
+import type { SubWorkflowNodeData } from "@/types/subworkflow";
 import { uid, uniqueName } from "@/lib/utils";
 
 const nodeTypes = {
     state: StateNode,
     transition: TransitionNode,
+    subworkflow: SubWorkflowNode,
 };
 
 const edgeTypes = {
@@ -74,7 +77,12 @@ function EditorCanvasInner() {
             const targetNode = nodes.find((n) => n.id === connection.target);
             if (!sourceNode || !targetNode) return;
 
-            if (sourceNode.type === "state" && targetNode.type === "state") {
+            const sourceIsPlace =
+                sourceNode.type === "state" || sourceNode.type === "subworkflow";
+            const targetIsPlace =
+                targetNode.type === "state" || targetNode.type === "subworkflow";
+
+            if (sourceIsPlace && targetIsPlace) {
                 // State→State: create an intermediate transition node + 2 edges
                 const transitionId = uid("transition");
                 const midX = (sourceNode.position.x + targetNode.position.x) / 2;
@@ -112,8 +120,8 @@ function EditorCanvasInner() {
                 ]);
                 snapshot();
             } else if (
-                (sourceNode.type === "state" && targetNode.type === "transition") ||
-                (sourceNode.type === "transition" && targetNode.type === "state")
+                (sourceIsPlace && targetNode.type === "transition") ||
+                (sourceNode.type === "transition" && targetIsPlace)
             ) {
                 // State→Transition or Transition→State: add a single connector edge
                 setEdges((eds) => [
@@ -142,7 +150,7 @@ function EditorCanvasInner() {
         (e: DragEvent) => {
             e.preventDefault();
             const type = e.dataTransfer.getData("application/reactflow");
-            if (type !== "state") return;
+            if (type !== "state" && type !== "subworkflow") return;
 
             const position = screenToFlowPosition({
                 x: e.clientX,
@@ -153,17 +161,31 @@ function EditorCanvasInner() {
                 (n) => (n.data as unknown as StateNodeData).label
             );
 
-            addNode({
-                id: uid("state"),
-                type: "state",
-                position,
-                data: {
-                    label: uniqueName("state", existingLabels),
-                    isInitial: false,
-                    isFinal: false,
-                    metadata: {},
-                } satisfies StateNodeData,
-            });
+            if (type === "subworkflow") {
+                addNode({
+                    id: uid("subworkflow"),
+                    type: "subworkflow",
+                    position,
+                    data: {
+                        label: uniqueName("sub_workflow", existingLabels),
+                        workflowId: null,
+                        workflowName: null,
+                        metadata: {},
+                    } satisfies SubWorkflowNodeData,
+                });
+            } else {
+                addNode({
+                    id: uid("state"),
+                    type: "state",
+                    position,
+                    data: {
+                        label: uniqueName("state", existingLabels),
+                        isInitial: false,
+                        isFinal: false,
+                        metadata: {},
+                    } satisfies StateNodeData,
+                });
+            }
         },
         [screenToFlowPosition, addNode, nodes]
     );

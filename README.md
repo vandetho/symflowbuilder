@@ -3,7 +3,7 @@
 # SymFlowBuilder
 
 A visual drag-and-drop builder for Symfony Workflow configurations.
-Design state machines graphically, then export production-ready YAML.
+Design state machines graphically, then export production-ready YAML, JSON, TypeScript, or Mermaid diagrams.
 
 [Live Site](https://symflowbuilder.com) · [Issues](https://github.com/vandetho/symflowbuilder/issues) · [Contributing](#contributing)
 
@@ -11,7 +11,8 @@ Design state machines graphically, then export production-ready YAML.
 
 - **Visual Editor** -- Drag-and-drop states and transitions on a React Flow canvas
 - **Transition Nodes** -- Petri-net model with AND-split, AND-join, and OR patterns clearly visualized
-- **YAML Export** -- Production-ready Symfony workflow YAML for versions 5.4, 6.4, 7.4, and 8.0
+- **Workflow Composition** -- Nest workflows by adding sub-workflow nodes that reference other saved workflows
+- **Multi-Format Export** -- Production-ready YAML (Symfony 5.4–8.0), JSON, TypeScript, and Mermaid diagram output
 - **YAML Import** -- Drop in existing YAML files to visualize and edit them with auto-layout
 - **Workflow Simulator** -- Step through transitions visually with guard toggles, Symfony event log, auto-play, history, and step-back
 - **Workflow Validation** -- Detect unreachable states, dead transitions, and orphan places before exporting
@@ -108,7 +109,7 @@ app/
   api/workflows/               # CRUD + sharing + versioning API
 
 components/
-  editor/                      # Canvas, custom nodes, edges, panels
+  editor/                      # Canvas, custom nodes (state, transition, subworkflow), edges, panels
   landing/                     # Hero graph, YAML preview
   ui/                          # Glass-styled UI primitives
 
@@ -161,7 +162,7 @@ engine.apply("submit");
 engine.getActivePlaces(); // ["submitted"]
 ```
 
-Features: state machines, Petri nets, guards, Symfony event order, validation, pattern analysis, YAML/JSON/TypeScript import/export, `!php/const` support, subject-driven API with marking stores.
+Features: state machines, Petri nets, guards, Symfony event order, validation, pattern analysis, YAML/JSON/TypeScript/Mermaid import/export, `!php/const` support, subject-driven API with marking stores.
 
 [npm](https://www.npmjs.com/package/symflow) · [GitHub](https://github.com/vandetho/symflow) · [Blog Post](/blog/symflow-workflow-engine-for-nodejs)
 
@@ -206,6 +207,8 @@ CI runs ESLint, Prettier, TypeScript checks, and a production build on every PR.
 - [x] FAQ page and blog (PostgreSQL-backed)
 - [x] Standalone workflow engine ([`symflow`](https://www.npmjs.com/package/symflow) npm package)
 - [x] `!php/const` and `!php/enum` YAML tag support
+- [x] Export to Mermaid diagram format (`stateDiagram-v2`)
+- [x] Workflow composition (nested sub-workflow nodes)
 
 ### In Progress
 
@@ -215,8 +218,8 @@ CI runs ESLint, Prettier, TypeScript checks, and a production build on every PR.
 ### Planned
 
 - [ ] Workflow templates (e-commerce, CMS, approval flows)
+- [ ] Export to PlantUML diagram format
 - [ ] Symfony bundle generator (download a full bundle scaffold)
-- [ ] Export to Mermaid / PlantUML diagram formats
 - [ ] Team workspaces with shared workflow libraries
 - [ ] Workflow diff view (compare two versions side by side)
 - [ ] Dark/light theme toggle

@@ -1,17 +1,19 @@
 "use client";
 
 import { type DragEvent } from "react";
-import { CircleDot } from "lucide-react";
+import { CircleDot, Workflow } from "lucide-react";
 
 function PaletteItem({
     label,
     icon: Icon,
+    nodeType,
 }: {
     label: string;
     icon: React.ComponentType<{ className?: string }>;
+    nodeType: string;
 }) {
     const onDragStart = (e: DragEvent) => {
-        e.dataTransfer.setData("application/reactflow", "state");
+        e.dataTransfer.setData("application/reactflow", nodeType);
         e.dataTransfer.effectAllowed = "move";
     };
 
@@ -33,7 +35,8 @@ export function NodePalette() {
             <span className="text-sm font-medium text-[var(--text-muted)] px-1">
                 Drag to canvas
             </span>
-            <PaletteItem label="State (Place)" icon={CircleDot} />
+            <PaletteItem label="State (Place)" icon={CircleDot} nodeType="state" />
+            <PaletteItem label="Sub-Workflow" icon={Workflow} nodeType="subworkflow" />
             <div className="mt-1 px-1">
                 <p className="text-xs text-[var(--text-disabled)] leading-relaxed">
                     Set initial / final in
