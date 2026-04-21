@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.31.4](https://github.com/vandetho/symflowbuilder/compare/v1.31.3...v1.31.4) (2026-04-21)
+
+
+### Documentation
+
+* update roadmap with done/in-progress/planned sections ([eb55deb](https://github.com/vandetho/symflowbuilder/commit/eb55debfed383e33efb7b144138e9543521b809b))
+
 ## [1.31.3](https://github.com/vandetho/symflowbuilder/compare/v1.31.2...v1.31.3) (2026-04-21)
 
 
