@@ -12,11 +12,7 @@
         "prisma:generate": "prisma generate",
         "prisma:migrate": "prisma migrate deploy",
         "prisma:studio": "prisma studio",
-        "prisma:seed": "tsx prisma/seed.ts",
         "typecheck": "tsc --noEmit"
-    },
-    "prisma": {
-        "seed": "tsx prisma/seed.ts"
     },
     "dependencies": {
         "@prisma/adapter-pg": "^7.7.0",
