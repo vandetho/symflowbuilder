@@ -54,15 +54,7 @@ function loadBlogPosts(): BlogPostData[] {
 
     const arraySource = source.slice(startIdx + startMarker.length - 1, endIdx);
 
-    // Convert TS template literals and object syntax to JSON-parseable format
-    // This is a simplified parser — works for our blog-posts.ts structure
     const posts: BlogPostData[] = [];
-    const slugRegex = /slug:\s*"([^"]+)"/g;
-    const titleRegex = /title:\s*"([^"]+)"/;
-    const dateRegex = /date:\s*"([^"]+)"/;
-    const excerptRegex = /excerpt:\s*\n?\s*"([^"]+)"/;
-    const tagsRegex = /tags:\s*\[([^\]]+)\]/;
-    const contentRegex = /content:\s*`([\s\S]*?)`/;
 
     // Split by slug matches to find each post block
     const blocks = arraySource.split(/\{\s*slug:/);
@@ -70,21 +62,35 @@ function loadBlogPosts(): BlogPostData[] {
     for (const block of blocks.slice(1)) {
         const fullBlock = "slug:" + block;
         const slugMatch = fullBlock.match(/slug:\s*"([^"]+)"/);
-        const titleMatch = fullBlock.match(titleRegex);
-        const dateMatch = fullBlock.match(dateRegex);
-        const excerptMatch = fullBlock.match(excerptRegex);
-        const tagsMatch = fullBlock.match(tagsRegex);
-        const contentMatch = fullBlock.match(contentRegex);
+        const titleMatch = fullBlock.match(/title:\s*"([^"]+)"/);
+        const dateMatch = fullBlock.match(/date:\s*"([^"]+)"/);
+        const excerptMatch = fullBlock.match(/excerpt:\s*\n?\s*"([^"]+)"/);
+        const tagsMatch = fullBlock.match(/tags:\s*\[([^\]]+)\]/);
 
-        if (slugMatch && titleMatch && dateMatch && excerptMatch && contentMatch) {
+        // Extract content from template literal by finding `content: \`` and
+        // scanning for the closing unescaped backtick (not preceded by \)
+        let content = "";
+        const contentStart = fullBlock.indexOf("content: `");
+        if (contentStart !== -1) {
+            const start = contentStart + "content: `".length;
+            let i = start;
+            while (i < fullBlock.length) {
+                if (fullBlock[i] === "`" && fullBlock[i - 1] !== "\\") {
+                    break;
+                }
+                i++;
+            }
+            content = fullBlock.slice(start, i);
+            // Unescape template literal content
+            content = content.replace(/\\`/g, "`").replace(/\\\$/g, "$");
+        }
+
+        if (slugMatch && titleMatch && dateMatch && excerptMatch && content) {
             const tags = tagsMatch
                 ? tagsMatch[1]
                       .split(",")
                       .map((t) => t.trim().replace(/"/g, "").replace(/'/g, ""))
                 : [];
-
-            // Unescape template literal content
-            const content = contentMatch[1].replace(/\\`/g, "`").replace(/\\\$/g, "$");
 
             posts.push({
                 slug: slugMatch[1],
