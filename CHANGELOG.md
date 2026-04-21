@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.32.0](https://github.com/vandetho/symflowbuilder/compare/v1.31.4...v1.32.0) (2026-04-21)
+
+
+### Features
+
+* add Mermaid export, sub-workflow nodes, and blog post ([b97f99f](https://github.com/vandetho/symflowbuilder/commit/b97f99fcf9127e7aa93eca7331b52ed7f7c54444))
+
+
+### Refactoring
+
+* replace @symflow/core alias with symflow directly ([5eeb067](https://github.com/vandetho/symflowbuilder/commit/5eeb0673b7315bda7494e1d77e3fad198bfc94d6))
+
 ## [1.31.4](https://github.com/vandetho/symflowbuilder/compare/v1.31.3...v1.31.4) (2026-04-21)
 
 
