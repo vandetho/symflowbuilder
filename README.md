@@ -184,34 +184,44 @@ CI runs ESLint, Prettier, TypeScript checks, and a production build on every PR.
 
 ## Roadmap
 
+### Done
+
 - [x] Visual editor with drag-and-drop states and transitions
 - [x] YAML export for Symfony 5.4, 6.4, 7.4, and 8.0
 - [x] YAML import with auto-layout
+- [x] JSON and TypeScript export formats
+- [x] Import from URL (GitHub raw, Gists, any HTTP endpoint)
+- [x] Workflow simulator with step-through, auto-play, and history
+- [x] Workflow validation (detect unreachable states, dead transitions)
 - [x] Guards, listeners, and metadata on nodes/edges
 - [x] Symfony styling metadata (bg_color, description, color, arrow_color)
+- [x] Color picker component for styling metadata (react-color)
 - [x] Undo / redo (50-step history)
-- [x] GitHub + Google OAuth
+- [x] GitHub + Google + Email/Password auth
 - [x] Cloud save with auto-sync
 - [x] Public sharing with read-only links
 - [x] Explore page for community workflows
-- [x] FAQ page
 - [x] Keyboard shortcuts via TanStack Hotkeys
 - [x] SEO with OG images, sitemap, and robots.txt
-- [x] Workflow simulator with step-through, auto-play, and history
-- [x] Workflow validation (detect unreachable states, dead transitions)
-- [x] Color picker component for styling metadata (react-color)
-- [x] Standalone workflow engine (`symflow` npm package)
-- [x] JSON and TypeScript export formats
-- [x] Import from URL (GitHub raw, Gists, any HTTP endpoint)
-- [x] Blog backed by PostgreSQL
+- [x] FAQ page and blog (PostgreSQL-backed)
+- [x] Standalone workflow engine ([`symflow`](https://www.npmjs.com/package/symflow) npm package)
+- [x] `!php/const` and `!php/enum` YAML tag support
+
+### In Progress
+
+- [ ] Real-time collaboration (multiplayer cursors via [`@symflowbuilder/collab`](https://github.com/vandetho/symflow-collab))
 - [ ] Version history UI with restore
+
+### Planned
+
 - [ ] Workflow templates (e-commerce, CMS, approval flows)
-- [ ] Real-time collaboration (multiplayer cursors) — in development
 - [ ] Symfony bundle generator (download a full bundle scaffold)
 - [ ] Export to Mermaid / PlantUML diagram formats
 - [ ] Team workspaces with shared workflow libraries
 - [ ] Workflow diff view (compare two versions side by side)
 - [ ] Dark/light theme toggle
+- [ ] Email invitations for collaborators
+- [ ] Admin dashboard for blog post management
 
 ## Sponsors
 
