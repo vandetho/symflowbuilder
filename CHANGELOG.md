@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.32.1](https://github.com/vandetho/symflowbuilder/compare/v1.32.0...v1.32.1) (2026-04-21)
+
+
+### Bug Fixes
+
+* load dotenv in seed script for DATABASE_URL ([9024cfd](https://github.com/vandetho/symflowbuilder/commit/9024cfdff25028567c1d546bf6e29f9bc6f3d32c))
+* load env from project root before importing prisma ([f33d6da](https://github.com/vandetho/symflowbuilder/commit/f33d6da90bb3348bf2e77cc62b57ed76d0e89f81))
+
 ## [1.32.0](https://github.com/vandetho/symflowbuilder/compare/v1.31.4...v1.32.0) (2026-04-21)
 
 
