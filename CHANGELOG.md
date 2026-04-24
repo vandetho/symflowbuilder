@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.35.0](https://github.com/vandetho/symflowbuilder/compare/v1.34.0...v1.35.0) (2026-04-24)
+
+
+### Features
+
+* add syntax highlighting to blog code blocks and seed all posts ([5140253](https://github.com/vandetho/symflowbuilder/commit/51402531bb2f270f5a552ccb2939aeafc0af0c09))
+
 ## [1.34.0](https://github.com/vandetho/symflowbuilder/compare/v1.33.0...v1.34.0) (2026-04-24)
 
 
