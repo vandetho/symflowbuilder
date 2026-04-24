@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CodeBlock } from "@/components/ui/code-block";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { prisma } from "@symflowbuilder/db";
@@ -68,6 +69,7 @@ export default async function BlogPostPage({
 
         // Code block
         if (line.startsWith("```")) {
+            const lang = line.slice(3).trim() || undefined;
             const codeLines: string[] = [];
             i++;
             while (i < lines.length && !lines[i].startsWith("```")) {
@@ -76,14 +78,9 @@ export default async function BlogPostPage({
             }
             i++; // skip closing ```
             elements.push(
-                <pre
-                    key={key++}
-                    className="rounded-[14px] bg-[#0d0d1a] border border-[var(--glass-border)] p-4 overflow-x-auto my-4"
-                >
-                    <code className="text-[12px] font-mono text-[var(--text-secondary)] leading-relaxed">
-                        {codeLines.join("\n")}
-                    </code>
-                </pre>
+                <div key={key++} className="my-4">
+                    <CodeBlock code={codeLines.join("\n")} title={lang} />
+                </div>
             );
             continue;
         }
