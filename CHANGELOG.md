@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.33.0](https://github.com/vandetho/symflowbuilder/compare/v1.32.1...v1.33.0) (2026-04-24)
+
+
+### Features
+
+* add DOT/PHP export, weighted arcs, Laravel page, and code highlighting ([e740dc9](https://github.com/vandetho/symflowbuilder/commit/e740dc9ce2559a26170026601ff64faf49fd6be9))
+
 ## [1.32.1](https://github.com/vandetho/symflowbuilder/compare/v1.32.0...v1.32.1) (2026-04-21)
 
 
