@@ -48,6 +48,9 @@ jobs:
                       echo "==> Running migrations..."
                       pnpm --filter @symflowbuilder/db prisma:migrate
 
+                      echo "==> Seeding blog posts..."
+                      pnpm prisma:seed
+
                       echo "==> Building..."
                       pnpm run build
 
