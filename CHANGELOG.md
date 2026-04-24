@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.34.0](https://github.com/vandetho/symflowbuilder/compare/v1.33.0...v1.34.0) (2026-04-24)
+
+
+### Features
+
+* show Edit button on shared view when owner is viewing ([0c48ccd](https://github.com/vandetho/symflowbuilder/commit/0c48ccd16c9e1a3e598077852d340bf7ea85b923))
+
 ## [1.33.0](https://github.com/vandetho/symflowbuilder/compare/v1.32.1...v1.33.0) (2026-04-24)
 
 
