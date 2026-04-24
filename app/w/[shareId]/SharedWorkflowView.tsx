@@ -13,7 +13,16 @@ import {
 import "@xyflow/react/dist/style.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Settings2, Download, Copy, Check, Play, Square } from "lucide-react";
+import {
+    ArrowRight,
+    Pencil,
+    Settings2,
+    Download,
+    Copy,
+    Check,
+    Play,
+    Square,
+} from "lucide-react";
 
 import { Logo } from "@/components/ui/logo";
 import { StateNode } from "@/components/editor/nodes/StateNode";
@@ -54,9 +63,16 @@ interface Props {
     type: string;
     symfonyVersion: string;
     graphJson: Record<string, unknown>;
+    workflowId?: string;
 }
 
-export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Props) {
+export function SharedWorkflowView({
+    name,
+    type,
+    symfonyVersion,
+    graphJson,
+    workflowId,
+}: Props) {
     const router = useRouter();
     const [showConfig, setShowConfig] = useState(false);
     const [showExport, setShowExport] = useState(false);
@@ -176,15 +192,24 @@ export function SharedWorkflowView({ name, type, symfonyVersion, graphJson }: Pr
                         <Settings2 className="w-3.5 h-3.5" />
                         Config
                     </Button>
-                    <Button
-                        size="sm"
-                        variant="ghost"
-                        className="gap-1.5"
-                        onClick={handleOpenInEditor}
-                    >
-                        Open in Editor
-                        <ArrowRight className="w-3 h-3" />
-                    </Button>
+                    {workflowId ? (
+                        <Link href={`/editor/${workflowId}`}>
+                            <Button size="sm" variant="default" className="gap-1.5">
+                                <Pencil className="w-3 h-3" />
+                                Edit
+                            </Button>
+                        </Link>
+                    ) : (
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            className="gap-1.5"
+                            onClick={handleOpenInEditor}
+                        >
+                            Open in Editor
+                            <ArrowRight className="w-3 h-3" />
+                        </Button>
+                    )}
                 </div>
             </div>
 

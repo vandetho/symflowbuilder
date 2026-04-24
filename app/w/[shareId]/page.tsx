@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { prisma } from "@symflowbuilder/db";
 import { notFound } from "next/navigation";
+import { auth } from "@/auth";
 import { SharedWorkflowView } from "./SharedWorkflowView";
 
 export async function generateMetadata({
@@ -52,12 +53,16 @@ export default async function SharedWorkflowPage({
         notFound();
     }
 
+    const session = await auth();
+    const isOwner = session?.user?.id === workflow.userId;
+
     return (
         <SharedWorkflowView
             name={workflow.name}
             type={workflow.type}
             symfonyVersion={workflow.symfonyVersion}
             graphJson={workflow.graphJson as Record<string, unknown>}
+            workflowId={isOwner ? workflow.id : undefined}
         />
     );
 }
