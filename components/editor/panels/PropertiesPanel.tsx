@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState, useMemo, useEffect } from "react";
-import { X, Plus, Trash2, Palette, Workflow, Link2, Unlink } from "lucide-react";
+import { X, Plus, Trash2, Palette, Workflow, Link2, Unlink, Weight } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -283,6 +283,53 @@ export function PropertiesPanel() {
                         <span className="text-[9px] text-[var(--text-muted)]">
                             Symfony ExpressionLanguage syntax
                         </span>
+                    </div>
+
+                    <Separator />
+
+                    {/* Weighted Arcs */}
+                    <div className="flex flex-col gap-2">
+                        <Label className="flex items-center gap-1.5">
+                            <Weight className="w-3 h-3" />
+                            Arc Weights
+                        </Label>
+                        <span className="text-[9px] text-[var(--text-muted)]">
+                            Token consume/produce weights for Petri nets (default 1)
+                        </span>
+                        <div className="flex items-center gap-3">
+                            <div className="flex-1 flex flex-col gap-1">
+                                <Label className="text-[10px]">Consume</Label>
+                                <Input
+                                    type="number"
+                                    min={1}
+                                    value={data.consumeWeight ?? 1}
+                                    onChange={(e) => {
+                                        const val = parseInt(e.target.value, 10);
+                                        updateNodeData(selectedNode.id, {
+                                            consumeWeight:
+                                                !isNaN(val) && val > 1 ? val : undefined,
+                                        });
+                                    }}
+                                    className="h-7 text-xs"
+                                />
+                            </div>
+                            <div className="flex-1 flex flex-col gap-1">
+                                <Label className="text-[10px]">Produce</Label>
+                                <Input
+                                    type="number"
+                                    min={1}
+                                    value={data.produceWeight ?? 1}
+                                    onChange={(e) => {
+                                        const val = parseInt(e.target.value, 10);
+                                        updateNodeData(selectedNode.id, {
+                                            produceWeight:
+                                                !isNaN(val) && val > 1 ? val : undefined,
+                                        });
+                                    }}
+                                    className="h-7 text-xs"
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     <Separator />

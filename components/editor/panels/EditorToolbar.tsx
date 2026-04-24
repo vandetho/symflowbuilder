@@ -19,6 +19,8 @@ import {
     FileCode,
     Link2,
     GitBranch,
+    CircleDot,
+    Gem,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
@@ -247,7 +249,7 @@ function SignInButton() {
     );
 }
 
-type ExportFormat = "yaml" | "json" | "typescript" | "mermaid";
+type ExportFormat = "yaml" | "json" | "typescript" | "mermaid" | "dot" | "php";
 
 const FORMAT_CONFIG: Record<ExportFormat, { label: string; ext: string; mime: string }> =
     {
@@ -255,6 +257,8 @@ const FORMAT_CONFIG: Record<ExportFormat, { label: string; ext: string; mime: st
         json: { label: "JSON", ext: "json", mime: "application/json" },
         typescript: { label: "TypeScript", ext: "ts", mime: "text/typescript" },
         mermaid: { label: "Mermaid", ext: "mmd", mime: "text/plain" },
+        dot: { label: "DOT", ext: "dot", mime: "text/plain" },
+        php: { label: "PHP (Laravel)", ext: "php", mime: "text/x-php" },
     };
 
 export function EditorToolbar() {
@@ -265,6 +269,8 @@ export function EditorToolbar() {
         exportJson,
         exportTs,
         exportMermaid,
+        exportDot,
+        exportPhp,
         importYaml,
         importJson,
         importFromUrl,
@@ -292,6 +298,8 @@ export function EditorToolbar() {
                 json: exportJson,
                 typescript: exportTs,
                 mermaid: exportMermaid,
+                dot: exportDot,
+                php: exportPhp,
             };
             setExportOutput(exporters[format]());
             setExportFormat(format);
@@ -304,6 +312,8 @@ export function EditorToolbar() {
             exportJson,
             exportTs,
             exportMermaid,
+            exportDot,
+            exportPhp,
             setSelectedNode,
             setSelectedEdge,
         ]
@@ -570,6 +580,26 @@ export function EditorToolbar() {
                                     <GitBranch className="w-3.5 h-3.5" />
                                     Mermaid
                                 </button>
+                                <button
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    onClick={() => {
+                                        setOpenDropdown(null);
+                                        doExport("dot");
+                                    }}
+                                >
+                                    <CircleDot className="w-3.5 h-3.5" />
+                                    DOT (Graphviz)
+                                </button>
+                                <button
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    onClick={() => {
+                                        setOpenDropdown(null);
+                                        doExport("php");
+                                    }}
+                                >
+                                    <Gem className="w-3.5 h-3.5" />
+                                    PHP (Laravel)
+                                </button>
                             </div>
                         )}
                     </div>
@@ -714,73 +744,75 @@ export function EditorToolbar() {
             {/* Export Preview Drawer */}
             {showExport && (
                 <div className="absolute top-0 right-0 bottom-0 z-30 w-[480px] bg-[#12121f] border-l border-[var(--glass-border)] rounded-l-[18px] flex flex-col shadow-[0_0_64px_rgba(0,0,0,0.5)]">
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--glass-border)]">
-                        <div className="flex items-center gap-2">
+                    <div className="flex flex-col border-b border-[var(--glass-border)]">
+                        <div className="flex items-center justify-between px-4 py-3">
                             <span className="text-sm font-medium text-[var(--text-primary)]">
                                 {FORMAT_CONFIG[exportFormat].label} Output
                             </span>
-                            <div className="flex items-center gap-1">
-                                {(
-                                    [
-                                        "yaml",
-                                        "json",
-                                        "typescript",
-                                        "mermaid",
-                                    ] as ExportFormat[]
-                                ).map((f) => (
-                                    <button
-                                        key={f}
-                                        onClick={() => doExport(f)}
-                                        className={`px-2 py-0.5 rounded-md text-[10px] transition-colors ${
-                                            exportFormat === f
-                                                ? "bg-[var(--accent-dim)] text-[var(--accent-bright)]"
-                                                : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
-                                        }`}
-                                    >
-                                        {FORMAT_CONFIG[f].label}
-                                    </button>
-                                ))}
+                            <div className="flex items-center gap-2">
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={handleCopy}
+                                        >
+                                            <Copy className="w-4 h-4" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="bottom">Copy</TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={handleDownload}
+                                        >
+                                            <FileDown className="w-4 h-4" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="bottom">
+                                        Download .{FORMAT_CONFIG[exportFormat].ext}
+                                    </TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => setShowExport(false)}
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="bottom">Close</TooltipContent>
+                                </Tooltip>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <Tooltip>
-                                <TooltipTrigger>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={handleCopy}
-                                    >
-                                        <Copy className="w-4 h-4" />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="bottom">Copy</TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                                <TooltipTrigger>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={handleDownload}
-                                    >
-                                        <FileDown className="w-4 h-4" />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="bottom">
-                                    Download .{FORMAT_CONFIG[exportFormat].ext}
-                                </TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                                <TooltipTrigger>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => setShowExport(false)}
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="bottom">Close</TooltipContent>
-                            </Tooltip>
+                        <div className="flex items-center gap-1 px-4 pb-2.5 flex-wrap">
+                            {(
+                                [
+                                    "yaml",
+                                    "json",
+                                    "typescript",
+                                    "mermaid",
+                                    "dot",
+                                    "php",
+                                ] as ExportFormat[]
+                            ).map((f) => (
+                                <button
+                                    key={f}
+                                    onClick={() => doExport(f)}
+                                    className={`px-2.5 py-1 rounded-md text-[10px] transition-colors ${
+                                        exportFormat === f
+                                            ? "bg-[var(--accent-dim)] text-[var(--accent-bright)]"
+                                            : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--glass-base)]"
+                                    }`}
+                                >
+                                    {FORMAT_CONFIG[f].label}
+                                </button>
+                            ))}
                         </div>
                     </div>
                     <div className="flex-1 overflow-auto p-4">

@@ -9,6 +9,224 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
     {
+        slug: "laravel-export-and-symflow-laravel",
+        title: "Design Workflows Visually, Run Them in Laravel with symflow-laravel",
+        date: "2026-04-24",
+        excerpt:
+            "SymFlowBuilder now exports symflow-laravel compatible PHP config files. Design your workflow on a canvas, click Export, and drop the file into your Laravel project.",
+        tags: ["feature", "laravel", "export"],
+        content: `## Laravel Joins the Export Family
+
+SymFlowBuilder has always been about bridging the gap between visual design and production config. Today we are adding a new export target: **PHP for Laravel**.
+
+Click the export dropdown, choose **PHP (Laravel)**, and you get a ready-to-use config file for [symflow-laravel](https://github.com/vandetho/symflow-laravel) — a Symfony-compatible workflow engine for Laravel.
+
+## What is symflow-laravel?
+
+symflow-laravel is a Laravel package that brings Symfony's Workflow component semantics to Laravel applications. It supports state machines, Petri nets, guards, events, validation, weighted arcs, and middleware.
+
+Install it with Composer:
+
+\`\`\`bash
+composer require vandetho/symflow-laravel
+\`\`\`
+
+## What the Export Looks Like
+
+Here is a real export from SymFlowBuilder for a simple order workflow:
+
+\`\`\`php
+<?php
+
+use Laraflow\\Data\\Place;
+use Laraflow\\Data\\Transition;
+use Laraflow\\Data\\WorkflowDefinition;
+use Laraflow\\Data\\WorkflowMeta;
+use Laraflow\\Enums\\MarkingStoreType;
+use Laraflow\\Enums\\WorkflowType;
+
+return [
+    'definition' => new WorkflowDefinition(
+        name: 'order',
+        type: WorkflowType::StateMachine,
+        places: [
+            new Place(name: 'draft'),
+            new Place(name: 'submitted'),
+            new Place(name: 'approved'),
+        ],
+        transitions: [
+            new Transition(
+                name: 'submit',
+                froms: ['draft'],
+                tos: ['submitted'],
+            ),
+            new Transition(
+                name: 'approve',
+                froms: ['submitted'],
+                tos: ['approved'],
+                guard: 'is_granted("ROLE_ADMIN")',
+            ),
+        ],
+        initialMarking: ['draft'],
+    ),
+    'meta' => new WorkflowMeta(
+        name: 'order',
+        type: WorkflowType::StateMachine,
+        markingStore: MarkingStoreType::Method,
+        initialMarking: ['draft'],
+        supports: 'App\\\\Models\\\\Order',
+        property: 'status',
+    ),
+];
+\`\`\`
+
+No manual translation from YAML to PHP. No copy-pasting place names. The file is complete with imports, type-safe enums, and your guard expressions.
+
+## What is Included
+
+The PHP export covers everything you configure in the editor:
+
+- **WorkflowDefinition** with places, transitions, and initial marking
+- **Guard expressions** on transitions
+- **WorkflowType enum** (StateMachine or Workflow)
+- **MarkingStoreType enum** (Method or Property)
+- **Supports** (your model class)
+- **Weighted arcs** (consume and produce weights)
+- **Metadata** on places and transitions
+
+## Three Steps
+
+1. Design your workflow in the [editor](/editor)
+2. Click Export and choose **PHP (Laravel)**
+3. Drop the file into your Laravel project's config directory
+
+See the full [Laravel integration guide](/laravel) for details.`,
+    },
+    {
+        slug: "graphviz-dot-export",
+        title: "Export Workflows as Graphviz DOT Diagrams",
+        date: "2026-04-24",
+        excerpt:
+            "SymFlowBuilder now exports Graphviz DOT notation. Generate publication-quality workflow diagrams for documentation, presentations, and CI pipelines.",
+        tags: ["feature", "export", "graphviz"],
+        content: `## Graphviz DOT Export
+
+SymFlowBuilder now supports exporting your workflow as **Graphviz DOT** notation — the standard graph description language used by tools like Graphviz, dot, and dozens of renderers.
+
+Click the export dropdown and choose **DOT (Graphviz)** to get the output.
+
+## Why DOT?
+
+DOT is a plain-text format that describes graphs. It is supported everywhere:
+
+- **Documentation** — embed diagrams in Markdown, AsciiDoc, or LaTeX with Graphviz plugins
+- **CI pipelines** — generate workflow diagrams automatically from your config
+- **Presentations** — render publication-quality SVG or PDF diagrams
+- **Code reviews** — include a rendered diagram in your PR description
+- **Wiki pages** — GitHub, GitLab, and Confluence all support Graphviz rendering
+
+## Example Output
+
+A simple order workflow exports as:
+
+\`\`\`
+digraph "order" {
+    rankdir=LR;
+    node [shape=circle, style=filled, fillcolor="#2a2a3e", fontcolor="white", fontsize=10];
+    edge [fontsize=9];
+
+    "draft" [peripheries=2];
+    "submitted";
+    "approved";
+
+    "draft" -> "submitted" [label="submit"];
+    "submitted" -> "approved" [label="approve"];
+}
+\`\`\`
+
+## Rendering
+
+You can render DOT files with any Graphviz-compatible tool:
+
+\`\`\`bash
+# Command line
+dot -Tsvg workflow.dot -o workflow.svg
+dot -Tpng workflow.dot -o workflow.png
+
+# Or use an online renderer
+\`\`\`
+
+## All Six Export Formats
+
+With this addition, SymFlowBuilder now supports six export formats:
+
+| Format | Extension | Use Case |
+|--------|-----------|----------|
+| YAML | .yaml | Symfony framework config |
+| JSON | .json | symflow npm package |
+| TypeScript | .ts | Type-safe Node.js projects |
+| Mermaid | .mmd | Markdown-embedded diagrams |
+| DOT | .dot | Graphviz rendering, CI pipelines |
+| PHP | .php | Laravel with symflow-laravel |
+
+All formats are accessible from the export dropdown or the preview drawer tabs.`,
+    },
+    {
+        slug: "weighted-arcs-for-petri-nets",
+        title: "Weighted Arcs: Advanced Petri Net Modeling in SymFlowBuilder",
+        date: "2026-04-24",
+        excerpt:
+            "Configure consume and produce weights on transitions for advanced Petri net workflows. Weights display on the canvas and export to all formats automatically.",
+        tags: ["feature", "editor", "petri-net"],
+        content: `## What Are Weighted Arcs?
+
+In standard Petri nets, each transition consumes one token from each input place and produces one token in each output place. **Weighted arcs** change this — a transition can consume or produce multiple tokens at once.
+
+This is useful for modeling:
+
+- **Batch processing** — a transition that requires 3 items to proceed
+- **Resource pools** — consuming 2 resources and producing 1 result
+- **Rate limiting** — transitions that consume tokens at different rates
+
+## How to Use Them
+
+1. Select a transition node on the canvas
+2. In the properties panel, find the **Arc Weights** section
+3. Set the **Consume** weight (tokens consumed from input places, default 1)
+4. Set the **Produce** weight (tokens produced in output places, default 1)
+
+## Canvas Display
+
+When a transition has non-default weights, they display directly on the canvas label:
+
+\`\`\`
+submit (3:2)
+\`\`\`
+
+This means the transition consumes **3** tokens and produces **2** tokens. Default weights (1:1) are hidden to keep the canvas clean.
+
+## Export Support
+
+Weighted arcs export to all six formats automatically:
+
+- **YAML** — uses Symfony's weight syntax
+- **JSON** — includes \`consumeWeight\` and \`produceWeight\` fields
+- **TypeScript** — typed weight properties
+- **Mermaid** — weight annotation in edge labels
+- **DOT** — weight labels on edges
+- **PHP** — weight properties on Transition data objects
+
+## Validation
+
+The symflow engine validates weights automatically. Invalid weights (zero, negative, or non-integer) are caught before export.
+
+## When to Use Weights
+
+Most workflows do not need weighted arcs. They are relevant when you are modeling a true Petri net where token counts matter — resource allocation, manufacturing processes, or concurrent systems with capacity constraints.
+
+If you are building a standard state machine or approval workflow, the default weight of 1 is correct and you can ignore this feature entirely.`,
+    },
+    {
         slug: "import-workflows-from-url",
         title: "Import Workflows from Any URL — YAML and JSON",
         date: "2026-04-20",

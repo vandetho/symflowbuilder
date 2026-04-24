@@ -68,9 +68,12 @@ importers:
       sonner:
         specifier: ^2.0.7
         version: 2.0.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      sugar-high:
+        specifier: ^1.1.0
+        version: 1.1.0
       symflow:
-        specifier: ^2.4.0
-        version: 2.4.0(@xyflow/react@12.10.2(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+        specifier: ^3.0.0
+        version: 3.0.0(@xyflow/react@12.10.2(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       tailwind-merge:
         specifier: ^3.5.0
         version: 3.5.0
@@ -3036,6 +3039,9 @@ packages:
       babel-plugin-macros:
         optional: true
 
+  sugar-high@1.1.0:
+    resolution: {integrity: sha512-pL68G9H5VgK5z5aRAp8Yl4+obwbfEpr4BCCdO9V9JrWTFQiPMuN2GKxl9Vn/oxzkcS8TOTFFNti3LXe0UWX2Yw==}
+
   supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
@@ -3044,8 +3050,9 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  symflow@2.4.0:
-    resolution: {integrity: sha512-Icd/bzl950WyQNM7qeFQv15s7/+ny1OWd+sAQ2PHV/Awd0UkXrScO+DIYLSItEq17I7MXxEmdYgcbTPqQG4sFg==}
+  symflow@3.0.0:
+    resolution: {integrity: sha512-HxDFs581ZvdEcIlnbIBdWF5b9Rnukv8ZKvJi2W++3RCiAmYNGLF9bc6EszdHWF1iU0iGGujWzNohXPIizq1pMQ==}
+    hasBin: true
     peerDependencies:
       '@xyflow/react': ^12.10.2
     peerDependenciesMeta:
@@ -6169,13 +6176,15 @@ snapshots:
     optionalDependencies:
       '@babel/core': 7.29.0
 
+  sugar-high@1.1.0: {}
+
   supports-color@7.2.0:
     dependencies:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  symflow@2.4.0(@xyflow/react@12.10.2(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)):
+  symflow@3.0.0(@xyflow/react@12.10.2(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)):
     dependencies:
       js-yaml: 4.1.1
     optionalDependencies:

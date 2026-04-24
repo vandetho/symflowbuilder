@@ -35,7 +35,7 @@ export const TransitionNode = memo(
                 {/* Label */}
                 <span
                     className={`
-                        text-[10px] font-mono leading-none max-w-[100px] truncate
+                        text-[10px] font-mono leading-none max-w-[120px] truncate
                         ${
                             simActive && isEnabled
                                 ? "text-[var(--success)]"
@@ -46,6 +46,13 @@ export const TransitionNode = memo(
                     `}
                 >
                     {data.label}
+                    {(data.consumeWeight ?? 1) !== 1 ||
+                    (data.produceWeight ?? 1) !== 1 ? (
+                        <span className="text-[var(--text-muted)]">
+                            {" "}
+                            ({data.consumeWeight ?? 1}:{data.produceWeight ?? 1})
+                        </span>
+                    ) : null}
                 </span>
 
                 {/* Guard indicator */}

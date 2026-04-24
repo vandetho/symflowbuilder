@@ -21,6 +21,9 @@ import {
     exportGraphToYaml,
     exportGraphToJson,
     exportGraphToTs,
+    exportGraphToMermaid,
+    exportGraphToDot,
+    exportGraphToPhp,
     importWorkflowYamlToGraph,
     importWorkflowJsonToGraph,
     migrateGraphData,
@@ -28,7 +31,6 @@ import {
 import type { AccessLevel } from "@/types/collaboration";
 import type { SubWorkflowNodeData } from "@/types/subworkflow";
 import { uid, uniqueName } from "@/lib/utils";
-import { exportGraphToMermaid } from "symflow/react-flow";
 
 interface EditorStore {
     nodes: Node[];
@@ -72,6 +74,8 @@ interface EditorStore {
     exportJson: () => string;
     exportTs: () => string;
     exportMermaid: () => string;
+    exportDot: () => string;
+    exportPhp: () => string;
     importYaml: (yamlString: string) => void;
     importJson: (jsonString: string) => void;
     importFromUrl: (url: string) => Promise<void>;
@@ -242,6 +246,16 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
     exportMermaid: () => {
         const { nodes, edges, workflowMeta } = get();
         return exportGraphToMermaid({ nodes, edges, meta: workflowMeta });
+    },
+
+    exportDot: () => {
+        const { nodes, edges, workflowMeta } = get();
+        return exportGraphToDot({ nodes, edges, meta: workflowMeta });
+    },
+
+    exportPhp: () => {
+        const { nodes, edges, workflowMeta } = get();
+        return exportGraphToPhp({ nodes, edges, meta: workflowMeta });
     },
 
     importYaml: (yamlString) => {

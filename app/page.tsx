@@ -13,6 +13,8 @@ import {
     GitFork,
     Palette,
     Package,
+    Gem,
+    Weight,
 } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/icons";
 import { Logo } from "@/components/ui/logo";
@@ -94,6 +96,19 @@ const FEATURES = [
         description:
             "The workflow engine is available as a standalone npm package — symflow. Run the same Symfony semantics in any Node.js, serverless, or browser project.",
         href: "/engine",
+    },
+    {
+        icon: Gem,
+        title: "Laravel Export",
+        description:
+            "Export symflow-laravel compatible PHP config files. Design in SymFlowBuilder, run in Laravel — zero manual config needed.",
+        href: "/laravel",
+    },
+    {
+        icon: Weight,
+        title: "Weighted Arcs",
+        description:
+            "Configure consume and produce weights on transitions for advanced Petri net modeling. Exported to all formats automatically.",
     },
 ];
 

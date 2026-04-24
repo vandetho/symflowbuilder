@@ -4,6 +4,7 @@ import { use, useEffect, useState } from "react";
 import { EditorCanvas } from "@/components/editor/EditorCanvas";
 import { useEditorStore } from "@/stores/editor";
 import { useAutosave } from "@/hooks/use-autosave";
+import { Logo } from "@/components/ui/logo";
 import type { WorkflowMeta } from "symflow";
 import type { Node, Edge } from "@xyflow/react";
 
@@ -59,18 +60,27 @@ export default function EditWorkflowPage({
 
     if (loading) {
         return (
-            <div className="h-screen w-screen flex items-center justify-center">
-                <span className="text-sm text-[var(--text-muted)] font-mono animate-pulse">
-                    Loading...
-                </span>
+            <div className="h-screen w-screen flex items-center justify-center bg-[#0a0a14]">
+                <div className="flex flex-col items-center gap-4">
+                    <Logo
+                        size={40}
+                        className="animate-pulse shadow-[0_0_40px_var(--accent-glow)]"
+                    />
+                    <span className="text-sm text-[var(--text-muted)] font-mono">
+                        Loading workflow...
+                    </span>
+                </div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="h-screen w-screen flex items-center justify-center">
-                <span className="text-sm text-[var(--danger)]">{error}</span>
+            <div className="h-screen w-screen flex items-center justify-center bg-[#0a0a14]">
+                <div className="flex flex-col items-center gap-4">
+                    <Logo size={40} />
+                    <span className="text-sm text-[var(--danger)]">{error}</span>
+                </div>
             </div>
         );
     }

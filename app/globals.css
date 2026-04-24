@@ -42,6 +42,18 @@
 
     /* Background */
     --bg-base: #08080f;
+
+    /* Syntax highlighting (sugar-high) */
+    --sh-class: #9d94ff;
+    --sh-identifier: rgba(255, 255, 255, 0.85);
+    --sh-sign: rgba(255, 255, 255, 0.45);
+    --sh-property: #7dd3fc;
+    --sh-entity: #7dd3fc;
+    --sh-jsxliterals: #9d94ff;
+    --sh-string: #34d399;
+    --sh-keyword: #c084fc;
+    --sh-comment: rgba(255, 255, 255, 0.25);
+    --sh-space: inherit;
 }
 
 @theme inline {

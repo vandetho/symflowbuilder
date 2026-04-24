@@ -13,6 +13,9 @@ import {
     Cloud,
     Package,
     Cpu,
+    CircleDot,
+    Gem,
+    Weight,
     type LucideIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -61,6 +64,12 @@ const CATEGORIES: { title: string; features: Feature[] }[] = [
                 description:
                     "Set bg_color, description, color, and arrow_color matching Symfony's workflow dump styling. Pick colors with a built-in color picker that previews on the canvas.",
             },
+            {
+                icon: Weight,
+                title: "Weighted Arcs",
+                description:
+                    "Configure consume and produce weights on transitions for advanced Petri net modeling. Weights display directly on the canvas and export to all formats automatically.",
+            },
         ],
     },
     {
@@ -77,6 +86,18 @@ const CATEGORIES: { title: string; features: Feature[] }[] = [
                 title: "Import Existing Workflows",
                 description:
                     "Drop in your existing YAML files or paste them directly. SymFlowBuilder parses the YAML, detects the workflow type, and renders the graph with automatic topological layout.",
+            },
+            {
+                icon: Gem,
+                title: "PHP / Laravel Export",
+                description:
+                    "Export a ready-to-use symflow-laravel compatible PHP config file. Design your workflow visually in SymFlowBuilder, then run it in Laravel with zero manual config.",
+            },
+            {
+                icon: CircleDot,
+                title: "Graphviz DOT Export",
+                description:
+                    "Export your workflow as Graphviz DOT notation for rendering with external tools, embedding in documentation, or generating publication-quality diagrams.",
             },
         ],
     },
@@ -116,7 +137,7 @@ const CATEGORIES: { title: string; features: Feature[] }[] = [
                 icon: FileCode2,
                 title: "Import & Export Formats",
                 description:
-                    "Round-trip YAML, JSON, and TypeScript. Import existing Symfony configs — including !php/const tags — and run them directly. Export TypeScript codegen for type-safe workflow definitions.",
+                    "Round-trip YAML, JSON, TypeScript, Mermaid, Graphviz DOT, and PHP (Laravel). Import existing Symfony configs — including !php/const tags — and run them directly. Export TypeScript codegen for type-safe workflow definitions.",
             },
         ],
     },

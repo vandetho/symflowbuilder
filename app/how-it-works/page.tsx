@@ -44,7 +44,7 @@ const STEPS: Step[] = [
         step: "03",
         title: "Configure guards & metadata",
         description:
-            "Click any transition node to configure guard expressions, add event listeners, and set metadata. Guards use Symfony ExpressionLanguage syntax to control when a transition is allowed. Add styling metadata (color, arrow_color) to customize the workflow dump output.",
+            "Click any transition node to configure guard expressions, add event listeners, set arc weights for Petri net modeling, and add metadata. Guards use Symfony ExpressionLanguage syntax to control when a transition is allowed. Add styling metadata (color, arrow_color) to customize the workflow dump output.",
         icon: Shield,
         accent: "var(--accent-bright)",
     },
@@ -58,9 +58,9 @@ const STEPS: Step[] = [
     },
     {
         step: "05",
-        title: "Export YAML",
+        title: "Export to any format",
         description:
-            "Export production-ready Symfony workflow YAML for your target version (5.4, 6.4, 7.4, or 8.0). Copy to clipboard or download as a file. The output uses proper Symfony conventions — tilde nulls, flow arrays, and version-specific structures. Paste it into your project and you are done.",
+            "Export your workflow in six formats: Symfony YAML (5.4–8.0), JSON, TypeScript, Mermaid diagrams, Graphviz DOT, or symflow-laravel compatible PHP for Laravel. Copy to clipboard or download as a file. Each format uses proper conventions and is ready to paste into your project.",
         icon: FileCode2,
         accent: "var(--success)",
     },
@@ -93,11 +93,12 @@ export default async function HowItWorksPage() {
                         Guide
                     </Badge>
                     <h1 className="text-3xl sm:text-4xl font-light text-[var(--text-primary)] tracking-tight">
-                        Five steps to <span className="font-medium">production YAML</span>
+                        Five steps to{" "}
+                        <span className="font-medium">production config</span>
                     </h1>
                     <p className="text-sm text-[var(--text-secondary)] max-w-md">
-                        Design, validate, and export Symfony workflows without writing a
-                        single line of YAML by hand.
+                        Design, validate, and export Symfony or Laravel workflows without
+                        writing config by hand.
                     </p>
                 </div>
             </section>

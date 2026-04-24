@@ -9,6 +9,7 @@ import { GitHubIcon } from "@/components/ui/icons";
 const NAV_LINKS = [
     { href: "/features", label: "Features" },
     { href: "/engine", label: "Engine" },
+    { href: "/laravel", label: "Laravel" },
     { href: "/how-it-works", label: "How It Works" },
     { href: "/explore", label: "Explore" },
     { href: "/blog", label: "Blog" },

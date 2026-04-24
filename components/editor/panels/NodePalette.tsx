@@ -32,16 +32,19 @@ function PaletteItem({
 export function NodePalette() {
     return (
         <div className="absolute top-16 left-4 z-10 flex flex-col gap-2">
-            <span className="text-sm font-medium text-[var(--text-muted)] px-1">
+            <span className="text-sm font-medium text-[var(--text-primary)] px-1">
                 Drag to canvas
             </span>
             <PaletteItem label="State (Place)" icon={CircleDot} nodeType="state" />
             <PaletteItem label="Sub-Workflow" icon={Workflow} nodeType="subworkflow" />
-            <div className="mt-1 px-1">
-                <p className="text-xs text-[var(--text-disabled)] leading-relaxed">
-                    Set initial / final in
-                    <br />
-                    the properties panel
+            <div className="mt-1 px-1 flex flex-col gap-1.5">
+                <p className="text-[10px] text-[var(--text-secondary)] leading-relaxed">
+                    <span className="text-[var(--text-primary)]">State:</span> Set initial
+                    / final in the properties panel
+                </p>
+                <p className="text-[10px] text-[var(--text-secondary)] leading-relaxed">
+                    <span className="text-[var(--text-primary)]">Sub-Workflow:</span>{" "}
+                    Embed a saved workflow as a place node. Sign in to link it.
                 </p>
             </div>
         </div>

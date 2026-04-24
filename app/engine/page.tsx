@@ -8,7 +8,6 @@ import {
     GitFork,
     ArrowRight,
     Check,
-    Terminal,
     Layers,
     Upload,
     Play,
@@ -19,6 +18,8 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { CopyCommand } from "@/components/ui/copy-command";
+import { CodeBlock } from "@/components/ui/code-block";
 import { auth } from "@/auth";
 
 const FEATURES = [
@@ -199,10 +200,7 @@ export default async function EnginePage() {
                         PHP required.
                     </p>
 
-                    <div className="glass-sm rounded-[10px] px-5 py-3 font-mono text-sm text-(--text-primary) flex items-center gap-3">
-                        <Terminal className="w-4 h-4 text-(--text-muted)" />
-                        npm install symflow
-                    </div>
+                    <CopyCommand command="npm install symflow" />
 
                     <div className="flex items-center gap-3 mt-1">
                         <a
@@ -271,11 +269,7 @@ export default async function EnginePage() {
                             Create an engine, validate, apply transitions, listen to
                             events.
                         </p>
-                        <div className="glass rounded-[14px] p-4 overflow-x-auto">
-                            <pre className="text-[11px] leading-[1.6] text-(--text-secondary) font-mono whitespace-pre">
-                                {CODE_EXAMPLE}
-                            </pre>
-                        </div>
+                        <CodeBlock code={CODE_EXAMPLE} title="engine.ts" />
                     </div>
 
                     {/* Subject-Driven */}
@@ -287,11 +281,7 @@ export default async function EnginePage() {
                             Like Symfony — pass your entity, the marking is managed for
                             you.
                         </p>
-                        <div className="glass rounded-[14px] p-4 overflow-x-auto">
-                            <pre className="text-[11px] leading-[1.6] text-(--text-secondary) font-mono whitespace-pre">
-                                {SUBJECT_EXAMPLE}
-                            </pre>
-                        </div>
+                        <CodeBlock code={SUBJECT_EXAMPLE} title="workflow.ts" />
                     </div>
                 </div>
             </section>
