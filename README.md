@@ -21,6 +21,7 @@ Design state machines graphically, then export production-ready YAML, JSON, Type
 - **Styling Metadata** -- Set `bg_color`, `description`, `color`, `arrow_color` with a built-in color picker
 - **Undo / Redo** -- 50-step history with Cmd+Z / Cmd+Shift+Z
 - **Shareable Links** -- Generate read-only public links to share workflow designs
+- **Markdown-Ready Embeds** -- Copy a Mermaid block for GitHub READMEs or grab an `<iframe>` snippet to drop a live, interactive workflow into any docs site
 - **No Account Required** -- The editor is fully public. Sign in to unlock cloud save, versioning, and sharing
 
 ## Tech Stack
@@ -106,6 +107,7 @@ app/
   dashboard/                   # Protected user workspace
   auth/                        # Sign in / error pages
   w/[shareId]/page.tsx         # Public shared workflow view
+  embed/[shareId]/page.tsx     # Iframe-friendly read-only canvas (CSP allows any frame-ancestor)
   api/workflows/               # CRUD + sharing + versioning API
 
 components/
@@ -209,6 +211,7 @@ CI runs ESLint, Prettier, TypeScript checks, and a production build on every PR.
 - [x] `!php/const` and `!php/enum` YAML tag support
 - [x] Export to Mermaid diagram format (`stateDiagram-v2`)
 - [x] Workflow composition (nested sub-workflow nodes)
+- [x] Markdown-ready Mermaid copy + iframe embed for shared workflows
 
 ### In Progress
 
