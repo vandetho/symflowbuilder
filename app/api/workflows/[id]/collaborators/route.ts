@@ -1,26 +1,18 @@
-import { auth } from "@/auth";
 import { prisma } from "@symflowbuilder/db";
-import { getWorkflowAccess, isOwner } from "@/lib/workflow-auth";
+import { getWorkflowAccess, isOwner, requireUserId } from "@/lib/workflow-auth";
+import { addCollaboratorSchema } from "@/lib/schemas/collaborator";
 import type { NextRequest } from "next/server";
-import { z } from "zod";
-
-const addCollaboratorSchema = z.object({
-    email: z.string().email(),
-    role: z.enum(["viewer", "editor"]),
-});
 
 export async function GET(
     _request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const session = await auth();
-    if (!session?.user?.id) {
-        return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireUserId();
+    if (auth instanceof Response) return auth;
 
     try {
-        const { access } = await getWorkflowAccess(id, session.user.id);
+        const { access } = await getWorkflowAccess(id, auth.userId);
 
         if (!isOwner(access)) {
             return Response.json({ error: "Not found" }, { status: 404 });
@@ -47,13 +39,11 @@ export async function POST(
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const session = await auth();
-    if (!session?.user?.id) {
-        return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireUserId();
+    if (auth instanceof Response) return auth;
 
     try {
-        const { access } = await getWorkflowAccess(id, session.user.id);
+        const { access } = await getWorkflowAccess(id, auth.userId);
 
         if (!isOwner(access)) {
             return Response.json({ error: "Not found" }, { status: 404 });
@@ -78,7 +68,7 @@ export async function POST(
             );
         }
 
-        if (user.id === session.user.id) {
+        if (user.id === auth.userId) {
             return Response.json(
                 { error: "You cannot add yourself as a collaborator" },
                 { status: 400 }

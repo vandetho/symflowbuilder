@@ -9,9 +9,11 @@ import {
     ReactFlowProvider,
     useReactFlow,
     reconnectEdge,
+    addEdge,
     type NodeMouseHandler,
     type EdgeMouseHandler,
     type OnReconnect,
+    type OnConnectEnd,
     type Connection,
     type Edge,
 } from "@xyflow/react";
@@ -61,20 +63,19 @@ function EditorCanvasInner() {
 
     const simActive = useSimulatorStore((s) => s.active);
     const { screenToFlowPosition } = useReactFlow();
-    const connectingFrom = useRef<{
-        nodeId: string;
-        handleType: string;
-    } | null>(null);
     const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
 
-    // Handle connections: create transition nodes between state nodes
+    // Handle connections: create transition nodes between state nodes.
+    // Reads nodes/edges via getState() so the callback identity is stable across
+    // graph mutations and doesn't churn ReactFlow's prop diff during drag.
     const onConnect = useCallback(
         (connection: Connection) => {
-            connectingFrom.current = null;
             if (!connection.source || !connection.target) return;
+            const { nodes: currentNodes, edges: currentEdges } =
+                useEditorStore.getState();
 
-            const sourceNode = nodes.find((n) => n.id === connection.source);
-            const targetNode = nodes.find((n) => n.id === connection.target);
+            const sourceNode = currentNodes.find((n) => n.id === connection.source);
+            const targetNode = currentNodes.find((n) => n.id === connection.target);
             if (!sourceNode || !targetNode) return;
 
             const sourceIsPlace =
@@ -88,7 +89,7 @@ function EditorCanvasInner() {
                 const midX = (sourceNode.position.x + targetNode.position.x) / 2;
                 const midY = (sourceNode.position.y + targetNode.position.y) / 2;
 
-                const existingLabels = nodes
+                const existingLabels = currentNodes
                     .filter((n) => n.type === "transition")
                     .map((n) => (n.data as unknown as TransitionNodeData).label);
 
@@ -123,34 +124,21 @@ function EditorCanvasInner() {
                 (sourceIsPlace && targetNode.type === "transition") ||
                 (sourceNode.type === "transition" && targetIsPlace)
             ) {
-                // State→Transition or Transition→State: add a single connector edge.
-                // Dedupe on (source, target) — React Flow keys edges by source/target,
-                // so a duplicate pair would collide even with a unique edge id.
-                setEdges((eds) => {
-                    if (
-                        eds.some(
-                            (e) =>
-                                e.source === connection.source &&
-                                e.target === connection.target
-                        )
-                    ) {
-                        return eds;
-                    }
-                    return [
-                        ...eds,
-                        {
-                            id: uid("edge"),
-                            source: connection.source!,
-                            target: connection.target!,
-                            type: "connector",
-                        },
-                    ];
-                });
+                // addEdge() returns same ref on duplicate — skip snapshot on no-op.
+                const newEdge: Edge = {
+                    id: uid("edge"),
+                    source: connection.source,
+                    target: connection.target,
+                    type: "connector",
+                };
+                const next = addEdge(newEdge, currentEdges);
+                if (next === currentEdges) return;
+                setEdges(next);
                 snapshot();
             }
             // Block transition→transition connections (do nothing)
         },
-        [nodes, addNode, setEdges, snapshot]
+        [addNode, setEdges, snapshot]
     );
 
     // --- Drag & drop from palette ---
@@ -170,9 +158,9 @@ function EditorCanvasInner() {
                 y: e.clientY,
             });
 
-            const existingLabels = nodes.map(
-                (n) => (n.data as unknown as StateNodeData).label
-            );
+            const existingLabels = useEditorStore
+                .getState()
+                .nodes.map((n) => (n.data as unknown as StateNodeData).label);
 
             if (type === "subworkflow") {
                 addNode({
@@ -200,7 +188,7 @@ function EditorCanvasInner() {
                 });
             }
         },
-        [screenToFlowPosition, addNode, nodes]
+        [screenToFlowPosition, addNode]
     );
 
     // --- Selection ---
@@ -269,17 +257,15 @@ function EditorCanvasInner() {
     const onReconnect: OnReconnect = useCallback(
         (oldEdge: Edge, newConnection: Connection) => {
             edgeReconnectSuccessful.current = true;
-            setEdges((eds) => {
-                // Reject reconnect that would duplicate an existing (source, target) pair
-                const wouldDuplicate = eds.some(
-                    (e) =>
-                        e.id !== oldEdge.id &&
-                        e.source === newConnection.source &&
-                        e.target === newConnection.target
-                );
-                if (wouldDuplicate) return eds;
-                return reconnectEdge(oldEdge, newConnection, eds);
-            });
+            const currentEdges = useEditorStore.getState().edges;
+            const wouldDuplicate = currentEdges.some(
+                (e) =>
+                    e.id !== oldEdge.id &&
+                    e.source === newConnection.source &&
+                    e.target === newConnection.target
+            );
+            if (wouldDuplicate) return;
+            setEdges((eds) => reconnectEdge(oldEdge, newConnection, eds));
             snapshot();
         },
         [setEdges, snapshot]
@@ -297,62 +283,26 @@ function EditorCanvasInner() {
         [setEdges, snapshot]
     );
 
-    // --- Connect start/end: drop on empty space creates a new state ---
-    const onConnectStart = useCallback(
-        (
-            _event: MouseEvent | TouchEvent,
-            params: { nodeId: string | null; handleType: string | null }
-        ) => {
-            if (params.nodeId && params.handleType) {
-                connectingFrom.current = {
-                    nodeId: params.nodeId,
-                    handleType: params.handleType,
-                };
-            }
-        },
-        []
-    );
+    // Drop on empty pane → auto-create.
+    const onConnectEnd: OnConnectEnd = useCallback(
+        (_event, connectionState) => {
+            const { fromNode, fromHandle, toNode, to } = connectionState;
+            // Drops onto an existing node are handled by onConnect; bail here.
+            if (!fromNode || !fromHandle || toNode || !to) return;
 
-    const onConnectEnd = useCallback(
-        (event: MouseEvent | TouchEvent) => {
-            if (!connectingFrom.current) return;
-
-            const target = (event as MouseEvent).target as HTMLElement;
-            // Only create a node if the drop landed on empty pane — not on an
-            // existing node or a connection handle. In React Flow v12 nodes are
-            // descendants of `.react-flow__pane`, so `closest(".react-flow__pane")`
-            // alone is not enough; we must also reject node/handle drops.
-            const droppedOnNode = !!target.closest(".react-flow__node");
-            const droppedOnHandle = !!target.closest(".react-flow__handle");
-            const droppedOnPane = !!target.closest(".react-flow__pane");
-            if (droppedOnNode || droppedOnHandle || !droppedOnPane) {
-                connectingFrom.current = null;
-                return;
-            }
-
-            const clientX =
-                "clientX" in event ? event.clientX : event.changedTouches[0].clientX;
-            const clientY =
-                "clientY" in event ? event.clientY : event.changedTouches[0].clientY;
-
-            const position = screenToFlowPosition({ x: clientX, y: clientY });
-            const fromNode = nodes.find((n) => n.id === connectingFrom.current!.nodeId);
-            if (!fromNode) {
-                connectingFrom.current = null;
-                return;
-            }
-            const isSource = connectingFrom.current.handleType === "source";
+            const isSource = fromHandle.type === "source";
+            const currentNodes = useEditorStore.getState().nodes;
 
             if (fromNode.type === "transition") {
-                // Dragging from a transition node → create a new state node + 1 edge
+                // Transition → empty pane: create a state + 1 edge
                 const newStateId = uid("state");
-                const existingStateLabels = nodes
+                const existingStateLabels = currentNodes
                     .filter((n) => n.type === "state")
                     .map((n) => (n.data as unknown as StateNodeData).label);
                 addNode({
                     id: newStateId,
                     type: "state",
-                    position,
+                    position: to,
                     data: {
                         label: uniqueName("state", existingStateLabels),
                         isInitial: false,
@@ -370,18 +320,18 @@ function EditorCanvasInner() {
                     },
                 ]);
             } else {
-                // Dragging from a state node → create transition node + new state + edges
+                // State/sub-workflow → empty pane: create a transition + state + 2 edges
                 const newStateId = uid("state");
                 const transitionId = uid("transition");
-                const existingStateLabels = nodes
+                const existingStateLabels = currentNodes
                     .filter((n) => n.type === "state")
                     .map((n) => (n.data as unknown as StateNodeData).label);
-                const existingTransitionLabels = nodes
+                const existingTransitionLabels = currentNodes
                     .filter((n) => n.type === "transition")
                     .map((n) => (n.data as unknown as TransitionNodeData).label);
 
-                const midX = (fromNode.position.x + position.x) / 2;
-                const midY = (fromNode.position.y + position.y) / 2;
+                const midX = (fromNode.position.x + to.x) / 2;
+                const midY = (fromNode.position.y + to.y) / 2;
 
                 addNode({
                     id: transitionId,
@@ -397,7 +347,7 @@ function EditorCanvasInner() {
                 addNode({
                     id: newStateId,
                     type: "state",
-                    position,
+                    position: to,
                     data: {
                         label: uniqueName("state", existingStateLabels),
                         isInitial: false,
@@ -425,9 +375,8 @@ function EditorCanvasInner() {
                 ]);
             }
             snapshot();
-            connectingFrom.current = null;
         },
-        [screenToFlowPosition, addNode, setEdges, snapshot, nodes]
+        [addNode, setEdges, snapshot]
     );
 
     return (
@@ -442,7 +391,6 @@ function EditorCanvasInner() {
                 onNodesChange={simActive ? undefined : onNodesChange}
                 onEdgesChange={simActive ? undefined : onEdgesChange}
                 onConnect={simActive ? undefined : onConnect}
-                onConnectStart={simActive ? undefined : onConnectStart}
                 onConnectEnd={simActive ? undefined : onConnectEnd}
                 onReconnect={simActive ? undefined : onReconnect}
                 onReconnectStart={simActive ? undefined : onReconnectStart}

@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * Animated dashed line connector between landing page sections.
  * Mimics the editor's transition edges.

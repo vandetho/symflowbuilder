@@ -1,6 +1,25 @@
 import { prisma, type Workflow } from "@symflowbuilder/db";
+import { auth } from "@/auth";
+import type { AccessLevel } from "@/types/collaboration";
 
-export type AccessLevel = "none" | "viewer" | "editor" | "owner";
+export type { AccessLevel };
+
+/**
+ * Returns `{ userId }` for an authenticated request, or a 401 Response that
+ * the route handler should return as-is.
+ *
+ * Usage:
+ *   const result = await requireUserId();
+ *   if (result instanceof Response) return result;
+ *   const { userId } = result;
+ */
+export async function requireUserId(): Promise<{ userId: string } | Response> {
+    const session = await auth();
+    if (!session?.user?.id) {
+        return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    return { userId: session.user.id };
+}
 
 interface WorkflowAccess {
     access: AccessLevel;

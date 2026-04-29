@@ -1,6 +1,5 @@
-import { auth } from "@/auth";
 import { prisma } from "@symflowbuilder/db";
-import { getWorkflowAccess, isOwner } from "@/lib/workflow-auth";
+import { getWorkflowAccess, isOwner, requireUserId } from "@/lib/workflow-auth";
 import type { NextRequest } from "next/server";
 import { randomBytes } from "crypto";
 
@@ -9,13 +8,11 @@ export async function POST(
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const session = await auth();
-    if (!session?.user?.id) {
-        return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireUserId();
+    if (auth instanceof Response) return auth;
 
     try {
-        const { access } = await getWorkflowAccess(id, session.user.id);
+        const { access } = await getWorkflowAccess(id, auth.userId);
 
         if (!isOwner(access)) {
             return Response.json({ error: "Not found" }, { status: 404 });
@@ -38,13 +35,11 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const session = await auth();
-    if (!session?.user?.id) {
-        return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireUserId();
+    if (auth instanceof Response) return auth;
 
     try {
-        const { access } = await getWorkflowAccess(id, session.user.id);
+        const { access } = await getWorkflowAccess(id, auth.userId);
 
         if (!isOwner(access)) {
             return Response.json({ error: "Not found" }, { status: 404 });

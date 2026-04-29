@@ -27,6 +27,27 @@ export function PropertiesPanel() {
         ? nodes.find((n) => n.id === selectedNodeId)
         : null;
 
+    // Derive transition's connected from/to place labels once per change.
+    // Hoisted above the early return so hooks rules are satisfied.
+    const { fromLabels, toLabels } = useMemo(() => {
+        if (selectedNode?.type !== "transition") {
+            return { fromLabels: [] as string[], toLabels: [] as string[] };
+        }
+        const from = new Set<string>();
+        const to = new Set<string>();
+        for (const e of edges) {
+            if (e.target === selectedNode.id) {
+                const n = nodes.find((x) => x.id === e.source);
+                if (n) from.add((n.data as unknown as StateNodeData).label);
+            }
+            if (e.source === selectedNode.id) {
+                const n = nodes.find((x) => x.id === e.target);
+                if (n) to.add((n.data as unknown as StateNodeData).label);
+            }
+        }
+        return { fromLabels: [...from], toLabels: [...to] };
+    }, [edges, nodes, selectedNode]);
+
     if (!selectedNode) return null;
 
     if (selectedNode.type === "state") {
@@ -65,7 +86,7 @@ export function PropertiesPanel() {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <label className="flex items-center gap-2 cursor-pointer">
+                        <Label className="flex items-center gap-2 cursor-pointer font-normal">
                             <Checkbox
                                 checked={data.isInitial}
                                 onCheckedChange={(checked) =>
@@ -74,11 +95,9 @@ export function PropertiesPanel() {
                                     })
                                 }
                             />
-                            <span className="text-xs text-[var(--text-secondary)]">
-                                Initial place
-                            </span>
-                        </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
+                            Initial place
+                        </Label>
+                        <Label className="flex items-center gap-2 cursor-pointer font-normal">
                             <Checkbox
                                 checked={data.isFinal}
                                 onCheckedChange={(checked) =>
@@ -87,10 +106,8 @@ export function PropertiesPanel() {
                                     })
                                 }
                             />
-                            <span className="text-xs text-[var(--text-secondary)]">
-                                Final place
-                            </span>
-                        </label>
+                            Final place
+                        </Label>
                     </div>
 
                     <Separator />
@@ -173,26 +190,6 @@ export function PropertiesPanel() {
 
     if (selectedNode?.type === "transition") {
         const data = selectedNode.data as unknown as TransitionNodeData;
-
-        // Derive from/to from connected edges (deduplicated)
-        const fromLabels = [
-            ...new Set(
-                edges
-                    .filter((e) => e.target === selectedNode.id)
-                    .map((e) => nodes.find((n) => n.id === e.source))
-                    .filter(Boolean)
-                    .map((n) => (n!.data as unknown as StateNodeData).label)
-            ),
-        ];
-        const toLabels = [
-            ...new Set(
-                edges
-                    .filter((e) => e.source === selectedNode.id)
-                    .map((e) => nodes.find((n) => n.id === e.target))
-                    .filter(Boolean)
-                    .map((n) => (n!.data as unknown as StateNodeData).label)
-            ),
-        ];
 
         return (
             <div className="absolute top-16 right-4 bottom-4 z-20 w-[300px] bg-[#12121f] border border-[var(--glass-border)] rounded-[18px] flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">

@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback } from "react";
 import {
     getBezierPath,
     EdgeLabelRenderer,
@@ -10,6 +10,8 @@ import {
 import type { TransitionEdgeData } from "symflow/react-flow";
 import { useEditorStore } from "@/stores/editor";
 import { useSimulatorStore } from "@/stores/simulator";
+
+type EdgePattern = "AND" | "FORK" | "AND+FORK" | null;
 
 export const TransitionEdge = memo(
     ({
@@ -24,7 +26,6 @@ export const TransitionEdge = memo(
         selected,
     }: EdgeProps & { data?: TransitionEdgeData }) => {
         const setSelectedEdge = useEditorStore((s) => s.setSelectedEdge);
-        const edges = useEditorStore((s) => s.edges);
         const { setEdges } = useReactFlow();
         const simActive = useSimulatorStore((s) => s.active);
         const isEnabled = useSimulatorStore((s) =>
@@ -32,26 +33,29 @@ export const TransitionEdge = memo(
         );
         const simDimmed = simActive && !isEnabled;
 
-        // Detect AND pattern: multiple edges share the same transition name
-        const edgePattern = useMemo(() => {
+        // Narrow selector: returns the AND/FORK pattern string (or null).
+        // Returning a scalar lets Zustand skip re-renders when unrelated edges mutate.
+        const edgePattern = useEditorStore((s): EdgePattern => {
             if (!data?.label) return null;
-            const siblings = edges.filter(
-                (e) =>
-                    (e.data as unknown as TransitionEdgeData | undefined)?.label ===
-                    data.label
-            );
-            if (siblings.length <= 1) return null;
-
-            const sources = new Set(siblings.map((e) => e.source));
-            const targets = new Set(siblings.map((e) => e.target));
-            const multiFrom = sources.size > 1;
-            const multiTo = targets.size > 1;
-
+            let sources: Set<string> | null = null;
+            let targets: Set<string> | null = null;
+            let count = 0;
+            for (const e of s.edges) {
+                const label = (e.data as unknown as TransitionEdgeData | undefined)
+                    ?.label;
+                if (label !== data.label) continue;
+                count++;
+                (sources ??= new Set()).add(e.source);
+                (targets ??= new Set()).add(e.target);
+            }
+            if (count <= 1) return null;
+            const multiFrom = (sources?.size ?? 0) > 1;
+            const multiTo = (targets?.size ?? 0) > 1;
             if (multiFrom && multiTo) return "AND+FORK";
             if (multiFrom) return "AND";
             if (multiTo) return "FORK";
             return null;
-        }, [data?.label, edges]);
+        });
 
         const handleLabelClick = useCallback(
             (e: React.MouseEvent) => {

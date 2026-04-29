@@ -119,8 +119,8 @@ stores/
   editor.ts                    # Zustand store (nodes, edges, undo/redo)
   simulator.ts                 # Simulator state (marking, history, auto-play)
 lib/
-  collab.ts                    # Optional collab module loader
-  schemas/                     # Zod validation schemas
+  workflow-auth.ts             # requireUserId / getWorkflowAccess helpers
+  utils.ts                     # cn(), uid(), uniqueName()
 packages/
   db/                          # Prisma schema + client (@symflowbuilder/db)
 
@@ -128,8 +128,6 @@ packages/
 # See: https://github.com/vandetho/symflow
 hooks/
   use-autosave.ts              # Debounced cloud/local save
-  use-local-draft.ts           # localStorage persistence
-  use-workflow.ts              # Workflow CRUD operations
 ```
 
 ## Authentication Model

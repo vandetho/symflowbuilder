@@ -1,32 +1,25 @@
-import { auth } from "@/auth";
 import { prisma } from "@symflowbuilder/db";
-import { getWorkflowAccess, isOwner } from "@/lib/workflow-auth";
+import { getWorkflowAccess, isOwner, requireUserId } from "@/lib/workflow-auth";
+import { updateCollaboratorRoleSchema } from "@/lib/schemas/collaborator";
 import type { NextRequest } from "next/server";
-import { z } from "zod";
-
-const updateRoleSchema = z.object({
-    role: z.enum(["viewer", "editor"]),
-});
 
 export async function PUT(
     request: NextRequest,
     { params }: { params: Promise<{ id: string; collaboratorId: string }> }
 ) {
     const { id, collaboratorId } = await params;
-    const session = await auth();
-    if (!session?.user?.id) {
-        return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireUserId();
+    if (auth instanceof Response) return auth;
 
     try {
-        const { access } = await getWorkflowAccess(id, session.user.id);
+        const { access } = await getWorkflowAccess(id, auth.userId);
 
         if (!isOwner(access)) {
             return Response.json({ error: "Not found" }, { status: 404 });
         }
 
         const body = await request.json();
-        const parsed = updateRoleSchema.safeParse(body);
+        const parsed = updateCollaboratorRoleSchema.safeParse(body);
         if (!parsed.success) {
             return Response.json(
                 { error: "Invalid request", details: parsed.error.flatten() },
@@ -55,13 +48,11 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string; collaboratorId: string }> }
 ) {
     const { id, collaboratorId } = await params;
-    const session = await auth();
-    if (!session?.user?.id) {
-        return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireUserId();
+    if (auth instanceof Response) return auth;
 
     try {
-        const { access } = await getWorkflowAccess(id, session.user.id);
+        const { access } = await getWorkflowAccess(id, auth.userId);
 
         if (!isOwner(access)) {
             return Response.json({ error: "Not found" }, { status: 404 });
