@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.36.1](https://github.com/vandetho/symflowbuilder/compare/v1.36.0...v1.36.1) (2026-04-29)
+
+
+### Bug Fixes
+
+* **editor:** toolbar dropdown sizing and connect/reconnect dedupe ([#96](https://github.com/vandetho/symflowbuilder/issues/96)) ([ba23d9c](https://github.com/vandetho/symflowbuilder/commit/ba23d9cfed1f0ba76df3673cdb7f4b05dab87dd1))
+
 ## [1.36.0](https://github.com/vandetho/symflowbuilder/compare/v1.35.0...v1.36.0) (2026-04-29)
 
 
