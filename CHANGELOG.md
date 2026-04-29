@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.36.0](https://github.com/vandetho/symflowbuilder/compare/v1.35.0...v1.36.0) (2026-04-29)
+
+
+### Features
+
+* add markdown-ready Mermaid copy and iframe embed for shared workflows ([9560fbf](https://github.com/vandetho/symflowbuilder/commit/9560fbff32d5a914e63ad3efb9a5a2089f0fa567))
+* markdown-ready Mermaid copy + iframe embed for shared workflows ([3f4cfb9](https://github.com/vandetho/symflowbuilder/commit/3f4cfb9bb9300a3d49bcbfec01e5a7c2b632af83))
+
 ## [1.35.0](https://github.com/vandetho/symflowbuilder/compare/v1.34.0...v1.35.0) (2026-04-24)
 
 
