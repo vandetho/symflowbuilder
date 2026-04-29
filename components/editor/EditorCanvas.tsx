@@ -123,16 +123,29 @@ function EditorCanvasInner() {
                 (sourceIsPlace && targetNode.type === "transition") ||
                 (sourceNode.type === "transition" && targetIsPlace)
             ) {
-                // State→Transition or Transition→State: add a single connector edge
-                setEdges((eds) => [
-                    ...eds,
-                    {
-                        id: uid("edge"),
-                        source: connection.source!,
-                        target: connection.target!,
-                        type: "connector",
-                    },
-                ]);
+                // State→Transition or Transition→State: add a single connector edge.
+                // Dedupe on (source, target) — React Flow keys edges by source/target,
+                // so a duplicate pair would collide even with a unique edge id.
+                setEdges((eds) => {
+                    if (
+                        eds.some(
+                            (e) =>
+                                e.source === connection.source &&
+                                e.target === connection.target
+                        )
+                    ) {
+                        return eds;
+                    }
+                    return [
+                        ...eds,
+                        {
+                            id: uid("edge"),
+                            source: connection.source!,
+                            target: connection.target!,
+                            type: "connector",
+                        },
+                    ];
+                });
                 snapshot();
             }
             // Block transition→transition connections (do nothing)
@@ -256,7 +269,17 @@ function EditorCanvasInner() {
     const onReconnect: OnReconnect = useCallback(
         (oldEdge: Edge, newConnection: Connection) => {
             edgeReconnectSuccessful.current = true;
-            setEdges((eds) => reconnectEdge(oldEdge, newConnection, eds));
+            setEdges((eds) => {
+                // Reject reconnect that would duplicate an existing (source, target) pair
+                const wouldDuplicate = eds.some(
+                    (e) =>
+                        e.id !== oldEdge.id &&
+                        e.source === newConnection.source &&
+                        e.target === newConnection.target
+                );
+                if (wouldDuplicate) return eds;
+                return reconnectEdge(oldEdge, newConnection, eds);
+            });
             snapshot();
         },
         [setEdges, snapshot]
@@ -295,9 +318,14 @@ function EditorCanvasInner() {
             if (!connectingFrom.current) return;
 
             const target = (event as MouseEvent).target as HTMLElement;
-            // Only create node if dropped on the pane (not on another node/handle)
-            const isPane = target.closest(".react-flow__pane");
-            if (!isPane) {
+            // Only create a node if the drop landed on empty pane — not on an
+            // existing node or a connection handle. In React Flow v12 nodes are
+            // descendants of `.react-flow__pane`, so `closest(".react-flow__pane")`
+            // alone is not enough; we must also reject node/handle drops.
+            const droppedOnNode = !!target.closest(".react-flow__node");
+            const droppedOnHandle = !!target.closest(".react-flow__handle");
+            const droppedOnPane = !!target.closest(".react-flow__pane");
+            if (droppedOnNode || droppedOnHandle || !droppedOnPane) {
                 connectingFrom.current = null;
                 return;
             }
@@ -309,9 +337,13 @@ function EditorCanvasInner() {
 
             const position = screenToFlowPosition({ x: clientX, y: clientY });
             const fromNode = nodes.find((n) => n.id === connectingFrom.current!.nodeId);
+            if (!fromNode) {
+                connectingFrom.current = null;
+                return;
+            }
             const isSource = connectingFrom.current.handleType === "source";
 
-            if (fromNode?.type === "transition") {
+            if (fromNode.type === "transition") {
                 // Dragging from a transition node → create a new state node + 1 edge
                 const newStateId = uid("state");
                 const existingStateLabels = nodes
@@ -348,8 +380,8 @@ function EditorCanvasInner() {
                     .filter((n) => n.type === "transition")
                     .map((n) => (n.data as unknown as TransitionNodeData).label);
 
-                const midX = (fromNode!.position.x + position.x) / 2;
-                const midY = (fromNode!.position.y + position.y) / 2;
+                const midX = (fromNode.position.x + position.x) / 2;
+                const midY = (fromNode.position.y + position.y) / 2;
 
                 addNode({
                     id: transitionId,
@@ -374,8 +406,8 @@ function EditorCanvasInner() {
                     } satisfies StateNodeData,
                 });
 
-                const sourceId = isSource ? fromNode!.id : newStateId;
-                const targetId = isSource ? newStateId : fromNode!.id;
+                const sourceId = isSource ? fromNode.id : newStateId;
+                const targetId = isSource ? newStateId : fromNode.id;
                 setEdges((eds) => [
                     ...eds,
                     {

@@ -457,7 +457,7 @@ export function EditorToolbar() {
                             variant="ghost"
                             size="sm"
                             onClick={handleImportFile}
-                            className="rounded-r-none border-r-0"
+                            className="rounded-r-none border-r-0!"
                         >
                             <Upload className="w-3.5 h-3.5" />
                             Import
@@ -465,7 +465,7 @@ export function EditorToolbar() {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="rounded-l-none px-1.5 h-full"
+                            className="rounded-l-none px-1.5"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setOpenDropdown(
@@ -483,25 +483,25 @@ export function EditorToolbar() {
                             </svg>
                         </Button>
                         {openDropdown === "import" && (
-                            <div className="absolute top-full left-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[180px] z-50">
+                            <div className="absolute top-full right-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-50">
                                 <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
                                     onClick={() => {
                                         setOpenDropdown(null);
                                         handleImportFile();
                                     }}
                                 >
-                                    <Upload className="w-3.5 h-3.5" />
+                                    <Upload className="w-3.5 h-3.5 shrink-0" />
                                     From file (.yaml, .json)
                                 </button>
                                 <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
                                     onClick={() => {
                                         setOpenDropdown(null);
                                         setShowImportUrl(true);
                                     }}
                                 >
-                                    <Link2 className="w-3.5 h-3.5" />
+                                    <Link2 className="w-3.5 h-3.5 shrink-0" />
                                     From URL
                                 </button>
                             </div>
@@ -521,7 +521,7 @@ export function EditorToolbar() {
                         <Button
                             variant="default"
                             size="sm"
-                            className="rounded-l-none border-l border-white/20 px-1.5 h-full"
+                            className="rounded-l-none border-l border-white/20 px-1.5"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setOpenDropdown(
@@ -539,65 +539,65 @@ export function EditorToolbar() {
                             </svg>
                         </Button>
                         {openDropdown === "export" && (
-                            <div className="absolute top-full left-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[140px] z-50">
+                            <div className="absolute top-full right-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-50">
                                 <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
                                     onClick={() => {
                                         setOpenDropdown(null);
                                         doExport("yaml");
                                     }}
                                 >
-                                    <FileDown className="w-3.5 h-3.5" />
+                                    <FileDown className="w-3.5 h-3.5 shrink-0" />
                                     YAML
                                 </button>
                                 <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
                                     onClick={() => {
                                         setOpenDropdown(null);
                                         doExport("json");
                                     }}
                                 >
-                                    <FileJson className="w-3.5 h-3.5" />
+                                    <FileJson className="w-3.5 h-3.5 shrink-0" />
                                     JSON
                                 </button>
                                 <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
                                     onClick={() => {
                                         setOpenDropdown(null);
                                         doExport("typescript");
                                     }}
                                 >
-                                    <FileCode className="w-3.5 h-3.5" />
+                                    <FileCode className="w-3.5 h-3.5 shrink-0" />
                                     TypeScript
                                 </button>
                                 <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
                                     onClick={() => {
                                         setOpenDropdown(null);
                                         doExport("mermaid");
                                     }}
                                 >
-                                    <GitBranch className="w-3.5 h-3.5" />
+                                    <GitBranch className="w-3.5 h-3.5 shrink-0" />
                                     Mermaid
                                 </button>
                                 <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
                                     onClick={() => {
                                         setOpenDropdown(null);
                                         doExport("dot");
                                     }}
                                 >
-                                    <CircleDot className="w-3.5 h-3.5" />
+                                    <CircleDot className="w-3.5 h-3.5 shrink-0" />
                                     DOT (Graphviz)
                                 </button>
                                 <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
                                     onClick={() => {
                                         setOpenDropdown(null);
                                         doExport("php");
                                     }}
                                 >
-                                    <Gem className="w-3.5 h-3.5" />
+                                    <Gem className="w-3.5 h-3.5 shrink-0" />
                                     PHP (Laravel)
                                 </button>
                             </div>
