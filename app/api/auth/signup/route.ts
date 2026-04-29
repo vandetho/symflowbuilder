@@ -1,12 +1,6 @@
 import { prisma } from "@symflowbuilder/db";
 import bcrypt from "bcryptjs";
-import { z } from "zod";
-
-const signUpSchema = z.object({
-    name: z.string().min(1, "Name is required"),
-    email: z.string().email("Invalid email"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-});
+import { signUpSchema } from "@/lib/schemas/auth";
 
 export async function POST(req: Request) {
     try {

@@ -32,6 +32,24 @@ import type { AccessLevel } from "@/types/collaboration";
 import type { SubWorkflowNodeData } from "@/types/subworkflow";
 import { uid, uniqueName } from "@/lib/utils";
 
+function shallowEqualPatch<T extends object>(
+    base: T | undefined,
+    patch: Partial<T>
+): boolean {
+    if (!base) return false;
+    for (const key of Object.keys(patch) as (keyof T)[]) {
+        if (base[key] !== patch[key]) return false;
+    }
+    return true;
+}
+
+function cloneSnapshot(nodes: Node[], edges: Edge[]): Snapshot {
+    return {
+        nodes: nodes.map((n) => ({ ...n, data: { ...n.data } })),
+        edges: edges.map((e) => ({ ...e, data: e.data ? { ...e.data } : e.data })),
+    };
+}
+
 interface EditorStore {
     nodes: Node[];
     edges: Edge[];
@@ -151,36 +169,59 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
     },
 
     updateNodeData: (id, data) => {
-        set((state) => ({
-            nodes: state.nodes.map((n) =>
-                n.id === id ? { ...n, data: { ...n.data, ...data } } : n
-            ),
-        }));
+        set((state) => {
+            let mutated = false;
+            const nextNodes = state.nodes.map((n) => {
+                if (n.id !== id) return n;
+                if (shallowEqualPatch(n.data, data)) return n;
+                mutated = true;
+                return { ...n, data: { ...n.data, ...data } };
+            });
+            return mutated ? { nodes: nextNodes } : state;
+        });
     },
 
     updateEdgeData: (id, data) => {
-        set((state) => ({
-            edges: state.edges.map((e) =>
-                e.id === id ? { ...e, data: { ...e.data, ...data } } : e
-            ),
-        }));
+        set((state) => {
+            let mutated = false;
+            const nextEdges = state.edges.map((e) => {
+                if (e.id !== id) return e;
+                if (shallowEqualPatch(e.data, data)) return e;
+                mutated = true;
+                return { ...e, data: { ...e.data, ...data } };
+            });
+            return mutated ? { edges: nextEdges } : state;
+        });
     },
 
-    setSelectedNode: (id) => set({ selectedNodeId: id, selectedEdgeId: null }),
-    setSelectedEdge: (id) => set({ selectedEdgeId: id, selectedNodeId: null }),
+    setSelectedNode: (id) =>
+        set((state) =>
+            state.selectedNodeId === id && state.selectedEdgeId === null
+                ? state
+                : { selectedNodeId: id, selectedEdgeId: null }
+        ),
+    setSelectedEdge: (id) =>
+        set((state) =>
+            state.selectedEdgeId === id && state.selectedNodeId === null
+                ? state
+                : { selectedEdgeId: id, selectedNodeId: null }
+        ),
 
     updateMeta: (meta) => {
-        set((state) => ({
-            workflowMeta: { ...state.workflowMeta, ...meta },
-        }));
+        set((state) => {
+            if (shallowEqualPatch(state.workflowMeta, meta)) return state;
+            return { workflowMeta: { ...state.workflowMeta, ...meta } };
+        });
     },
 
+    // Deep-copy nodes/edges so a later in-place mutation by React Flow (e.g. on
+    // selection/dragging flags) cannot corrupt the past/future entry.
     snapshot: () => {
         set((state) => ({
             history: {
                 past: [
                     ...state.history.past.slice(-49),
-                    { nodes: state.nodes, edges: state.edges },
+                    cloneSnapshot(state.nodes, state.edges),
                 ],
                 future: [],
             },
@@ -319,14 +360,16 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
     },
 
     setNodes: (updater) => {
-        set((state) => ({
-            nodes: typeof updater === "function" ? updater(state.nodes) : updater,
-        }));
+        set((state) => {
+            const next = typeof updater === "function" ? updater(state.nodes) : updater;
+            return next === state.nodes ? state : { nodes: next };
+        });
     },
 
     setEdges: (updater) => {
-        set((state) => ({
-            edges: typeof updater === "function" ? updater(state.edges) : updater,
-        }));
+        set((state) => {
+            const next = typeof updater === "function" ? updater(state.edges) : updater;
+            return next === state.edges ? state : { edges: next };
+        });
     },
 }));

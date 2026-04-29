@@ -21,6 +21,8 @@ import {
     GitBranch,
     CircleDot,
     Gem,
+    ChevronDown,
+    type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
@@ -32,6 +34,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectItem } from "@/components/ui/select";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Logo } from "@/components/ui/logo";
+import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import {
     Dialog,
     DialogContent,
@@ -251,15 +254,55 @@ function SignInButton() {
 
 type ExportFormat = "yaml" | "json" | "typescript" | "mermaid" | "dot" | "php";
 
-const FORMAT_CONFIG: Record<ExportFormat, { label: string; ext: string; mime: string }> =
-    {
-        yaml: { label: "YAML", ext: "yaml", mime: "text/yaml" },
-        json: { label: "JSON", ext: "json", mime: "application/json" },
-        typescript: { label: "TypeScript", ext: "ts", mime: "text/typescript" },
-        mermaid: { label: "Mermaid", ext: "mmd", mime: "text/plain" },
-        dot: { label: "DOT", ext: "dot", mime: "text/plain" },
-        php: { label: "PHP (Laravel)", ext: "php", mime: "text/x-php" },
-    };
+const FORMAT_CONFIG: Record<
+    ExportFormat,
+    { label: string; ext: string; mime: string; icon: LucideIcon; menuLabel: string }
+> = {
+    yaml: {
+        label: "YAML",
+        ext: "yaml",
+        mime: "text/yaml",
+        icon: FileDown,
+        menuLabel: "YAML",
+    },
+    json: {
+        label: "JSON",
+        ext: "json",
+        mime: "application/json",
+        icon: FileJson,
+        menuLabel: "JSON",
+    },
+    typescript: {
+        label: "TypeScript",
+        ext: "ts",
+        mime: "text/typescript",
+        icon: FileCode,
+        menuLabel: "TypeScript",
+    },
+    mermaid: {
+        label: "Mermaid",
+        ext: "mmd",
+        mime: "text/plain",
+        icon: GitBranch,
+        menuLabel: "Mermaid",
+    },
+    dot: {
+        label: "DOT",
+        ext: "dot",
+        mime: "text/plain",
+        icon: CircleDot,
+        menuLabel: "DOT (Graphviz)",
+    },
+    php: {
+        label: "PHP (Laravel)",
+        ext: "php",
+        mime: "text/x-php",
+        icon: Gem,
+        menuLabel: "PHP (Laravel)",
+    },
+};
+
+const EXPORT_FORMATS = Object.keys(FORMAT_CONFIG) as ExportFormat[];
 
 export function EditorToolbar() {
     const {
@@ -472,39 +515,31 @@ export function EditorToolbar() {
                                     openDropdown === "import" ? null : "import"
                                 );
                             }}
+                            aria-label="Import options"
                         >
-                            <svg
-                                width="8"
-                                height="5"
-                                viewBox="0 0 8 5"
-                                fill="currentColor"
-                            >
-                                <path d="M0 0l4 5 4-5z" />
-                            </svg>
+                            <ChevronDown className="w-3 h-3" />
                         </Button>
                         {openDropdown === "import" && (
-                            <div className="absolute top-full right-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-50">
-                                <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                            <DropdownMenu>
+                                <DropdownMenuItem
+                                    icon={<Upload className="w-3.5 h-3.5" />}
                                     onClick={() => {
                                         setOpenDropdown(null);
                                         handleImportFile();
                                     }}
                                 >
-                                    <Upload className="w-3.5 h-3.5 shrink-0" />
                                     From file (.yaml, .json)
-                                </button>
-                                <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    icon={<Link2 className="w-3.5 h-3.5" />}
                                     onClick={() => {
                                         setOpenDropdown(null);
                                         setShowImportUrl(true);
                                     }}
                                 >
-                                    <Link2 className="w-3.5 h-3.5 shrink-0" />
                                     From URL
-                                </button>
-                            </div>
+                                </DropdownMenuItem>
+                            </DropdownMenu>
                         )}
                     </div>
 
@@ -528,79 +563,29 @@ export function EditorToolbar() {
                                     openDropdown === "export" ? null : "export"
                                 );
                             }}
+                            aria-label="Export options"
                         >
-                            <svg
-                                width="8"
-                                height="5"
-                                viewBox="0 0 8 5"
-                                fill="currentColor"
-                            >
-                                <path d="M0 0l4 5 4-5z" />
-                            </svg>
+                            <ChevronDown className="w-3 h-3" />
                         </Button>
                         {openDropdown === "export" && (
-                            <div className="absolute top-full right-0 mt-1 glass-strong border border-[var(--glass-border)] rounded-[10px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-50">
-                                <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                    onClick={() => {
-                                        setOpenDropdown(null);
-                                        doExport("yaml");
-                                    }}
-                                >
-                                    <FileDown className="w-3.5 h-3.5 shrink-0" />
-                                    YAML
-                                </button>
-                                <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                    onClick={() => {
-                                        setOpenDropdown(null);
-                                        doExport("json");
-                                    }}
-                                >
-                                    <FileJson className="w-3.5 h-3.5 shrink-0" />
-                                    JSON
-                                </button>
-                                <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                    onClick={() => {
-                                        setOpenDropdown(null);
-                                        doExport("typescript");
-                                    }}
-                                >
-                                    <FileCode className="w-3.5 h-3.5 shrink-0" />
-                                    TypeScript
-                                </button>
-                                <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                    onClick={() => {
-                                        setOpenDropdown(null);
-                                        doExport("mermaid");
-                                    }}
-                                >
-                                    <GitBranch className="w-3.5 h-3.5 shrink-0" />
-                                    Mermaid
-                                </button>
-                                <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                    onClick={() => {
-                                        setOpenDropdown(null);
-                                        doExport("dot");
-                                    }}
-                                >
-                                    <CircleDot className="w-3.5 h-3.5 shrink-0" />
-                                    DOT (Graphviz)
-                                </button>
-                                <button
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs whitespace-nowrap text-[var(--text-secondary)] hover:bg-[var(--glass-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                    onClick={() => {
-                                        setOpenDropdown(null);
-                                        doExport("php");
-                                    }}
-                                >
-                                    <Gem className="w-3.5 h-3.5 shrink-0" />
-                                    PHP (Laravel)
-                                </button>
-                            </div>
+                            <DropdownMenu>
+                                {EXPORT_FORMATS.map((format) => {
+                                    const cfg = FORMAT_CONFIG[format];
+                                    const Icon = cfg.icon;
+                                    return (
+                                        <DropdownMenuItem
+                                            key={format}
+                                            icon={<Icon className="w-3.5 h-3.5" />}
+                                            onClick={() => {
+                                                setOpenDropdown(null);
+                                                doExport(format);
+                                            }}
+                                        >
+                                            {cfg.menuLabel}
+                                        </DropdownMenuItem>
+                                    );
+                                })}
+                            </DropdownMenu>
                         )}
                     </div>
 
@@ -791,16 +776,7 @@ export function EditorToolbar() {
                             </div>
                         </div>
                         <div className="flex items-center gap-1 px-4 pb-2.5 flex-wrap">
-                            {(
-                                [
-                                    "yaml",
-                                    "json",
-                                    "typescript",
-                                    "mermaid",
-                                    "dot",
-                                    "php",
-                                ] as ExportFormat[]
-                            ).map((f) => (
+                            {EXPORT_FORMATS.map((f) => (
                                 <button
                                     key={f}
                                     onClick={() => doExport(f)}

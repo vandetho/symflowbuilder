@@ -24,23 +24,27 @@ export const ConnectorEdge = memo(
         selected,
     }: EdgeProps) => {
         const simActive = useSimulatorStore((s) => s.active);
-        const nodes = useEditorStore((s) => s.nodes);
 
-        // Find the adjacent transition node to determine if enabled
-        const isEnabled = useSimulatorStore((s) => {
-            if (!s.active) return false;
-            const sourceNode = nodes.find((n) => n.id === source);
-            const targetNode = nodes.find((n) => n.id === target);
-            const transitionNode =
-                sourceNode?.type === "transition"
-                    ? sourceNode
-                    : targetNode?.type === "transition"
-                      ? targetNode
-                      : null;
-            if (!transitionNode) return false;
-            const label = (transitionNode.data as unknown as TransitionNodeData).label;
-            return s.enabledTransitions.some((t) => t.name === label);
+        // Narrow selector: returns just the adjacent transition's label (or null).
+        // A scalar return makes Zustand skip re-render when other nodes mutate.
+        const transitionLabel = useEditorStore((s) => {
+            const sourceNode = s.nodes.find((n) => n.id === source);
+            if (sourceNode?.type === "transition") {
+                return (sourceNode.data as unknown as TransitionNodeData).label;
+            }
+            const targetNode = s.nodes.find((n) => n.id === target);
+            if (targetNode?.type === "transition") {
+                return (targetNode.data as unknown as TransitionNodeData).label;
+            }
+            return null;
         });
+
+        const isEnabled = useSimulatorStore(
+            (s) =>
+                s.active &&
+                transitionLabel !== null &&
+                s.enabledTransitions.some((t) => t.name === transitionLabel)
+        );
 
         const simDimmed = simActive && !isEnabled;
 

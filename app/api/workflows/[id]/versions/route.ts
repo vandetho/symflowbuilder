@@ -1,6 +1,6 @@
-import { auth } from "@/auth";
 import { prisma } from "@symflowbuilder/db";
-import { getWorkflowAccess, canView, canEdit } from "@/lib/workflow-auth";
+import { getWorkflowAccess, canView, canEdit, requireUserId } from "@/lib/workflow-auth";
+import { createVersionSchema } from "@/lib/schemas/workflow";
 import type { NextRequest } from "next/server";
 
 export async function GET(
@@ -8,13 +8,11 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const session = await auth();
-    if (!session?.user?.id) {
-        return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireUserId();
+    if (auth instanceof Response) return auth;
 
     try {
-        const { access } = await getWorkflowAccess(id, session.user.id);
+        const { access } = await getWorkflowAccess(id, auth.userId);
 
         if (!canView(access)) {
             return Response.json({ error: "Not found" }, { status: 404 });
@@ -41,25 +39,31 @@ export async function POST(
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const session = await auth();
-    if (!session?.user?.id) {
-        return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireUserId();
+    if (auth instanceof Response) return auth;
 
     try {
-        const { access, workflow } = await getWorkflowAccess(id, session.user.id);
+        const { access, workflow } = await getWorkflowAccess(id, auth.userId);
 
         if (!canEdit(access) || !workflow) {
             return Response.json({ error: "Not found" }, { status: 404 });
         }
 
         const body = await request.json();
+        const parsed = createVersionSchema.safeParse(body);
+        if (!parsed.success) {
+            return Response.json(
+                { error: "Invalid request", details: parsed.error.flatten() },
+                { status: 400 }
+            );
+        }
+        const data = parsed.data;
         const version = await prisma.workflowVersion.create({
             data: {
                 workflowId: id,
-                graphJson: body.graphJson ?? workflow.graphJson,
-                yamlSnapshot: body.yamlSnapshot ?? workflow.yamlCache ?? "",
-                label: body.label,
+                graphJson: (data.graphJson ?? workflow.graphJson) as object,
+                yamlSnapshot: data.yamlSnapshot ?? workflow.yamlCache ?? "",
+                label: data.label,
             },
         });
 

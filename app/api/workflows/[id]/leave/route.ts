@@ -1,23 +1,21 @@
-import { auth } from "@/auth";
 import { prisma } from "@symflowbuilder/db";
 import type { NextRequest } from "next/server";
+import { requireUserId } from "@/lib/workflow-auth";
 
 export async function POST(
     _request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const session = await auth();
-    if (!session?.user?.id) {
-        return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireUserId();
+    if (auth instanceof Response) return auth;
 
     try {
         const collaborator = await prisma.workflowCollaborator.findUnique({
             where: {
                 workflowId_userId: {
                     workflowId: id,
-                    userId: session.user.id,
+                    userId: auth.userId,
                 },
             },
         });
