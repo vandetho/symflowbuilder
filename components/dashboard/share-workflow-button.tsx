@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Share2, Link2, Link2Off, Copy, Check } from "lucide-react";
+import { Share2, Link2, Link2Off, Copy, Check, Code2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,10 +25,14 @@ export function ShareWorkflowButton({
     const [currentShareId, setCurrentShareId] = useState(shareId);
     const [loading, setLoading] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [embedCopied, setEmbedCopied] = useState(false);
     const router = useRouter();
 
-    const shareUrl = currentShareId
-        ? `${typeof window !== "undefined" ? window.location.origin : ""}/w/${currentShareId}`
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const shareUrl = currentShareId ? `${origin}/w/${currentShareId}` : "";
+    const embedUrl = currentShareId ? `${origin}/embed/${currentShareId}` : "";
+    const embedSnippet = currentShareId
+        ? `<iframe src="${embedUrl}" width="100%" height="500" style="border:0;border-radius:14px" loading="lazy" title="SymFlowBuilder workflow"></iframe>`
         : "";
 
     const handleShare = async () => {
@@ -71,6 +75,13 @@ export function ShareWorkflowButton({
         setCopied(true);
         toast.success("Link copied");
         setTimeout(() => setCopied(false), 2000);
+    };
+
+    const handleCopyEmbed = () => {
+        navigator.clipboard.writeText(embedSnippet);
+        setEmbedCopied(true);
+        toast.success("Embed snippet copied");
+        setTimeout(() => setEmbedCopied(false), 2000);
     };
 
     return (
@@ -116,6 +127,35 @@ export function ShareWorkflowButton({
                                             <Copy className="w-3.5 h-3.5" />
                                         )}
                                     </Button>
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <div className="flex items-center gap-1.5 text-[10px] text-[var(--text-muted)]">
+                                        <Code2 className="w-3 h-3" />
+                                        Embed
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Input
+                                            value={embedSnippet}
+                                            readOnly
+                                            className="text-[10px] font-mono flex-1"
+                                        />
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={handleCopyEmbed}
+                                            className="shrink-0"
+                                        >
+                                            {embedCopied ? (
+                                                <Check className="w-3.5 h-3.5 text-[var(--success)]" />
+                                            ) : (
+                                                <Copy className="w-3.5 h-3.5" />
+                                            )}
+                                        </Button>
+                                    </div>
+                                    <p className="text-[10px] text-[var(--text-muted)]">
+                                        Drop into MDX, HTML, or any docs site that allows
+                                        iframes.
+                                    </p>
                                 </div>
                                 <div className="flex justify-between">
                                     <div className="flex items-center gap-1.5 text-[10px] text-[var(--success)]">

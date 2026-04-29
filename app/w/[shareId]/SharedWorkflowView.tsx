@@ -110,7 +110,11 @@ export function SharedWorkflowView({
     const exportLabel = exportFormat === "yaml" ? "YAML" : "Mermaid";
 
     const handleCopyExport = async () => {
-        await navigator.clipboard.writeText(exportOutput);
+        const text =
+            exportFormat === "mermaid"
+                ? `\`\`\`mermaid\n${exportOutput}\n\`\`\``
+                : exportOutput;
+        await navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };

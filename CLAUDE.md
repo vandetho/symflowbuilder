@@ -109,3 +109,12 @@ If a component doesn't exist, build it in `/components/ui/` using Radix primitiv
 - Auth protects `/dashboard/*` and `/api/workflows/*` only
 - Guest drafts persist to localStorage, migrate to cloud on sign-in
 - Providers: GitHub OAuth + Google OAuth via Auth.js v5
+
+### Sharing & Embeds
+
+- Public share view: `/w/[shareId]` — full chrome (header, export drawer, simulator)
+- Iframe embed: `/embed/[shareId]` — minimal chrome, fit-to-view canvas, branding watermark
+- Both routes resolve via `Workflow.shareId` (unique) and require `isPublic = true`
+- `/embed/*` ships with `Content-Security-Policy: frame-ancestors *` (set in `next.config.ts`) — do not block-list it; it is the only path explicitly meant to be framed
+- Embed query params: `?minimap=0` hides the minimap, `?branding=0` hides the SymFlowBuilder watermark
+- Mermaid copy buttons (dashboard + shared view) wrap output in a fenced ` ```mermaid ` block so paste-into-README "just works"

@@ -9,6 +9,88 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
     {
+        slug: "embed-workflows-anywhere",
+        title: "Embed SymFlowBuilder Workflows in Any README, Doc, or Wiki",
+        date: "2026-04-28",
+        excerpt:
+            "Two new ways to put a live workflow next to the code it describes: a one-click Mermaid block for GitHub READMEs, and an iframe embed for docs sites that want pan, zoom, and minimap.",
+        tags: ["feature", "share", "embed", "mermaid", "documentation"],
+        content: `## Workflows belong next to the code they describe
+
+A Symfony workflow is documentation as much as it is configuration. The state machine for an order, an article, a moderation queue — that diagram answers more onboarding questions than half a wiki page. The problem has always been getting the diagram *into* the wiki page.
+
+This release adds two paths from a SymFlowBuilder workflow to wherever your team writes things down. Pick the one that matches the destination.
+
+## Path 1 — Copy a Mermaid block (works in GitHub READMEs)
+
+Open any workflow on the dashboard or on its public share page, click **Export**, switch to **Mermaid**, and hit **Copy**.
+
+What lands on your clipboard is not raw \`stateDiagram-v2\` text — it is already wrapped in a fenced block:
+
+\`\`\`text
+\\\`\\\`\\\`mermaid
+stateDiagram-v2
+    direction LR
+    [*] --> draft
+    draft --> submitted: submit
+    submitted --> approved: approve [is_granted("ROLE_ADMIN")]
+    submitted --> rejected: reject
+    approved --> [*]
+\\\`\\\`\\\`
+\`\`\`
+
+Paste that block straight into a GitHub README, a GitLab MR description, an Obsidian note, a Notion page, or any other Markdown surface that renders Mermaid. No screenshots to keep in sync, no PNG drift, no broken alt text. The diagram updates the next time you re-export.
+
+If you want the raw \`.mmd\` (for embedding into your own tooling), the **Download** button still gives you the unwrapped version. Copy = Markdown-ready, Download = engine-ready.
+
+## Path 2 — Drop in an \`<iframe>\` (works in any docs site)
+
+Mermaid is great for static diagrams. But when you want pan, zoom, a minimap, and the actual node styling from your workflow — the kind of thing readers can scroll around in — you need the real canvas.
+
+Make any workflow public from the dashboard, open the share dialog, and you will now see an **Embed** snippet alongside the share link:
+
+\`\`\`html
+<iframe
+  src="https://symflowbuilder.com/embed/abc123def456"
+  width="100%"
+  height="500"
+  style="border:0;border-radius:14px"
+  loading="lazy"
+  title="SymFlowBuilder workflow"
+></iframe>
+\`\`\`
+
+That route — \`/embed/[shareId]\` — renders the same React Flow canvas you use in the editor, but with the chrome stripped: no header bar, no export drawer, no config dialog. Just the diagram, fit to view on load, with an interactive minimap in the corner and a small "SymFlowBuilder" watermark linking back to the live share page.
+
+Drop it into Docusaurus, MkDocs, Mintlify, Nextra, your Notion-as-docs setup, a Confluence page that allows iframes — anywhere HTML is allowed.
+
+### Tweak it with query params
+
+The embed accepts a couple of switches:
+
+- \`?minimap=0\` — hide the minimap (useful for small embeds)
+- \`?branding=0\` — hide the SymFlowBuilder watermark (please leave it on if you can — it is the only "credit" the project gets)
+
+### How it is actually allowed to be framed
+
+By default, modern browsers will refuse to render an iframe from another origin if the response sets \`X-Frame-Options\` or restrictive \`frame-ancestors\`. The new route does the opposite: it ships an explicit \`Content-Security-Policy: frame-ancestors *\` header, scoped only to \`/embed/*\`. The rest of the app stays as it was. You opt in to being framed by sharing a workflow; the rest of the surface area is untouched.
+
+## Pick the right path
+
+| You want… | Use |
+| --- | --- |
+| A diagram in a GitHub/GitLab README | **Mermaid copy** — renders natively, no iframe needed |
+| A diagram in a Markdown file rendered by a tool that does not support Mermaid | **Mermaid copy** — pastes as a fenced block, downgrades gracefully to monospace text |
+| Pan, zoom, minimap, real styling, in a docs site | **Iframe embed** — interactive, always up-to-date with the source workflow |
+| A static PNG/SVG for a slide deck | Coming next — see the roadmap |
+
+## What is next
+
+The natural follow-up is an SVG snapshot endpoint — \`/api/w/[shareId]/svg\` — that returns a rendered diagram in any markdown renderer that does not support Mermaid or iframes. That one needs a small addition to the [\`symflow\`](https://www.npmjs.com/package/symflow) engine to keep export functions consistent (string-builder pattern alongside YAML, JSON, TypeScript, Mermaid, and DOT). It is on the roadmap; ping the [issue tracker](https://github.com/vandetho/symflowbuilder/issues) if you have a use case that needs it sooner.
+
+In the meantime: design the workflow once, paste it everywhere it belongs.`,
+    },
+    {
         slug: "laravel-export-and-symflow-laravel",
         title: "Design Workflows Visually, Run Them in Laravel with symflow-laravel",
         date: "2026-04-24",

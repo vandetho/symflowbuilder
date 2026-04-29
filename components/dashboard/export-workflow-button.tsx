@@ -51,9 +51,10 @@ export function ExportWorkflowButton({ name, graphJson }: ExportWorkflowButtonPr
     const cfg = FORMAT_CONFIG[format];
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(output);
+        const text = format === "mermaid" ? `\`\`\`mermaid\n${output}\n\`\`\`` : output;
+        navigator.clipboard.writeText(text);
         setCopied(true);
-        toast.success(`${cfg.label} copied`);
+        toast.success(format === "mermaid" ? "Markdown copied" : `${cfg.label} copied`);
         setTimeout(() => setCopied(false), 2000);
     };
 
