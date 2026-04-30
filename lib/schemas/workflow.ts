@@ -10,6 +10,7 @@ export const createWorkflowSchema = z.object({
     type: z.enum(WORKFLOW_TYPES).optional(),
     graphJson: z.unknown().optional(),
     yamlCache: z.string().optional(),
+    simulationConfig: z.unknown().nullish(),
 });
 
 export const updateWorkflowSchema = z.object({
@@ -19,6 +20,7 @@ export const updateWorkflowSchema = z.object({
     type: z.enum(WORKFLOW_TYPES).optional(),
     graphJson: z.unknown().optional(),
     yamlCache: z.string().optional(),
+    simulationConfig: z.unknown().nullish(),
 });
 
 export const createVersionSchema = z.object({

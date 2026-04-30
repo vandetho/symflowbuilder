@@ -9,6 +9,385 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
     {
+        slug: "walkthrough-publishing-an-article-scenario",
+        title: "Walkthrough: Building the 'Publishing an Article' Scenario from Scratch",
+        date: "2026-04-30",
+        excerpt:
+            "A step-by-step walkthrough of designing a playable workflow scenario in SymFlowBuilder — from drawing places and transitions, to writing patches, to attaching mock API calls, to embedding the result in your docs.",
+        tags: ["tutorial", "simulator", "scenarios", "article", "walkthrough"],
+        content: `## What we are building
+
+A blog post going through editorial review. Five places — \`draft\`, \`pending_review\`, \`approved\`, \`rejected\`, \`published\` — and four transitions. By the end you will be able to click through the simulator and watch an article object evolve from a draft with no reviewer to a published post with a public URL, with the API calls a real backend would make plotted out beside it.
+
+This is the workflow shipped as the **Publishing an article** template. We are going to rebuild it from scratch, slowly, so each piece earns its place.
+
+## Step 1 — Draw the graph
+
+Open the [editor](/editor) and drag five state nodes onto the canvas. Name them:
+
+- \`draft\` — initial state
+- \`pending_review\`
+- \`approved\`
+- \`rejected\`
+- \`published\`
+
+Mark \`draft\` as the initial state in the properties panel. This becomes \`initial_marking: draft\` in the exported YAML.
+
+Now connect them with four transitions:
+
+- \`submit_for_review\` — \`draft\` → \`pending_review\`
+- \`approve\` — \`pending_review\` → \`approved\`
+- \`reject\` — \`pending_review\` → \`rejected\`
+- \`publish\` — \`approved\` → \`published\`
+
+Set the workflow type to \`state_machine\` (the article is in exactly one place at a time) and set \`property: status\` on the marking store — that is the field name on your domain object that holds the current state.
+
+At this point you have a working state machine. Click **Simulate** in the toolbar and you can already step through it. But every transition does the same thing: shift a token between abstract place names. That is not very interesting yet.
+
+## Step 2 — Open the Scenario tab
+
+The simulator sheet on the right has three tabs: **Steps**, **Scenario**, **Inspector**. Switch to **Scenario**.
+
+This is where the article lives. The starting **subject** — the JSON object your workflow operates on — needs to describe what an article actually looks like in your system. Paste this in:
+
+\`\`\`json
+{
+    "id": "art_1042",
+    "title": "My first post",
+    "body": "Hello, world.",
+    "author": "alice",
+    "reviewer": null,
+    "reviewNotes": null,
+    "publishedAt": null
+}
+\`\`\`
+
+Notice there is no \`status\` field. You do not need one — because you set \`property: status\` on the workflow, the simulator automatically writes the current marking into \`subject.status\` after every step. State machines write a single string (\`"draft"\`); workflow-type Petri nets write an array of place names. This mirrors what Symfony's marking store does in production.
+
+So at \`t=0\`, your live subject is actually:
+
+\`\`\`json
+{
+    "id": "art_1042",
+    "title": "My first post",
+    "body": "Hello, world.",
+    "author": "alice",
+    "reviewer": null,
+    "reviewNotes": null,
+    "publishedAt": null,
+    "status": "draft"
+}
+\`\`\`
+
+That is what shows up in the Inspector.
+
+## Step 3 — Write the patches
+
+Below the subject editor is a card per transition. Each card has a **+ Patch** button and a **+ Request** button. Patches mutate the subject when the transition fires.
+
+A patch has three pieces: an **op**, a **path**, and a **value**.
+
+The op is one of three things:
+
+- **set** — assign a value at the path. Replaces whatever was there. *You will use this almost every time.* Example: \`set reviewer = "bob"\` becomes \`subject.reviewer = "bob"\`.
+- **push** — append to an array at the path. Creates the array if missing. Example: \`push history "submitted"\` becomes \`subject.history.push("submitted")\`.
+- **del** — delete the field entirely. Example: \`del reviewer\` becomes \`delete subject.reviewer\`. Different from \`set reviewer = null\` — \`del\` removes the key from the object.
+
+The path is a JSON-pointer-style string: \`field\`, \`nested.field\`, or \`items[0].name\` for arrays. The value is anything JSON. Strings, numbers, booleans, arrays, nested objects.
+
+Now configure the four transitions:
+
+### \`submit_for_review\`
+
+The author submits the draft. A reviewer gets assigned.
+
+\`\`\`text
++ Patch  set  reviewer  "bob"
+\`\`\`
+
+### \`approve\`
+
+The reviewer signs off.
+
+\`\`\`text
++ Patch  set  reviewNotes  "LGTM"
+\`\`\`
+
+### \`reject\`
+
+The reviewer asks for changes. Notes get set, reviewer gets cleared so a new one can be assigned next round.
+
+\`\`\`text
++ Patch  set  reviewNotes  "Needs rework"
++ Patch  set  reviewer     null
+\`\`\`
+
+(You could use \`del reviewer\` instead — same end-result if you do not care about the field existing.)
+
+### \`publish\`
+
+The article goes live. We stamp a publish timestamp.
+
+\`\`\`text
++ Patch  set  publishedAt  "2026-04-30T10:00:00.000Z"
+\`\`\`
+
+## Step 4 — Walk through it
+
+Switch back to **Steps**. Click \`submit_for_review\`. Two things happen:
+
+1. The marking advances from \`draft\` to \`pending_review\`. The state node on the canvas glows green; the previous one dims.
+2. The subject mutates: \`reviewer\` becomes \`"bob"\` and \`status\` becomes \`"pending_review"\`.
+
+You can see the second part directly: open **Inspector** and you get a side-by-side diff of the subject before and after that step. Changed fields are highlighted. \`reviewer\` flips from \`null\` to \`"bob"\`. \`status\` flips from \`"draft"\` to \`"pending_review"\`.
+
+Click \`approve\`, then \`publish\`. The article walks the happy path. If you go back and pick \`reject\` instead, you can watch the alternate branch play out — \`reviewNotes\` gets set to \`"Needs rework"\`, \`reviewer\` clears to \`null\`, the article ends up in \`rejected\`.
+
+This is the moment scenarios stop being abstract. You are not reading a YAML file. You are watching an article move through a process.
+
+## Step 5 — Add mock API calls
+
+Most workflows are not just state machines — each transition typically corresponds to a real API call. \`submit_for_review\` posts to \`/api/articles/.../submit\`. \`publish\` posts to \`/api/articles/.../publish\`. Real listeners fire those requests in production.
+
+In the simulator you can attach a *mock* request to each transition — a fake HTTP call that the Inspector will display as if it had fired. No real network goes out. It is a teaching surface, not a backend mock.
+
+Click **+ Request** on the \`submit_for_review\` card. The editor expands inline:
+
+- **Method**: \`POST\`
+- **URL**: \`/api/articles/{{id}}/submit\`
+- **Request body**:
+  \`\`\`json
+  { "reviewer": "bob" }
+  \`\`\`
+- **Status**: \`202\`
+- **Response body**:
+  \`\`\`json
+  { "id": "{{id}}", "status": "pending_review" }
+  \`\`\`
+
+Notice the \`{{id}}\` interpolation. The simulator substitutes \`{{ subject.path }}\` references with the actual subject value at the moment the transition fires. So when you click \`submit_for_review\`, the Inspector shows \`POST /api/articles/art_1042/submit\` — the \`{{id}}\` gets resolved against the live subject. Substitution works in URLs and in JSON values.
+
+Add similar requests for the other three transitions:
+
+- \`approve\` → \`POST /api/articles/{{id}}/approve\` returning \`200 { "id": "{{id}}", "status": "approved" }\`
+- \`reject\` → \`POST /api/articles/{{id}}/reject\` returning \`200 { "id": "{{id}}", "status": "rejected" }\`
+- \`publish\` → \`POST /api/articles/{{id}}/publish\` returning \`200 { "id": "{{id}}", "status": "published", "url": "https://example.com/blog/{{id}}" }\`
+
+Now walk the scenario again. Click any step in the history. The Inspector shows the subject diff *and* the resolved mock request — method, URL, body, status, response. The substituted values are frozen into the step's history at the moment of the transition; if you patch \`id\` later, the historical request keeps the value it had at the time.
+
+## Step 6 — Save and share
+
+When you stop the simulator (or it auto-saves), the scenario gets persisted to the workflow alongside the graph. Reload the page and the scenario comes back. Sign in and the scenario rides up to the cloud with the workflow.
+
+Open the share dialog and make the workflow public. Anyone visiting \`/w/[shareId]\` can hit **Simulate** and walk through your scenario without signing in. They get the article-publishing experience exactly as you designed it.
+
+For docs sites, add an iframe:
+
+\`\`\`html
+<iframe
+  src="https://symflowbuilder.com/embed/<shareId>?play=1&minimap=0&branding=0"
+  width="100%"
+  height="560"
+  style="border:0;border-radius:14px"
+  loading="lazy"
+  title="Publishing an article"
+></iframe>
+\`\`\`
+
+The \`?play=1\` query param makes the embed start the simulator automatically — readers land on a runnable demo, not a static diagram.
+
+## What is actually persisting
+
+Under the hood, your scenario is a small JSON blob saved on the workflow:
+
+\`\`\`json
+{
+    "subject": {
+        "id": "art_1042",
+        "title": "My first post",
+        "...": "..."
+    },
+    "effects": {
+        "submit_for_review": {
+            "patches": [{ "op": "set", "path": "reviewer", "value": "bob" }],
+            "mockRequest": {
+                "method": "POST",
+                "url": "/api/articles/{{id}}/submit",
+                "body": { "reviewer": "bob" },
+                "response": { "status": 202, "body": { "id": "{{id}}", "status": "pending_review" } }
+            }
+        },
+        "approve": { "...": "..." },
+        "reject":  { "...": "..." },
+        "publish": { "...": "..." }
+    }
+}
+\`\`\`
+
+It lives in a separate \`simulationConfig\` column on the workflow row in PostgreSQL. **Crucially, it never enters the Symfony YAML export.** Your exported \`config/packages/workflow.yaml\` stays a clean Symfony workflow definition — places, transitions, guards, metadata. The scenario is a layer on top, scoped to the simulator.
+
+That separation is intentional. Scenarios are for explaining a workflow to a teammate or stakeholder; the YAML is for running it in production. Different audiences, different artifacts.
+
+## Why this is worth your time
+
+Half of every workflow review I have ever sat in starts with someone drawing on a whiteboard while saying "okay so an article comes in..." and then mutating a fictional object verbally. Scenarios put that conversation into the tool. Your reviewer no longer needs to imagine the article — they can click through the actual state machine with real-looking data and see, at each step, what the article looks like and what API the system would call.
+
+Hand someone a workflow link and they will read the diagram. Hand them a workflow link with a scenario and they will *use* it. That is the difference.
+
+## Try it now
+
+The full template is one click away if you do not want to build it from scratch:
+
+1. Open the [editor](/editor)
+2. Drag five places and four transitions matching the layout above
+3. Click **Simulate**, switch to **Scenario**, click **Publishing an article**
+4. Walk it through
+
+Or fork the existing public scenario and modify it — change the reviewer to your own team's names, swap the URL prefix to your real backend, add a \`tags\` array and \`push\` to it on each transition. The whole point of scenarios is that the data fits *your* domain, not ours.`,
+    },
+    {
+        slug: "playable-scenarios-mock-data-in-the-simulator",
+        title: "Playable Scenarios: Walk Through a Workflow Like You're Publishing an Article",
+        date: "2026-04-30",
+        excerpt:
+            "The simulator now carries a real subject — an article, an order, a document — through your workflow. Each transition can mutate the subject and show a mock API request. Click through it like an n8n run.",
+        tags: ["feature", "simulator", "scenarios", "mock-http"],
+        content: `## A simulator that only knew states was only half a simulator
+
+The original SymFlowBuilder simulator could fire transitions, track active places, evaluate guards, and replay Symfony events. What it could *not* do was answer the most common question someone asks of a workflow diagram:
+
+> "But what does the data look like at each step?"
+
+A workflow is rarely just a graph. It is a graph plus a *thing* moving through it — an article on its way to publication, an order on its way to fulfillment, a moderation case waiting on a reviewer. Without that thing, the simulator was an abstract token-pusher. You could see that \`approved\` was reachable from \`submitted\`. You could not see what an *approved article* actually looked like.
+
+This release fixes that. The simulator now carries a **subject** — the JSON object your workflow operates on — and lets each transition mutate it as it fires. You can also attach a fake HTTP request to any transition and see exactly what would have hit your backend. The result feels less like watching a state machine and more like clicking through an n8n run.
+
+## The article-publishing example, end to end
+
+Open the editor, build a state machine with five places — \`draft\`, \`pending_review\`, \`approved\`, \`rejected\`, \`published\` — and four transitions: \`submit_for_review\`, \`approve\`, \`reject\`, \`publish\`. Click **Simulate**.
+
+The simulator panel now has three tabs: **Steps**, **Scenario**, and **Inspector**. Open **Scenario** and click the **Publishing an article** template card.
+
+The starting subject lands on the page:
+
+\`\`\`json
+{
+    "id": "art_1042",
+    "title": "My first post",
+    "body": "Hello, world.",
+    "author": "alice",
+    "reviewer": null,
+    "reviewNotes": null,
+    "publishedAt": null
+}
+\`\`\`
+
+Below it, four transition cards. Each one has patches that mutate the subject and a mock HTTP request that *would* have fired:
+
+\`\`\`text
+submit_for_review
+  patches:  set reviewer = "bob"
+  request:  POST /api/articles/{{id}}/submit
+            { "reviewer": "bob" }
+            → 202 { "id": "{{id}}", "status": "pending_review" }
+\`\`\`
+
+Switch to **Steps**. Click \`submit_for_review\`. The article is now in \`pending_review\` and the reviewer is bob. Click \`approve\`. Then \`publish\`. The history list shows each step with a colored \`POST\` badge — visual proof that a request would have fired.
+
+Click any history row. The panel jumps to **Inspector** and shows you, side by side, what the article looked like *before* and *after* that transition, with the changed fields highlighted. Below that: the resolved mock request — \`POST /api/articles/art_1042/publish\` (the \`{{id}}\` was substituted with the real subject value at the moment of the transition) and a \`200\` response with a real-looking publish URL.
+
+That is the moment the feature clicks. You are not reading a YAML file or staring at boxes connected by arrows. You are watching an article get reviewed and published, with the API calls a real backend would make plotted out next to it.
+
+## What you can declare per transition
+
+Each transition can carry an optional **effect** with three pieces, all of them optional:
+
+### 1. A description
+
+A one-line note about what the transition represents. Shown in the Inspector at the top of the step.
+
+### 2. Patches that mutate the subject
+
+A list of \`{ op, path, value }\` operations applied to a deep-cloned subject when the transition fires. Three ops are supported:
+
+- \`set\` — write a value at the path. Path syntax is \`field.nested.deeper\` or \`items[0].name\`.
+- \`push\` — append a value to an array at the path.
+- \`remove\` — delete a key or splice an array element.
+
+Patches are interpreted client-side, in pure JavaScript, on a *cloned* subject. Nothing escapes the simulator. The original subject in the scenario is your "starting state" — re-running the simulator always rewinds to it.
+
+### 3. A mock HTTP request
+
+A pretend request the transition would have fired, with method, URL, optional body, and an optional canned response with status + body. URLs and JSON values support \`{{ subject.path }}\` interpolation, so:
+
+\`\`\`text
+POST /api/articles/{{id}}/publish
+\`\`\`
+
+…becomes \`POST /api/articles/art_1042/publish\` when fired. The substitution happens once, at the moment of the transition, using the subject *as it was* before the patches ran. That snapshot is frozen into the step's history — even if you patch \`id\` later, the historical request keeps the value it had at the time.
+
+No actual network call is made. The mock request is a UI artifact. That is intentional: scenarios are for *teaching, reviewing, and demoing* a workflow, not for testing your backend.
+
+## Three tabs, one mental model
+
+- **Steps** is the playback surface. Active places, available transitions, history. Click history to jump to Inspector.
+- **Scenario** is the design surface. Subject editor, per-transition patches and mock requests, template gallery. Edits persist with the workflow when you save.
+- **Inspector** is the *what just happened* surface. Before/after subject diff for the selected step, with changed paths highlighted, plus the resolved mock request and response.
+
+The footer carries the playback controls — **Step Back**, **Restart**, **Auto-play** with a configurable interval, and a stop. The header has tooltipped icons for restart and close.
+
+## Persistence and sharing
+
+A scenario is stored alongside the workflow in a new \`simulationConfig\` JSONB column. It travels with the workflow:
+
+- Auto-save picks up scenario edits and writes them to the cloud (signed-in users) or localStorage (guests), debounced 2 seconds.
+- The public share view at \`/w/[shareId]\` loads the scenario when the share owner has saved one. Anyone visiting the link can hit **Simulate** and walk the article through the workflow without an account.
+- The iframe embed at \`/embed/[shareId]\` is now interactive. Drop a \`<iframe>\` into a docs page, add \`?play=1\`, and the scenario auto-starts. Readers click through it the same way they click through an n8n demo on the n8n website.
+
+\`\`\`html
+<iframe
+  src="https://symflowbuilder.com/embed/abc123?play=1&minimap=0&branding=0"
+  width="100%"
+  height="560"
+  style="border:0;border-radius:14px"
+  loading="lazy"
+  title="Article publishing flow"
+></iframe>
+\`\`\`
+
+That iframe is a runnable demo of your workflow. Embed it in your README, your docs site, your design review document — wherever explaining the flow has so far required either a screenshot or an awkward "let me share my screen" moment.
+
+## What this is *not*
+
+A few deliberate non-goals, since people will ask:
+
+- **Not a backend mock**. No request leaves the browser. Mock responses are static — no scripting, no JavaScript evaluation. If you need a real mock backend, [MSW](https://mswjs.io) is what you want; this is a teaching surface.
+- **Not in the Symfony YAML export**. Scenarios are simulator-only and live in their own column. Your exported YAML stays a clean Symfony workflow definition that drops into \`config/packages/workflow.yaml\` without surprises.
+- **Not a replacement for tests**. It is excellent for *showing* a flow. It is not a substitute for the integration tests that pin your guards in production.
+
+## How it works under the hood
+
+The data model is small enough to describe in one paragraph. \`SimulationConfig\` is \`{ subject, effects, templateId }\`. Each effect is \`{ description?, patches?, mockRequest? }\`. The simulator store carries the subject as live state, deep-clones it on initialization, and on each \`apply()\` runs the matching effect's patches against a clone — preserving the *before* snapshot on the step. The mock request is resolved with a tiny \`{{ path }}\` interpolator that walks the subject via JSON-pointer-style segments and substitutes string and JSON values. Pure functions, fully sandboxed, no \`eval\`.
+
+The whole thing is built on the same [\`symflow\` engine](/blog/symflow-workflow-engine-for-nodejs) that powers Symfony-compatible runtime. The marking is still a Symfony marking. The events still fire in Symfony's order. The subject is a layer the simulator adds on top — the engine itself is unchanged.
+
+## Try it
+
+1. Open the [editor](/editor) and either build a workflow or load an existing one.
+2. Click **Simulate**.
+3. Switch to the **Scenario** tab and click **Publishing an article**.
+4. Switch back to **Steps** and walk \`submit_for_review\` → \`approve\` → \`publish\`.
+5. Click any history row.
+
+If you have already shared a workflow publicly, open its \`/w/[shareId]\` page — your viewers can now play through whatever scenario you saved.
+
+## What is next
+
+The natural follow-ups are user-supplied scenarios via share links (\`?scenario=template-id\` to override the saved one), per-place initial-state branches (so you can simulate "what if this article *started* in pending_review?"), and a record-and-replay button that captures a real run from your app and lets you scrub through it. Open issues if any of those would help.
+
+Until then: design the workflow, save the scenario, share the link, watch your reviewer click through it without ever opening a YAML file.`,
+    },
+    {
         slug: "embed-workflows-anywhere",
         title: "Embed SymFlowBuilder Workflows in Any README, Doc, or Wiki",
         date: "2026-04-28",

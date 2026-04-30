@@ -36,7 +36,14 @@ export default async function EmbedWorkflowPage({
 
     const workflow = await prisma.workflow.findUnique({
         where: { shareId },
-        select: { name: true, graphJson: true, isPublic: true },
+        select: {
+            name: true,
+            type: true,
+            symfonyVersion: true,
+            graphJson: true,
+            simulationConfig: true,
+            isPublic: true,
+        },
     });
 
     if (!workflow || !workflow.isPublic) {
@@ -45,14 +52,21 @@ export default async function EmbedWorkflowPage({
 
     const showMiniMap = query.minimap !== "0";
     const showBranding = query.branding !== "0";
+    const autoPlay = query.play === "1";
 
     return (
         <EmbeddedWorkflowView
             shareId={shareId}
             name={workflow.name}
+            type={workflow.type}
+            symfonyVersion={workflow.symfonyVersion}
             graphJson={workflow.graphJson as Record<string, unknown>}
+            simulationConfig={
+                (workflow.simulationConfig as Record<string, unknown> | null) ?? null
+            }
             showMiniMap={showMiniMap}
             showBranding={showBranding}
+            autoPlay={autoPlay}
         />
     );
 }

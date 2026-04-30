@@ -67,6 +67,7 @@ model Workflow {
   type           String   @default("workflow")
   graphJson      Json
   yamlCache      String?
+  simulationConfig Json?
   shareId        String?  @unique
   isPublic       Boolean  @default(false)
   createdAt      DateTime @default(now())

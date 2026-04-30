@@ -18,7 +18,7 @@ export function useAutosave({
     onLocalSave,
 }: UseAutosaveOptions = {}) {
     const [status, setStatus] = useState<SaveStatus>("idle");
-    const { nodes, edges, workflowMeta } = useEditorStore();
+    const { nodes, edges, workflowMeta, simulationConfig } = useEditorStore();
     const prevRef = useRef<string>("");
 
     const saveToCloud = useCallback(async () => {
@@ -34,6 +34,7 @@ export function useAutosave({
                     symfonyVersion: workflowMeta.symfonyVersion,
                     type: workflowMeta.type,
                     graphJson: { nodes, edges, meta: workflowMeta },
+                    simulationConfig: simulationConfig ?? null,
                 }),
             });
 
@@ -43,7 +44,7 @@ export function useAutosave({
         } catch {
             setStatus("error");
         }
-    }, [workflowId, nodes, edges, workflowMeta]);
+    }, [workflowId, nodes, edges, workflowMeta, simulationConfig]);
 
     const debouncedSave = useDebouncedCallback(() => {
         if (workflowId) {
@@ -58,7 +59,12 @@ export function useAutosave({
     useEffect(() => {
         if (!enabled) return;
 
-        const snapshot = JSON.stringify({ nodes, edges, workflowMeta });
+        const snapshot = JSON.stringify({
+            nodes,
+            edges,
+            workflowMeta,
+            simulationConfig,
+        });
         if (snapshot === prevRef.current) return;
         prevRef.current = snapshot;
 
@@ -69,7 +75,7 @@ export function useAutosave({
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setStatus("saving");
         debouncedSave();
-    }, [nodes, edges, workflowMeta, enabled, debouncedSave]);
+    }, [nodes, edges, workflowMeta, simulationConfig, enabled, debouncedSave]);
 
     return { status, saveToCloud };
 }

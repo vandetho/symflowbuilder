@@ -58,11 +58,14 @@ const edgeTypes = {
     connector: ConnectorEdge,
 };
 
+import type { SimulationConfig } from "@/types/simulation";
+
 interface Props {
     name: string;
     type: string;
     symfonyVersion: string;
     graphJson: Record<string, unknown>;
+    simulationConfig?: Record<string, unknown> | null;
     workflowId?: string;
 }
 
@@ -71,6 +74,7 @@ export function SharedWorkflowView({
     type,
     symfonyVersion,
     graphJson,
+    simulationConfig,
     workflowId,
 }: Props) {
     const router = useRouter();
@@ -172,7 +176,12 @@ export function SharedWorkflowView({
                             if (simActive) {
                                 simDeactivate();
                             } else {
-                                simInitialize(nodes, edges, meta);
+                                simInitialize(
+                                    nodes,
+                                    edges,
+                                    meta,
+                                    (simulationConfig as SimulationConfig | null) ?? null
+                                );
                                 simActivate();
                             }
                         }}

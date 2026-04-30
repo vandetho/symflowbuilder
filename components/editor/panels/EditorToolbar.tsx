@@ -56,13 +56,22 @@ function SimulateButton() {
     const initialize = useSimulatorStore((s) => s.initialize);
     const activate = useSimulatorStore((s) => s.activate);
     const deactivate = useSimulatorStore((s) => s.deactivate);
-    const { nodes, edges, workflowMeta } = useEditorStore();
+    const configDirty = useSimulatorStore((s) => s.configDirty);
+    const simConfig = useSimulatorStore((s) => s.config);
+    const markConfigSaved = useSimulatorStore((s) => s.markConfigSaved);
+    const { nodes, edges, workflowMeta, simulationConfig, setSimulationConfig } =
+        useEditorStore();
 
     const handleToggle = () => {
         if (simActive) {
+            // Persist scenario edits back to editor store on stop
+            if (configDirty) {
+                setSimulationConfig(simConfig);
+                markConfigSaved();
+            }
             deactivate();
         } else {
-            initialize(nodes, edges, workflowMeta);
+            initialize(nodes, edges, workflowMeta, simulationConfig);
             activate();
         }
     };

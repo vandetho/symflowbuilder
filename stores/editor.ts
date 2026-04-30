@@ -30,6 +30,7 @@ import {
 } from "symflow/react-flow";
 import type { AccessLevel } from "@/types/collaboration";
 import type { SubWorkflowNodeData } from "@/types/subworkflow";
+import type { SimulationConfig } from "@/types/simulation";
 import { uid, uniqueName } from "@/lib/utils";
 
 function shallowEqualPatch<T extends object>(
@@ -58,7 +59,9 @@ interface EditorStore {
     selectedNodeId: string | null;
     selectedEdgeId: string | null;
     accessLevel: AccessLevel | null;
+    simulationConfig: SimulationConfig | null;
     setAccessLevel: (level: AccessLevel | null) => void;
+    setSimulationConfig: (config: SimulationConfig | null) => void;
 
     // React Flow handlers
     onNodesChange: OnNodesChange;
@@ -97,7 +100,12 @@ interface EditorStore {
     importYaml: (yamlString: string) => void;
     importJson: (jsonString: string) => void;
     importFromUrl: (url: string) => Promise<void>;
-    loadFromJson: (data: { nodes: Node[]; edges: Edge[]; meta: WorkflowMeta }) => void;
+    loadFromJson: (data: {
+        nodes: Node[];
+        edges: Edge[];
+        meta: WorkflowMeta;
+        simulationConfig?: SimulationConfig | null;
+    }) => void;
     reset: () => void;
 
     // Setters for ReactFlow
@@ -113,7 +121,9 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
     selectedNodeId: null,
     selectedEdgeId: null,
     accessLevel: null,
+    simulationConfig: null,
     setAccessLevel: (level) => set({ accessLevel: level }),
+    setSimulationConfig: (config) => set({ simulationConfig: config }),
 
     onNodesChange: (changes) => {
         set({ nodes: applyNodeChanges(changes, get().nodes) });
@@ -335,7 +345,7 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
         }
     },
 
-    loadFromJson: ({ nodes, edges, meta }) => {
+    loadFromJson: ({ nodes, edges, meta, simulationConfig }) => {
         // Migrate old edge-based workflows to node-based format
         const migrated = migrateGraphData({ nodes, edges });
         set({
@@ -345,6 +355,7 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
             history: { past: [], future: [] },
             selectedNodeId: null,
             selectedEdgeId: null,
+            simulationConfig: simulationConfig ?? null,
         });
     },
 
@@ -356,6 +367,7 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
             workflowMeta: { ...DEFAULT_WORKFLOW_META },
             selectedNodeId: null,
             selectedEdgeId: null,
+            simulationConfig: null,
         });
     },
 
