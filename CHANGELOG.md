@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.37.0](https://github.com/vandetho/symflowbuilder/compare/v1.36.1...v1.37.0) (2026-04-30)
+
+
+### Features
+
+* **simulator:** playable scenarios with subject, patches, and mock HTTP ([#99](https://github.com/vandetho/symflowbuilder/issues/99)) ([bf9f476](https://github.com/vandetho/symflowbuilder/commit/bf9f476068a86941efc7c6b87c4034c16280af78))
+
 ## [1.36.1](https://github.com/vandetho/symflowbuilder/compare/v1.36.0...v1.36.1) (2026-04-29)
 
 
