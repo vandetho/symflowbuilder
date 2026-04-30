@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { prisma } from "@symflowbuilder/db";
+import { prisma, Prisma } from "@symflowbuilder/db";
 import {
     getWorkflowAccess,
     canView,
@@ -63,6 +63,12 @@ export async function PUT(
                 type: data.type,
                 graphJson: data.graphJson as object | undefined,
                 yamlCache: data.yamlCache,
+                simulationConfig:
+                    data.simulationConfig === undefined
+                        ? undefined
+                        : data.simulationConfig === null
+                          ? Prisma.JsonNull
+                          : (data.simulationConfig as Prisma.InputJsonValue),
             },
         });
 

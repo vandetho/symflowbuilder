@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useSimulatorStore } from "@/stores/simulator";
 
 const FEEDBACK_TYPES = [
     { value: "bug", label: "Bug", icon: Bug, color: "var(--danger)" },
@@ -47,6 +48,9 @@ const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB
 
 export function FeedbackFab() {
     const [open, setOpen] = useState(false);
+    // Right side is occupied by the simulator sheet during play —
+    // dock the FAB on the left then to avoid overlap.
+    const simActive = useSimulatorStore((s) => s.active);
     const [type, setType] = useState<FeedbackType>("general");
     const [message, setMessage] = useState("");
     const [name, setName] = useState("");
@@ -132,7 +136,7 @@ export function FeedbackFab() {
             {/* FAB Button */}
             <motion.button
                 onClick={() => setOpen(!open)}
-                className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-linear-to-br from-[#7c6ff7] to-[#9d94ff] text-white shadow-[0_4px_24px_var(--accent-glow)] hover:shadow-[0_4px_32px_var(--accent-glow)] transition-shadow flex items-center justify-center cursor-pointer"
+                className={`fixed bottom-6 z-50 w-12 h-12 rounded-full bg-linear-to-br from-[#7c6ff7] to-[#9d94ff] text-white shadow-[0_4px_24px_var(--accent-glow)] hover:shadow-[0_4px_32px_var(--accent-glow)] transition-all flex items-center justify-center cursor-pointer ${simActive ? "left-6" : "right-6"}`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
             >
@@ -169,7 +173,7 @@ export function FeedbackFab() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed bottom-20 right-6 z-50 w-[340px] rounded-[18px] shadow-[0_16px_64px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden max-h-[calc(100vh-120px)] border border-[var(--glass-border-strong)]"
+                        className={`fixed bottom-20 z-50 w-[340px] rounded-[18px] shadow-[0_16px_64px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden max-h-[calc(100vh-120px)] border border-[var(--glass-border-strong)] ${simActive ? "left-6" : "right-6"}`}
                         style={{
                             background:
                                 "linear-gradient(135deg, rgba(20, 20, 42, 0.92), rgba(12, 12, 28, 0.95))",

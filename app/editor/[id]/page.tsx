@@ -48,6 +48,7 @@ export default function EditWorkflowPage({
                         supports: "App\\Entity\\MyEntity",
                         property: "currentState",
                     },
+                    simulationConfig: workflow.simulationConfig ?? null,
                 });
             } catch {
                 setError("Failed to load workflow");

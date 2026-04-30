@@ -62,6 +62,9 @@ export default async function SharedWorkflowPage({
             type={workflow.type}
             symfonyVersion={workflow.symfonyVersion}
             graphJson={workflow.graphJson as Record<string, unknown>}
+            simulationConfig={
+                (workflow.simulationConfig as Record<string, unknown> | null) ?? null
+            }
             workflowId={isOwner ? workflow.id : undefined}
         />
     );

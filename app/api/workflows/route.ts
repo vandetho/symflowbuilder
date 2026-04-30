@@ -1,4 +1,4 @@
-import { prisma } from "@symflowbuilder/db";
+import { prisma, Prisma } from "@symflowbuilder/db";
 import type { NextRequest } from "next/server";
 import { requireUserId } from "@/lib/workflow-auth";
 import { createWorkflowSchema } from "@/lib/schemas/workflow";
@@ -52,6 +52,10 @@ export async function POST(request: NextRequest) {
                 type: data.type ?? "workflow",
                 graphJson: (data.graphJson ?? { nodes: [], edges: [] }) as object,
                 yamlCache: data.yamlCache,
+                simulationConfig:
+                    data.simulationConfig === null || data.simulationConfig === undefined
+                        ? Prisma.JsonNull
+                        : (data.simulationConfig as Prisma.InputJsonValue),
             },
         });
         return Response.json(workflow, { status: 201 });
