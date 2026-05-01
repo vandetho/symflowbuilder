@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.38.0](https://github.com/vandetho/symflowbuilder/compare/v1.37.0...v1.38.0) (2026-05-01)
+
+
+### Features
+
+* **embed:** highlight live marking via ?marking= query param ([#101](https://github.com/vandetho/symflowbuilder/issues/101)) ([6ef182b](https://github.com/vandetho/symflowbuilder/commit/6ef182b0d6060029f32ff92eae0fa0ab0920f4f6))
+* **embed:** highlight live marking via ?marking= query param ([#102](https://github.com/vandetho/symflowbuilder/issues/102)) ([afa4f9b](https://github.com/vandetho/symflowbuilder/commit/afa4f9bd93f2adc9e1285977ee3ce77225a99b91))
+
 ## [1.37.0](https://github.com/vandetho/symflowbuilder/compare/v1.36.1...v1.37.0) (2026-04-30)
 
 
