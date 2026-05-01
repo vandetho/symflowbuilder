@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { usePathname } from "next/navigation";
 import {
     MessageCircle,
     X,
@@ -47,6 +48,7 @@ const MAX_IMAGES = 3;
 const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB
 
 export function FeedbackFab() {
+    const pathname = usePathname();
     const [open, setOpen] = useState(false);
     // Right side is occupied by the simulator sheet during play —
     // dock the FAB on the left then to avoid overlap.
@@ -130,6 +132,8 @@ export function FeedbackFab() {
             setSending(false);
         }
     }, [type, message, name, email, subject, images]);
+
+    if (pathname?.startsWith("/embed/")) return null;
 
     return (
         <>
