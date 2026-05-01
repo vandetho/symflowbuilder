@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.38.3](https://github.com/vandetho/symflowbuilder/compare/v1.38.2...v1.38.3) (2026-05-01)
+
+
+### Bug Fixes
+
+* **embed:** hide FeedbackFab on /embed/ routes ([#108](https://github.com/vandetho/symflowbuilder/issues/108)) ([87fb1ef](https://github.com/vandetho/symflowbuilder/commit/87fb1efab54e1566dbd0207407e06d33366c17a7))
+
 ## [1.38.2](https://github.com/vandetho/symflowbuilder/compare/v1.38.1...v1.38.2) (2026-05-01)
 
 
