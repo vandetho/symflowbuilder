@@ -9,6 +9,184 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
     {
+        slug: "symflow-laravel-showcases-expense-approval-and-issue-tracker",
+        title: "Two Runnable symflow-laravel Showcases: Expense Approval and Issue Tracker",
+        date: "2026-05-01",
+        excerpt:
+            "Two open-source Laravel apps that put symflow-laravel through its paces — Petri-net AND-splits and AND-joins, role-based guards, audit middleware, live Mermaid diagrams, and a one-click round-trip back to the SymFlowBuilder canvas.",
+        tags: ["showcase", "laravel", "symflow-laravel", "petri-net"],
+        content: `## Why showcases beat docs
+
+The README for [\`symflow-laravel\`](https://github.com/vandetho/symflow-laravel) is solid, but a workflow engine only really clicks once you watch it move tokens around a real domain. So we built two: an **expense approval flow** with three reviewers running in parallel, and an **issue tracker** that requires both code review and QA to sign off before a merge. Both are runnable, both deploy free on Fly.io, and both round-trip cleanly with the visual canvas at SymFlowBuilder.
+
+This post is a tour of what each one demonstrates, what they share, and where to look when you want to copy a pattern into your own Laravel app.
+
+## The two apps at a glance
+
+| | [\`symflow-laravel-expense-approval\`](https://github.com/vandetho/symflow-laravel-expense-approval) | [\`symflow-laravel-issue-tracker\`](https://github.com/vandetho/symflow-laravel-issue-tracker) |
+|---|---|---|
+| Domain | Expense reports through legal + finance + manager review | Mini Jira clone where issues need code review + QA |
+| AND-split | \`submit\` fans \`draft\` → three review places | \`submit_for_review\` fans \`in_progress\` → two review places |
+| AND-join | \`finalize\` consumes a token from each \`*_approved\` place | \`merge\` consumes \`code_approved\` AND \`qa_approved\` |
+| Roles | employee, legal, finance, manager | developer, reviewer, qa |
+| UI | Livewire 3 + Tailwind, kanban dashboard, Mermaid diagram | Same stack, same diagram component |
+| Share canvas | [\`/w/9e50940e6f0e0d02\`](https://symflowbuilder.com/w/9e50940e6f0e0d02) | [\`/w/86b557637fa5a7aa\`](https://symflowbuilder.com/w/86b557637fa5a7aa) |
+
+They are deliberately built on the same scaffolding so you can diff them and see what is engine concern vs. domain concern.
+
+## Engine features they exercise
+
+Both apps push the same set of \`symflow-laravel\` features. The features matter individually, but the point of having two showcases is that you can see each one applied to a different domain:
+
+| Feature | What you can study |
+|---|---|
+| Petri-net AND-split | A single transition with one input place and several output places — \`submit\` in expenses, \`submit_for_review\` in issues |
+| Petri-net AND-join | A single transition that requires tokens in *all* its input places before it can fire |
+| Guards | A custom \`GuardEvaluatorInterface\` parses \`role:legal\` / \`role:reviewer\` strings against the authed user |
+| \`GuardResult\` codes | Disabled buttons surface the exact reason — *"Requires the legal role."*, *"Requires the qa role."* — instead of just being grey |
+| Middleware | \`AuditLogMiddleware\` writes \`(actor, transition, marking_before, marking_after, reason)\` for every fired transition |
+| Event listeners | A \`WorkflowEventType::Entered\` listener logs each hop, attached in \`WorkflowServiceProvider::boot\` |
+| Live Mermaid diagram | The standard \`MermaidExporter\` output gets \`classDef\` rules injected per active place — places light up in real time |
+
+## App #1 — Expense approval
+
+The shape of the workflow is what makes this one interesting:
+
+\`\`\`
+                             ┌─ legal_review ──── approve_legal ────┐
+                             │   reject_legal ─┐                    ▼
+draft ── submit ─────────────┼─ finance_review ── approve_finance ──┤
+                             │   reject_finance ┐                   ▼
+                             └─ manager_review ── approve_manager ──┘
+                                                                    │
+        ┌──────────── (any reject) ──────────────► rejected         ▼
+        │                                                        finalize
+        │                                                            │
+        │                                                            ▼
+        │                                                         approved
+        │                                                            │
+        │                                                            ▼
+        └────────────────────────────────────────────────────────── pay ──► paid
+\`\`\`
+
+\`submit\` is an AND-split — one transition that produces tokens in three places at once, so legal, finance, and manager are reviewing the same expense in parallel. Each reviewer can approve or reject independently. \`finalize\` is an AND-join — it can only fire when all three \`*_approved\` places hold a token. That is **not** something you can model in a state machine; it requires Petri-net semantics, which is exactly why the workflow type in \`config/laraflow.php\` is \`workflow\` and not \`state_machine\`.
+
+The \`pay\` transition is gated on \`role:manager\`. The \`approve_legal\` / \`approve_finance\` / \`approve_manager\` transitions are gated on the matching role. With the demo's role-switcher, you sign in as Hedy Lamarr (legal), approve the legal track, switch to Marie Curie (finance), approve finance, switch to Linus (manager), approve manager + finalize + pay. Watch the Mermaid diagram light up each marked place as you go.
+
+## App #2 — Issue tracker
+
+Smaller scope, same skeleton:
+
+\`\`\`
+                                              ┌─ code_review ── approve_code ── code_approved ─┐
+open ── start_work ── in_progress ── submit ──┤                                                ├── merge ── merged
+                                              │                                                │     [role:reviewer]
+                                              └─ qa_review ──── approve_qa ──── qa_approved ───┘
+
+  reject_code | reject_qa  →  closed
+  close (from open)         →  closed
+\`\`\`
+
+Two parallel tracks instead of three, but the AND-split / AND-join pattern is the same. The interesting bit is what \`reject_code\` and \`reject_qa\` do — they short-circuit the parallel branch they are on and the issue ends up in \`closed\`, even if the *other* branch hasn't finished. That asymmetry between approval (must wait for both) and rejection (either one closes it) is a real-world concern that pure state machines paper over.
+
+If you are debating whether to use \`state_machine\` or \`workflow\` in your own project, this is the cleanest example we have of when you need the Petri net.
+
+## What both apps share
+
+The skeleton you would lift into your own Laravel app lives in three files:
+
+\`\`\`
+app/
+├── Workflow/
+│   ├── RoleGuardEvaluator.php       // implements GuardEvaluatorInterface
+│   ├── AuditLogMiddleware.php       // implements MiddlewareInterface
+│   └── WorkflowReasonContext.php    // request-scoped reason store
+└── Providers/
+    └── WorkflowServiceProvider.php  // rebinds the registry
+\`\`\`
+
+The \`LaraflowServiceProvider\` that ships with the package registers a default \`WorkflowRegistryInterface\` singleton that builds \`Workflow\` instances *without* a guard evaluator. Both showcases override that binding so each workflow is built with the custom \`RoleGuardEvaluator\`, then attach \`AuditLogMiddleware\` and the entered-event listener in \`boot()\`. That registry override is the one piece of plumbing that is genuinely required — the rest is domain code.
+
+\`RoleGuardEvaluator\` is small enough to read in a sitting. It looks at the configured guard string (\`role:legal\`, \`role:reviewer\`, etc.), compares it to the authed user's role, and returns a \`GuardResult\` that carries either a granted flag or a structured reason code (\`not_authenticated\`, \`wrong_role\`). The Livewire view reads that reason and displays it under disabled buttons — a nice quality-of-life win that you only get because the engine surfaces *why* a transition is blocked, not just whether.
+
+## How a transition fires
+
+Same in both apps:
+
+1. Livewire button → \`{Model}Show::fire('approve_code')\`
+2. \`Workflow::can()\` runs the guard
+3. \`WorkflowReasonContext::set($reason)\` stashes the optional comment
+4. \`Workflow::apply()\` walks the engine: guard → leave → transition → enter → entered → completed → announce, hitting middleware along the way
+5. \`AuditLogMiddleware\` writes the audit record
+6. The \`Entered\` listener logs the hop
+7. \`PropertyMarkingStore::write\` updates the in-memory \`marking\` attribute
+8. Livewire calls \`$model->save()\` to persist
+
+That sequence is identical to what you would get from Symfony's stock workflow component. If you have a Symfony app today and you are migrating to Laravel — or vice versa — the workflow code travels.
+
+## The visual round-trip
+
+Both repos ship a \`workflow.yaml\` file that is the same workflow expressed in SymFlowBuilder's import format. So you can:
+
+1. Open the public canvas — [expense approval](https://symflowbuilder.com/w/9e50940e6f0e0d02) or [issue tracker](https://symflowbuilder.com/w/86b557637fa5a7aa)
+2. Drag a place around, add a transition, change a guard
+3. Hit Export → **PHP (Laravel)**
+4. Paste the output into the repo's \`config/laraflow.php\`
+
+Or go the other way — edit the YAML in the repo, paste it into the [editor](/editor)'s Import dialog, and see your changes on the canvas. The point of the showcases is not just *here is a working app*; it is *here is a working app whose workflow definition you can edit visually and ship to production without translating anything by hand*.
+
+## Run them yourself
+
+\`\`\`bash
+git clone https://github.com/vandetho/symflow-laravel.git              # sibling, required by the path repo
+git clone https://github.com/vandetho/symflow-laravel-expense-approval.git
+# or:
+git clone https://github.com/vandetho/symflow-laravel-issue-tracker.git
+
+cd symflow-laravel-expense-approval     # or the issue tracker
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate:fresh --seed
+npm run build
+php artisan serve
+\`\`\`
+
+Open <http://localhost:8000>, use the role-switcher in the top-right to pick a seeded user, and click around. Both apps include a kanban dashboard and a per-record detail page with the live diagram.
+
+## Deploy free on Fly.io
+
+Both repos ship a FrankenPHP-based \`Dockerfile\` and a \`fly.toml\` configured for a small machine plus a 1 GB persistent volume mounted at \`/data\` for SQLite:
+
+\`\`\`bash
+brew install flyctl   # or curl -L https://fly.io/install.sh | sh
+fly auth login
+
+fly launch --no-deploy --copy-config
+fly volumes create expense_data --size 1     # or issue_data, per repo
+fly secrets set APP_KEY="base64:$(openssl rand -base64 32)"
+fly deploy
+\`\`\`
+
+The Dockerfile rewrites \`composer.json\` at build time to swap the local **path repo** (used for development against \`../symflow-laravel\`) for the Packagist release of \`vandetho/symflow-laravel\`, so production deploys don't need the sibling clone. \`auto_stop_machines = "stop"\` keeps the demos idle when nobody is using them, so they consume effectively zero of Fly's free allowance — first request after sleep is ~2s slower while the machine boots.
+
+## What to copy into your own app
+
+If you only have time to lift one thing, lift \`AuditLogMiddleware\`. A persistent \`(actor, transition, before, after, reason, timestamp)\` log per fired transition is the single highest-leverage piece of workflow infrastructure you can have. It powers compliance reports, "who approved this and when" UIs, and the kind of "rewind the state" debugging that saves an afternoon every time you need it.
+
+If you have time for two, take the \`RoleGuardEvaluator\` pattern next. Putting role checks in declarative config (\`role:legal\` strings on transitions in \`config/laraflow.php\`) instead of scattered \`if (auth()->user()->hasRole(...))\` calls in controllers means your authorization model is *visible* — readable from the workflow definition, exportable as a diagram, editable on a canvas.
+
+## Links
+
+- [\`symflow-laravel\`](https://github.com/vandetho/symflow-laravel) — the engine
+- [\`symflow-laravel-expense-approval\`](https://github.com/vandetho/symflow-laravel-expense-approval) — multi-stage approval showcase
+- [\`symflow-laravel-issue-tracker\`](https://github.com/vandetho/symflow-laravel-issue-tracker) — parallel-review showcase
+- [Laravel integration guide](/laravel) — how the PHP export works
+- [Editor](/editor) — design your own workflow visually`,
+    },
+    {
         slug: "walkthrough-publishing-an-article-scenario",
         title: "Walkthrough: Building the 'Publishing an Article' Scenario from Scratch",
         date: "2026-04-30",
