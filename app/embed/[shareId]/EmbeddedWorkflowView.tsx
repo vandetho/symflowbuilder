@@ -121,7 +121,7 @@ export function EmbeddedWorkflowView({
     };
 
     return (
-        <div className="h-screen w-screen relative bg-[#0a0a14]">
+        <div className="h-screen w-screen relative bg-[#1a1a2e]">
             <ReactFlowProvider>
                 <ReactFlow
                     nodes={nodes}
@@ -134,13 +134,16 @@ export function EmbeddedWorkflowView({
                     panOnDrag={true}
                     zoomOnScroll={true}
                     fitView
+                    fitViewOptions={{ padding: 0.15, minZoom: 0.7, maxZoom: 1.2 }}
+                    minZoom={0.4}
+                    maxZoom={2}
                     proOptions={{ hideAttribution: true }}
                 >
                     <Background
                         variant={BackgroundVariant.Dots}
                         gap={20}
                         size={1}
-                        color="rgba(255,255,255,0.07)"
+                        color="rgba(255,255,255,0.18)"
                     />
                     {showMiniMap && (
                         <MiniMap
