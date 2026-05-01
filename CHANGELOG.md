@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.38.1](https://github.com/vandetho/symflowbuilder/compare/v1.38.0...v1.38.1) (2026-05-01)
+
+
+### Bug Fixes
+
+* **embed:** improve readability with bg lift, zoom floor, and brighter dots ([#104](https://github.com/vandetho/symflowbuilder/issues/104)) ([722555f](https://github.com/vandetho/symflowbuilder/commit/722555fd190616c2ad2b51c81cfeaae20bb5d431))
+
 ## [1.38.0](https://github.com/vandetho/symflowbuilder/compare/v1.37.0...v1.38.0) (2026-05-01)
 
 
