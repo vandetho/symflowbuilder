@@ -15,6 +15,7 @@ import {
     Package,
     Gem,
     Weight,
+    Radio,
 } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/icons";
 import { Logo } from "@/components/ui/logo";
@@ -89,6 +90,12 @@ const FEATURES = [
         title: "Shareable Links",
         description:
             "Generate read-only public links to share your workflow designs with teammates. No account required to view.",
+    },
+    {
+        icon: Radio,
+        title: "Embed with Live Marking",
+        description:
+            "Drop the canvas into your own app via /embed/<shareId>. Pass ?marking=place_a,place_b and active places light up in real time — perfect for showing runtime state next to your domain UI.",
     },
     {
         icon: Package,
