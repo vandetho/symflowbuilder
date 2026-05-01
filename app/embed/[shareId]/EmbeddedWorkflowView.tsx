@@ -121,7 +121,7 @@ export function EmbeddedWorkflowView({
     };
 
     return (
-        <div className="h-screen w-screen relative bg-[#11111c]">
+        <div className="h-screen w-screen relative bg-[#1a1a2e]">
             <ReactFlowProvider>
                 <ReactFlow
                     nodes={nodes}
@@ -143,7 +143,7 @@ export function EmbeddedWorkflowView({
                         variant={BackgroundVariant.Dots}
                         gap={20}
                         size={1}
-                        color="rgba(255,255,255,0.12)"
+                        color="rgba(255,255,255,0.18)"
                     />
                     {showMiniMap && (
                         <MiniMap
