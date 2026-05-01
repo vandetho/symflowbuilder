@@ -11,7 +11,6 @@ import {
     LogIn,
     Save,
     Share2,
-    Check,
     Play,
     Square,
     Globe,
@@ -44,6 +43,7 @@ import {
 } from "@/components/ui/dialog";
 import { useEditorStore } from "@/stores/editor";
 import { useSimulatorStore } from "@/stores/simulator";
+import { ShareDialog } from "@/components/share/share-dialog";
 import { GitHubIcon } from "@/components/ui/icons";
 import { Badge } from "@/components/ui/badge";
 import { version } from "@/package.json";
@@ -184,51 +184,54 @@ function ShareButton() {
     const { data: session } = useSession();
     const params = useParams();
     const workflowId = params?.id as string | undefined;
-    const [copied, setCopied] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [shareId, setShareId] = useState<string | null>(null);
+    const [hasFetched, setHasFetched] = useState(false);
 
     if (!session?.user || !workflowId) return null;
 
-    const handleShare = async () => {
+    const handleOpen = async () => {
+        setOpen(true);
+        if (hasFetched) return;
         try {
-            const res = await fetch(`/api/workflows/${workflowId}/share`, {
-                method: "POST",
-            });
-            if (!res.ok) throw new Error("Failed");
-            const data = await res.json();
-            const url = `${window.location.origin}/w/${data.shareId}`;
-            await navigator.clipboard.writeText(url);
-            toast.success(
-                "Share link copied — anyone with this link can view your workflow"
-            );
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
+            const res = await fetch(`/api/workflows/${workflowId}`);
+            if (res.ok) {
+                const data = await res.json();
+                setShareId(data.shareId ?? null);
+            }
         } catch {
-            toast.error("Failed to generate share link");
+            // Dialog still works — user can hit "Make Public" to generate a fresh link.
+        } finally {
+            setHasFetched(true);
         }
     };
 
     return (
-        <Tooltip>
-            <TooltipTrigger asChild>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="gap-1.5"
-                    onClick={handleShare}
-                    disabled={copied}
-                >
-                    {copied ? (
-                        <Check className="w-3.5 h-3.5 text-[var(--success)]" />
-                    ) : (
+        <>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-1.5"
+                        onClick={handleOpen}
+                    >
                         <Share2 className="w-3.5 h-3.5" />
-                    )}
-                    {copied ? "Copied!" : "Share"}
-                </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">
-                Generate a public read-only link
-            </TooltipContent>
-        </Tooltip>
+                        Share
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                    Public link, embed code, or revoke access
+                </TooltipContent>
+            </Tooltip>
+            <ShareDialog
+                workflowId={workflowId}
+                shareId={shareId}
+                open={open}
+                onOpenChange={setOpen}
+                onShareIdChange={setShareId}
+            />
+        </>
     );
 }
 
