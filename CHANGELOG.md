@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.40.0](https://github.com/vandetho/symflowbuilder/compare/v1.39.0...v1.40.0) (2026-05-01)
+
+
+### Features
+
+* **landing:** add Embed with Live Marking to feature grid ([#112](https://github.com/vandetho/symflowbuilder/issues/112)) ([d92ac06](https://github.com/vandetho/symflowbuilder/commit/d92ac06d00ac7ca8f4ee7b3801de32b6219d0f42))
+
 ## [1.39.0](https://github.com/vandetho/symflowbuilder/compare/v1.38.3...v1.39.0) (2026-05-01)
 
 
