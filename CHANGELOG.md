@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.38.2](https://github.com/vandetho/symflowbuilder/compare/v1.38.1...v1.38.2) (2026-05-01)
+
+
+### Bug Fixes
+
+* **blog:** swap share IDs in laravel showcases post ([#106](https://github.com/vandetho/symflowbuilder/issues/106)) ([e9b3a12](https://github.com/vandetho/symflowbuilder/commit/e9b3a1285afba46007b29d282b28be9428f44043))
+
 ## [1.38.1](https://github.com/vandetho/symflowbuilder/compare/v1.38.0...v1.38.1) (2026-05-01)
 
 
