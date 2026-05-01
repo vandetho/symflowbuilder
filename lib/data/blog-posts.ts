@@ -30,7 +30,7 @@ This post is a tour of what each one demonstrates, what they share, and where to
 | AND-join | \`finalize\` consumes a token from each \`*_approved\` place | \`merge\` consumes \`code_approved\` AND \`qa_approved\` |
 | Roles | employee, legal, finance, manager | developer, reviewer, qa |
 | UI | Livewire 3 + Tailwind, kanban dashboard, Mermaid diagram | Same stack, same diagram component |
-| Share canvas | [\`/w/9e50940e6f0e0d02\`](https://symflowbuilder.com/w/9e50940e6f0e0d02) | [\`/w/86b557637fa5a7aa\`](https://symflowbuilder.com/w/86b557637fa5a7aa) |
+| Share canvas | [\`/w/86b557637fa5a7aa\`](https://symflowbuilder.com/w/86b557637fa5a7aa) | [\`/w/9e50940e6f0e0d02\`](https://symflowbuilder.com/w/9e50940e6f0e0d02) |
 
 They are deliberately built on the same scaffolding so you can diff them and see what is engine concern vs. domain concern.
 
@@ -128,7 +128,7 @@ That sequence is identical to what you would get from Symfony's stock workflow c
 
 Both repos ship a \`workflow.yaml\` file that is the same workflow expressed in SymFlowBuilder's import format. So you can:
 
-1. Open the public canvas — [expense approval](https://symflowbuilder.com/w/9e50940e6f0e0d02) or [issue tracker](https://symflowbuilder.com/w/86b557637fa5a7aa)
+1. Open the public canvas — [expense approval](https://symflowbuilder.com/w/86b557637fa5a7aa) or [issue tracker](https://symflowbuilder.com/w/9e50940e6f0e0d02)
 2. Drag a place around, add a transition, change a guard
 3. Hit Export → **PHP (Laravel)**
 4. Paste the output into the repo's \`config/laraflow.php\`
