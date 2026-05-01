@@ -4,6 +4,7 @@ import { memo } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 import type { StateNodeData } from "symflow/react-flow";
 import { useSimulatorStore } from "@/stores/simulator";
+import { useExternalMarkingStore } from "@/stores/externalMarking";
 
 export const StateNode = memo(
     ({ data, selected }: NodeProps & { data: StateNodeData }) => {
@@ -11,8 +12,12 @@ export const StateNode = memo(
         const tokenCount = useSimulatorStore((s) =>
             s.active ? (s.marking[data.label] ?? 0) : 0
         );
-        const isMarked = simActive && tokenCount > 0;
-        const isDimmed = simActive && tokenCount === 0;
+        const externalMarked = useExternalMarkingStore((s) => s.places.has(data.label));
+        const externalActive = useExternalMarkingStore((s) => s.places.size > 0);
+        const isMarked = (simActive && tokenCount > 0) || externalMarked;
+        const isDimmed =
+            (simActive && tokenCount === 0 && !externalMarked) ||
+            (!simActive && externalActive && !externalMarked);
 
         const bgColor = data.metadata?.bg_color;
         const description = data.metadata?.description;

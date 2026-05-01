@@ -21,6 +21,7 @@ import { SubWorkflowNode } from "@/components/editor/nodes/SubWorkflowNode";
 import { ConnectorEdge } from "@/components/editor/edges/ConnectorEdge";
 import { SimulatorPanel } from "@/components/editor/panels/SimulatorPanel";
 import { useSimulatorStore } from "@/stores/simulator";
+import { useExternalMarkingStore } from "@/stores/externalMarking";
 import type { WorkflowMeta } from "symflow";
 import type { SimulationConfig } from "@/types/simulation";
 import { migrateGraphData } from "symflow/react-flow";
@@ -45,6 +46,7 @@ interface Props {
     showMiniMap: boolean;
     showBranding: boolean;
     autoPlay: boolean;
+    externalMarking: string[];
 }
 
 export function EmbeddedWorkflowView({
@@ -57,6 +59,7 @@ export function EmbeddedWorkflowView({
     showMiniMap,
     showBranding,
     autoPlay,
+    externalMarking,
 }: Props) {
     const rawNodes = (graphJson.nodes as Node[]) ?? [];
     const rawEdges = (graphJson.edges as Edge[]) ?? [];
@@ -76,6 +79,8 @@ export function EmbeddedWorkflowView({
     const simInitialize = useSimulatorStore((s) => s.initialize);
     const simActivate = useSimulatorStore((s) => s.activate);
     const simDeactivate = useSimulatorStore((s) => s.deactivate);
+    const setExternalPlaces = useExternalMarkingStore((s) => s.setPlaces);
+    const clearExternalPlaces = useExternalMarkingStore((s) => s.clear);
 
     useEffect(() => {
         if (autoPlay && !simActive) {
@@ -93,6 +98,13 @@ export function EmbeddedWorkflowView({
         // Run once on mount; deactivate on unmount.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        setExternalPlaces(externalMarking);
+        return () => {
+            clearExternalPlaces();
+        };
+    }, [externalMarking, setExternalPlaces, clearExternalPlaces]);
 
     const handleToggle = () => {
         if (simActive) {
