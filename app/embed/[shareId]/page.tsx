@@ -52,6 +52,7 @@ export default async function EmbedWorkflowPage({
 
     const showMiniMap = query.minimap !== "0";
     const showBranding = query.branding !== "0";
+    const showScenario = query.scenario !== "0";
     const autoPlay = query.play === "1";
     const externalMarking = parseMarkingParam(query.marking);
 
@@ -67,6 +68,7 @@ export default async function EmbedWorkflowPage({
             }
             showMiniMap={showMiniMap}
             showBranding={showBranding}
+            showScenario={showScenario}
             autoPlay={autoPlay}
             externalMarking={externalMarking}
         />

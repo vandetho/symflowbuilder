@@ -116,5 +116,6 @@ If a component doesn't exist, build it in `/components/ui/` using Radix primitiv
 - Iframe embed: `/embed/[shareId]` — minimal chrome, fit-to-view canvas, branding watermark
 - Both routes resolve via `Workflow.shareId` (unique) and require `isPublic = true`
 - `/embed/*` ships with `Content-Security-Policy: frame-ancestors *` (set in `next.config.ts`) — do not block-list it; it is the only path explicitly meant to be framed
-- Embed query params: `?minimap=0` hides the minimap, `?branding=0` hides the SymFlowBuilder watermark, `?marking=place_a,place_b` highlights the listed places (read by `EmbeddedWorkflowView` → `useExternalMarkingStore` → `StateNode`); host apps rebuild the iframe `src` to push live state from their own marking store
+- Embed query params: `?minimap=0` hides the minimap, `?branding=0` hides the SymFlowBuilder watermark, `?scenario=0` hides the Run-scenario button + simulator panel, `?marking=place_a,place_b` highlights the listed places (read by `EmbeddedWorkflowView` → `useExternalMarkingStore` → `StateNode`); host apps rebuild the iframe `src` to push live state from their own marking store
+- Embed canvas disables scroll/pinch/double-click zoom (so scrolling the host page doesn't accidentally zoom the iframe); pan is still allowed and `fitView` is floored at `minZoom: 0.7` to keep labels readable
 - Mermaid copy buttons (dashboard + shared view) wrap output in a fenced ` ```mermaid ` block so paste-into-README "just works"

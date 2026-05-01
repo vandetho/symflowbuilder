@@ -45,6 +45,7 @@ interface Props {
     simulationConfig?: Record<string, unknown> | null;
     showMiniMap: boolean;
     showBranding: boolean;
+    showScenario: boolean;
     autoPlay: boolean;
     externalMarking: string[];
 }
@@ -58,6 +59,7 @@ export function EmbeddedWorkflowView({
     simulationConfig,
     showMiniMap,
     showBranding,
+    showScenario,
     autoPlay,
     externalMarking,
 }: Props) {
@@ -132,7 +134,9 @@ export function EmbeddedWorkflowView({
                     nodesConnectable={false}
                     elementsSelectable={false}
                     panOnDrag={true}
-                    zoomOnScroll={true}
+                    zoomOnScroll={false}
+                    zoomOnPinch={false}
+                    zoomOnDoubleClick={false}
                     fitView
                     fitViewOptions={{ padding: 0.15, minZoom: 0.7, maxZoom: 1.2 }}
                     minZoom={0.4}
@@ -155,27 +159,29 @@ export function EmbeddedWorkflowView({
                 </ReactFlow>
             </ReactFlowProvider>
 
-            <div className="absolute top-3 left-3 z-30">
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className={`gap-1.5 backdrop-blur-xl border ${
-                        simActive
-                            ? "text-[var(--success)] bg-[var(--success-dim)] border-[var(--success)]"
-                            : "bg-[var(--glass-base)] border-[var(--glass-border)]"
-                    }`}
-                    onClick={handleToggle}
-                >
-                    {simActive ? (
-                        <Square className="w-3.5 h-3.5" />
-                    ) : (
-                        <Play className="w-3.5 h-3.5" />
-                    )}
-                    {simActive ? "Stop" : "Run scenario"}
-                </Button>
-            </div>
+            {showScenario && (
+                <div className="absolute top-3 left-3 z-30">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className={`gap-1.5 backdrop-blur-xl border ${
+                            simActive
+                                ? "text-[var(--success)] bg-[var(--success-dim)] border-[var(--success)]"
+                                : "bg-[var(--glass-base)] border-[var(--glass-border)]"
+                        }`}
+                        onClick={handleToggle}
+                    >
+                        {simActive ? (
+                            <Square className="w-3.5 h-3.5" />
+                        ) : (
+                            <Play className="w-3.5 h-3.5" />
+                        )}
+                        {simActive ? "Stop" : "Run scenario"}
+                    </Button>
+                </div>
+            )}
 
-            <SimulatorPanel />
+            {showScenario && <SimulatorPanel />}
 
             {showBranding && (
                 <a
