@@ -9,6 +9,108 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
     {
+        slug: "embed-live-workflow-state-with-marking-query-param",
+        title: "Embed Your Workflow's Live State with One Query Param",
+        date: "2026-05-01",
+        excerpt:
+            "The /embed iframe now accepts ?marking=place_a,place_b and lights up the active places in real time. Drop the canvas into your Symfony or Laravel app, push your domain object's marking on every render, and the embed mirrors live state — no JS, no postMessage, no polling.",
+        tags: ["feature", "embed", "marking", "laravel"],
+        content: `## What changed
+
+\`/embed/<shareId>\` accepts a new \`?marking=\` query param. Every place name listed in it lights up on the embedded canvas with the same green pulse the simulator uses. Anything not in the list dims out.
+
+\`\`\`
+https://symflowbuilder.com/embed/abc123?marking=legal_review,manager_review
+\`\`\`
+
+That is the whole feature. No JS to load, no postMessage handshake, no polling. The host app just rebuilds the iframe \`src\` whenever its model's marking changes and the embed re-renders with the new active places highlighted.
+
+## Why it exists
+
+We shipped iframe embeds a few months ago so you could drop a workflow canvas next to your docs or a project page. That worked for static "this is the design" use cases. But as soon as people started running real Symfony or Laravel apps and wanting the canvas to *track the runtime state of an entity* — *"this expense report is currently in legal_review and finance_review"* — the embed had nothing to say. You had to render a separate Mermaid diagram or a custom kanban to show that.
+
+Now the same canvas you designed your workflow on can also be the live status display, with one extra query string parameter.
+
+## How a Laravel host wires it up
+
+In a Livewire component, push your domain object's marking into the iframe \`src\` like this:
+
+\`\`\`blade
+@php $embedMarking = implode(',', array_map('urlencode', array_keys($expense->marking))); @endphp
+<iframe wire:key="symflowbuilder-iframe-{{ $embedMarking }}"
+        src="https://symflowbuilder.com/embed/{{ config('symflow.share_id') }}?branding=0&minimap=0{{ $embedMarking !== '' ? '&marking='.$embedMarking : '' }}"
+        width="100%" height="500"
+        class="rounded-lg"
+        loading="lazy"
+        title="Workflow"></iframe>
+\`\`\`
+
+Two bits worth pointing out:
+
+- The \`wire:key\` includes the marking. That is what tells Livewire to re-mount the iframe (and force a reload) every time the marking changes. Without it, Livewire keeps the same iframe DOM and the \`src\` change does not always trigger a navigation.
+- We \`urlencode\` each place name. Place names in well-formed Symfony workflows match \`/^[a-z][a-z0-9_]*$/\` so this is mostly belt-and-braces, but if you ever rename a place to something exotic you will be glad it is there.
+
+A Symfony Twig template looks almost identical:
+
+\`\`\`twig
+{% set embedMarking = expense.marking|map(p => p|url_encode)|join(',') %}
+<iframe src="https://symflowbuilder.com/embed/{{ shareId }}?branding=0&minimap=0{{ embedMarking ? '&marking=' ~ embedMarking : '' }}"
+        width="100%" height="500"></iframe>
+\`\`\`
+
+## What it looks like for the user
+
+When the marking changes — \`submit\` fires, a token moves from \`draft\` into three parallel review places — the iframe reloads with the new \`?marking=\` and the canvas re-fits with three places pulsing green and the rest dimmed. Reviewers looking at the page can see *"these are the people we are waiting on"* without you having to render a second diagram.
+
+Particularly nice for Petri-net workflows where multiple places are marked simultaneously: the AND-split / AND-join pattern is hard to convey with a single-current-state widget, but trivial when the canvas itself is the status display.
+
+## Why a query param and not postMessage
+
+We considered \`postMessage\`. It is smoother — the iframe stays mounted and the parent posts \`{type: 'symflow:marking', places: [...]}\` whenever the marking changes, with no reload flicker. We may add it later as an opt-in upgrade.
+
+But for v1, the query-param transport is the cheapest possible thing for both sides:
+
+- **No JS in the host.** A Livewire/Twig template that already renders an entity's state can build the URL with one line of templating. No \`<script>\` tags, no event listeners.
+- **Works with caching layers.** Each marking value produces a unique URL, so CDN/browser cache behaves correctly.
+- **SSR-friendly.** The marking is parsed server-side in \`/embed/<shareId>\`'s page component, validated, and passed straight to the React component as a prop. The first paint already has the right places highlighted.
+
+The cost is a small reload flicker on each transition. For a status display that updates a few times a day per entity, that is invisible.
+
+## Other embed knobs
+
+While we were in the area, two other small things moved:
+
+- **\`?scenario=0\`** hides the Run-scenario button and the simulator panel. Useful when the embed is purely a status display and you do not want users opening the playable scenario.
+- **Scroll, pinch, and double-click zoom are off** in the embed by default. Scrolling past the iframe in the host page used to land in the canvas and accidentally zoom; now scroll passes through to the host. Pan-on-drag still works, and the "Open full size" affordance gives users the full interactive view if they want it.
+
+The full embed surface today:
+
+| Param | Default | Effect |
+|---|---|---|
+| \`marking\` | empty | Highlights the listed places (comma-separated) |
+| \`minimap\` | shown | \`?minimap=0\` hides the minimap |
+| \`branding\` | shown | \`?branding=0\` hides the SymFlowBuilder watermark |
+| \`scenario\` | shown | \`?scenario=0\` hides the Run-scenario button |
+| \`play\` | off | \`?play=1\` autostarts the scenario on load |
+
+## Where to see it live
+
+The two [\`symflow-laravel\`](https://github.com/vandetho/symflow-laravel) showcases use this end-to-end:
+
+- [\`symflow-laravel-expense-approval\`](https://github.com/vandetho/symflow-laravel-expense-approval) — when an expense is sitting in legal + finance + manager review, all three places pulse on the embedded canvas
+- [\`symflow-laravel-issue-tracker\`](https://github.com/vandetho/symflow-laravel-issue-tracker) — \`code_review\` and \`qa_review\` both light up while the issue is in parallel review
+
+Both repos are runnable in two minutes (\`composer install && php artisan migrate:fresh --seed && php artisan serve\`) so you can watch the marking update live as you fire transitions.
+
+## Try it on your own workflow
+
+1. [Save a workflow](/dashboard) and click **Share** to get a share ID
+2. In whatever framework you are using, build the iframe \`src\` with your entity's current marking
+3. Refresh on transitions
+
+That is the entire integration. If you build something with it, [send us a link](https://github.com/vandetho/symflowbuilder/discussions) — we would love to feature it.`,
+    },
+    {
         slug: "symflow-laravel-showcases-expense-approval-and-issue-tracker",
         title: "Two Runnable symflow-laravel Showcases: Expense Approval and Issue Tracker",
         date: "2026-05-01",

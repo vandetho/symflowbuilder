@@ -16,6 +16,7 @@ import {
     CircleDot,
     Gem,
     Weight,
+    Radio,
     type LucideIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -155,6 +156,12 @@ const CATEGORIES: { title: string; features: Feature[] }[] = [
                 title: "Cloud Save",
                 description:
                     "Authenticated users get auto-save with debounced sync to the cloud. Guest drafts persist to localStorage and migrate automatically on sign-in.",
+            },
+            {
+                icon: Radio,
+                title: "Embed with Live Marking",
+                description:
+                    "Drop the canvas into your own app via /embed/<shareId>. Pass ?marking=place_a,place_b and the embedded canvas lights up the active places in real time — perfect for showing runtime state next to a Symfony or Laravel app's domain UI. Toggle minimap, branding, and scenario runner with query params.",
             },
         ],
     },
