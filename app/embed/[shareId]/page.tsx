@@ -53,6 +53,7 @@ export default async function EmbedWorkflowPage({
     const showMiniMap = query.minimap !== "0";
     const showBranding = query.branding !== "0";
     const autoPlay = query.play === "1";
+    const externalMarking = parseMarkingParam(query.marking);
 
     return (
         <EmbeddedWorkflowView
@@ -67,6 +68,17 @@ export default async function EmbedWorkflowPage({
             showMiniMap={showMiniMap}
             showBranding={showBranding}
             autoPlay={autoPlay}
+            externalMarking={externalMarking}
         />
     );
+}
+
+function parseMarkingParam(raw: string | string[] | undefined): string[] {
+    if (!raw) return [];
+    const values = Array.isArray(raw) ? raw : [raw];
+    const places = values
+        .flatMap((v) => v.split(","))
+        .map((s) => s.trim())
+        .filter((s) => /^[a-z][a-z0-9_]*$/i.test(s));
+    return Array.from(new Set(places));
 }
