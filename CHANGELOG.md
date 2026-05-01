@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.39.0](https://github.com/vandetho/symflowbuilder/compare/v1.38.3...v1.39.0) (2026-05-01)
+
+
+### Features
+
+* **embed:** scenario toggle, scroll-zoom off, marking blog + features ([#110](https://github.com/vandetho/symflowbuilder/issues/110)) ([4c8b5de](https://github.com/vandetho/symflowbuilder/commit/4c8b5de506d111ec369e1d0a420fe34d58f18954))
+
 ## [1.38.3](https://github.com/vandetho/symflowbuilder/compare/v1.38.2...v1.38.3) (2026-05-01)
 
 
