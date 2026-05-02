@@ -1,5 +1,7 @@
 # When `status = 'pending'` Stops Being Enough — Laravel + Petri Nets in Three Real Apps
 
+![When status = 'pending' stops being enough — Petri nets bring clarity to complex Laravel workflows](/blog/laravel-petri-nets-hero.png)
+
 _Why every Laravel app eventually outgrows the status enum, and what a real workflow engine looks like underneath._
 
 ---

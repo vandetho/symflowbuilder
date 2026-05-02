@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -218,6 +219,32 @@ export default async function BlogPostPage({
                     ))}
                 </ol>
             );
+            continue;
+        }
+
+        // Image: ![alt](src) on its own line
+        const imageMatch = line.trim().match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/);
+        if (imageMatch) {
+            const alt = imageMatch[1];
+            const src = imageMatch[2];
+            elements.push(
+                <figure key={key++} className="my-6">
+                    <Image
+                        src={src}
+                        alt={alt}
+                        width={1536}
+                        height={1024}
+                        className="w-full h-auto rounded-xl border border-[var(--glass-border)]"
+                        priority={key === 1}
+                    />
+                    {alt && (
+                        <figcaption className="mt-2 text-xs text-[var(--text-muted)] text-center">
+                            {alt}
+                        </figcaption>
+                    )}
+                </figure>
+            );
+            i++;
             continue;
         }
 
