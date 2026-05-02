@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.41.2](https://github.com/vandetho/symflowbuilder/compare/v1.41.1...v1.41.2) (2026-05-02)
+
+
+### Bug Fixes
+
+* **blog:** recurse into bold and italic content ([6164e2b](https://github.com/vandetho/symflowbuilder/commit/6164e2ba60240a6ba212bccb6598047a7dc76931))
+
 ## [1.41.1](https://github.com/vandetho/symflowbuilder/compare/v1.41.0...v1.41.1) (2026-05-02)
 
 
