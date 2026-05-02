@@ -221,6 +221,18 @@ export default async function BlogPostPage({
             continue;
         }
 
+        // Horizontal rule
+        if (/^---+\s*$/.test(line.trim())) {
+            elements.push(
+                <hr
+                    key={key++}
+                    className="my-8 border-0 border-t border-[var(--glass-border)]"
+                />
+            );
+            i++;
+            continue;
+        }
+
         // Empty line
         if (line.trim() === "") {
             i++;
@@ -282,7 +294,7 @@ export default async function BlogPostPage({
     );
 }
 
-/** Render inline markdown: **bold**, `code`, [links] */
+/** Render inline markdown: **bold**, *italic*, _italic_, `code`, [links], <autolinks> */
 function renderInline(text: string): React.ReactNode {
     const parts: React.ReactNode[] = [];
     let remaining = text;
@@ -292,6 +304,12 @@ function renderInline(text: string): React.ReactNode {
         const boldMatch = remaining.match(/\*\*(.+?)\*\*/);
         const codeMatch = remaining.match(/`(.+?)`/);
         const linkMatch = remaining.match(/\[(.+?)\]\((.+?)\)/);
+        // *italic* — but not part of **bold**
+        const italicStarMatch = remaining.match(/(?<!\*)\*(?!\*)([^*\n]+?)\*(?!\*)/);
+        // _italic_ — only when not surrounded by word chars (avoids snake_case)
+        const italicUnderMatch = remaining.match(/(?<![\w_])_(?!_)([^_\n]+?)_(?![\w_])/);
+        // <https://...> autolinks
+        const autoLinkMatch = remaining.match(/<(https?:\/\/[^>\s]+)>/);
 
         const matches = [
             boldMatch
@@ -302,6 +320,27 @@ function renderInline(text: string): React.ReactNode {
                 : null,
             linkMatch
                 ? { type: "link", index: linkMatch.index!, match: linkMatch }
+                : null,
+            italicStarMatch
+                ? {
+                      type: "italic",
+                      index: italicStarMatch.index!,
+                      match: italicStarMatch,
+                  }
+                : null,
+            italicUnderMatch
+                ? {
+                      type: "italic",
+                      index: italicUnderMatch.index!,
+                      match: italicUnderMatch,
+                  }
+                : null,
+            autoLinkMatch
+                ? {
+                      type: "autolink",
+                      index: autoLinkMatch.index!,
+                      match: autoLinkMatch,
+                  }
                 : null,
         ]
             .filter(Boolean)
@@ -347,6 +386,24 @@ function renderInline(text: string): React.ReactNode {
                             ? "noopener noreferrer"
                             : undefined
                     }
+                >
+                    {first.match[1]}
+                </a>
+            );
+        } else if (first.type === "italic") {
+            parts.push(
+                <em key={partKey++} className="italic">
+                    {first.match[1]}
+                </em>
+            );
+        } else if (first.type === "autolink") {
+            parts.push(
+                <a
+                    key={partKey++}
+                    href={first.match[1]}
+                    className="text-[var(--accent-bright)] hover:underline break-all"
+                    target="_blank"
+                    rel="noopener noreferrer"
                 >
                     {first.match[1]}
                 </a>
