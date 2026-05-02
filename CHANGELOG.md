@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.41.0](https://github.com/vandetho/symflowbuilder/compare/v1.40.0...v1.41.0) (2026-05-02)
+
+
+### Features
+
+* **editor:** replace one-click share with full share dialog ([#114](https://github.com/vandetho/symflowbuilder/issues/114)) ([71166f1](https://github.com/vandetho/symflowbuilder/commit/71166f12b5a25db773d6632c7db6a786b0b88983))
+
+
+### Documentation
+
+* **blog:** add Laravel + Petri Nets post ([30e8c44](https://github.com/vandetho/symflowbuilder/commit/30e8c44ca21a6c124675a40ddd789d0e0d976dd2))
+
 ## [1.40.0](https://github.com/vandetho/symflowbuilder/compare/v1.39.0...v1.40.0) (2026-05-01)
 
 
