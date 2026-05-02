@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.41.1](https://github.com/vandetho/symflowbuilder/compare/v1.41.0...v1.41.1) (2026-05-02)
+
+
+### Bug Fixes
+
+* **blog:** render italics, autolinks, and horizontal rules ([d693f60](https://github.com/vandetho/symflowbuilder/commit/d693f60b9587b35951759b40ed62c58b3acdac65))
+
 ## [1.41.0](https://github.com/vandetho/symflowbuilder/compare/v1.40.0...v1.41.0) (2026-05-02)
 
 
