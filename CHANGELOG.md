@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.42.0](https://github.com/vandetho/symflowbuilder/compare/v1.41.2...v1.42.0) (2026-05-02)
+
+
+### Features
+
+* **blog:** add hero image to Laravel + Petri Nets post ([9b4183e](https://github.com/vandetho/symflowbuilder/commit/9b4183ea3fceb266a11fd09abd29f26834febc28))
+
 ## [1.41.2](https://github.com/vandetho/symflowbuilder/compare/v1.41.1...v1.41.2) (2026-05-02)
 
 
