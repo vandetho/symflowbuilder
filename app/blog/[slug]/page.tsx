@@ -362,7 +362,7 @@ function renderInline(text: string): React.ReactNode {
                     key={partKey++}
                     className="font-medium text-[var(--text-primary)]"
                 >
-                    {first.match[1]}
+                    {renderInline(first.match[1])}
                 </strong>
             );
         } else if (first.type === "code") {
@@ -393,7 +393,7 @@ function renderInline(text: string): React.ReactNode {
         } else if (first.type === "italic") {
             parts.push(
                 <em key={partKey++} className="italic">
-                    {first.match[1]}
+                    {renderInline(first.match[1])}
                 </em>
             );
         } else if (first.type === "autolink") {
