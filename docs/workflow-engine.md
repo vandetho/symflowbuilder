@@ -1,6 +1,6 @@
 # Workflow Engine
 
-The workflow engine is published as the [`symflow`](https://www.npmjs.com/package/symflow) npm package ([GitHub](https://github.com/vandetho/symflow)). It powers the visual simulator in the editor and can be used standalone in any Node.js, serverless, or browser project.
+The engine ships as [`symflow`](https://www.npmjs.com/package/symflow) on npm ([source](https://github.com/vandetho/symflow)). It powers the editor's simulator and runs standalone in any Node.js, serverless, or browser project.
 
 ```bash
 npm install symflow
@@ -8,49 +8,49 @@ npm install symflow
 
 ## Symfony Compatibility
 
-The engine follows Symfony's semantics as closely as possible:
+The engine follows Symfony's semantics as closely as possible.
 
 ### Marking
 
-- **`workflow` type**: Multiple places can be active simultaneously (Petri-net). Marking is a `Record<string, number>` mapping place names to token counts.
-- **`state_machine` type**: Exactly one place is active at a time.
+- **`workflow` type**: multiple places active simultaneously (Petri-net). Marking is `Record<string, number>` — place names to token counts.
+- **`state_machine` type**: exactly one place active at a time.
 
 ### Transition Semantics
 
-- **`workflow` type with `from: [a, b]`**: AND-join. All from-places must have at least one token. Tokens are consumed from all from-places.
-- **`state_machine` type with `from: [a, b]`**: OR. The single active place must be one of the listed from-places.
-- **`to: [a, b]`**: AND-split. Tokens are placed in all to-places simultaneously.
+- **`workflow` type, `from: [a, b]`** — AND-join. All from-places need at least one token; tokens are consumed from all of them.
+- **`state_machine` type, `from: [a, b]`** — OR. The single active place must be one of the listed from-places.
+- **`to: [a, b]`** — AND-split. Tokens are placed in every to-place simultaneously.
 
 ### Event Dispatch Order
 
 When `apply(transitionName)` is called, events fire in this order (matching Symfony):
 
-| Order | Event        | Timing                                                  |
-| ----- | ------------ | ------------------------------------------------------- |
-| 1     | `guard`      | Before anything — checks if transition is allowed       |
-| 2     | `leave`      | Per from-place, before tokens are removed               |
-| 3     | `transition` | After tokens removed from from-places                   |
-| 4     | `enter`      | Per to-place, BEFORE marking is updated                 |
-| 5     | `entered`    | AFTER marking is updated (subject is now in new places) |
-| 6     | `completed`  | After the full transition is done                       |
-| 7     | `announce`   | Per newly enabled transition (re-checks availability)   |
+| Order | Event        | Timing                                                     |
+| ----- | ------------ | ---------------------------------------------------------- |
+| 1     | `guard`      | Before anything — checks whether the transition is allowed |
+| 2     | `leave`      | Per from-place, before tokens are removed                  |
+| 3     | `transition` | After tokens are removed from from-places                  |
+| 4     | `enter`      | Per to-place, BEFORE marking is updated                    |
+| 5     | `entered`    | AFTER marking is updated (subject is now in new places)    |
+| 6     | `completed`  | After the full transition is done                          |
+| 7     | `announce`   | Per newly enabled transition (re-checks availability)      |
 
-Key difference from Symfony: the engine does not dispatch named sub-events like `workflow.blog.guard.publish`. It uses generic event types.
+Key difference from Symfony: the engine does not dispatch named sub-events like `workflow.blog.guard.publish` — it uses generic event types.
 
 ### Guards
 
-- Guards are evaluated during `can()`, `apply()`, and `getEnabledTransitions()`
-- A pluggable `GuardEvaluator` function decides pass/fail
-- Default evaluator: all guards pass
-- Simulator: users can toggle guards on/off per transition to test different paths
+- Evaluated during `can()`, `apply()`, and `getEnabledTransitions()`.
+- A pluggable `GuardEvaluator` function decides pass/fail.
+- Default evaluator: all guards pass.
+- Simulator: toggle guards on or off per transition to explore different paths.
 
 ### TransitionBlockers
 
-When `can()` returns `{ allowed: false }`, it includes `blockers[]` explaining why:
+When `can()` returns `{ allowed: false }`, it includes a `blockers[]` array explaining why:
 
 - `unknown_transition` — transition name doesn't exist
 - `not_in_place` — required from-place is not marked
-- `invalid_marking` — state_machine has wrong number of active places
+- `invalid_marking` — state_machine has the wrong number of active places
 - `guard_blocked` — guard expression blocked the transition
 
 ## Package Structure
@@ -142,16 +142,16 @@ const engine = new WorkflowEngine(definition);
 
 `validateDefinition()` checks for:
 
-- No initial marking defined
-- Invalid initial marking (references non-existent place)
-- Invalid transition source/target (references non-existent place)
+- Missing initial marking
+- Invalid initial marking (references a non-existent place)
+- Invalid transition source/target (references a non-existent place)
 - Unreachable places (BFS from initial marking)
 - Dead transitions (source places are unreachable)
 - Orphan places (no incoming or outgoing transitions)
 
 ## Analyzer
 
-`analyzeWorkflow()` detects structural patterns:
+`analyzeWorkflow()` detects structural patterns.
 
 **Transition patterns:**
 
@@ -160,14 +160,14 @@ const engine = new WorkflowEngine(definition);
 - `and-join` — N from → 1 to (synchronization)
 - `and-split-join` — N from → M to
 
-**Place patterns (workflow type):**
+**Place patterns (`workflow` type):**
 
 - `or-split` — multiple outgoing transitions (choice)
 - `or-join` — multiple incoming transitions (merge)
-- `and-split` — target of a transition with multiple tos
-- `and-join` — source of a transition with multiple froms
+- `and-split` — target of a transition with multiple `tos`
+- `and-join` — source of a transition with multiple `froms`
 
-**Place patterns (state_machine type):**
+**Place patterns (`state_machine` type):**
 
 - `xor-split` — exclusive choice (only one path)
 - `xor-join` — exclusive merge (only one path was taken)

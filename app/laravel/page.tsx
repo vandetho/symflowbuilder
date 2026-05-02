@@ -26,25 +26,25 @@ const FEATURES = [
         icon: Gem,
         title: "symflow-laravel Compatible",
         description:
-            "Exports a ready-to-use PHP config file using symflow-laravel's data classes: WorkflowDefinition, Place, Transition, and WorkflowMeta.",
+            "Generates a PHP config file built from symflow-laravel's data classes: WorkflowDefinition, Place, Transition, and WorkflowMeta.",
     },
     {
         icon: Shield,
         title: "Guard Expressions",
         description:
-            "Guard expressions configured in the visual editor are exported directly into the transition's guard property. Access control built in.",
+            "Guards from the visual editor are emitted directly onto each transition's guard property. Access control built in.",
     },
     {
         icon: GitFork,
         title: "AND / OR Patterns",
         description:
-            "Model parallel forks (AND-split), synchronization (AND-join), and exclusive choices (OR) visually. The PHP export preserves multi-from and multi-to transitions.",
+            "Model parallel forks (AND-split), synchronization (AND-join), and exclusive choices (OR) visually. Multi-from and multi-to transitions survive the PHP export intact.",
     },
     {
         icon: Weight,
         title: "Weighted Arcs",
         description:
-            "Configure consume and produce weights on transitions for advanced Petri net modeling. Weights are exported to the PHP config automatically.",
+            "Set consume and produce weights for advanced Petri-net modeling. Weights flow through to the PHP config automatically.",
     },
     {
         icon: FileCode2,
@@ -56,19 +56,19 @@ const FEATURES = [
         icon: Play,
         title: "Validate Before Export",
         description:
-            "Catch unreachable states, dead transitions, and structural errors in the visual editor before exporting. Ship valid configs every time.",
+            "Catch unreachable states, dead transitions, and structural errors in the editor — before they become runtime bugs in Laravel.",
     },
     {
         icon: Upload,
         title: "Round-Trip Workflow",
         description:
-            "Import your existing Symfony YAML, edit visually in SymFlowBuilder, then export as Laravel PHP config. Migrate workflows between frameworks effortlessly.",
+            "Import existing Symfony YAML, edit visually, export as Laravel PHP config. Migrate between frameworks without rewriting by hand.",
     },
     {
         icon: Zap,
         title: "Zero Manual Config",
         description:
-            "The exported PHP file is complete — includes imports, definition, metadata, and marking store config. Copy the file into your Laravel project and register it.",
+            "The exported file is complete — imports, definition, metadata, and marking store. Drop it into your Laravel project and register it.",
     },
 ];
 
@@ -128,19 +128,19 @@ const STEPS = [
         step: "01",
         title: "Design your workflow",
         description:
-            "Use the visual editor to create states, transitions, guards, and metadata. No PHP needed yet.",
+            "Build states, transitions, guards, and metadata in the visual editor. No PHP needed yet.",
     },
     {
         step: "02",
         title: "Export as PHP",
         description:
-            'Click Export, select "PHP (Laravel)", and copy or download the generated config file.',
+            'Open Export, choose "PHP (Laravel)", and copy or download the generated file.',
     },
     {
         step: "03",
         title: "Drop into Laravel",
         description:
-            "Place the file in your Laravel project's config directory and register it with symflow-laravel. Done.",
+            "Place it in your Laravel config directory and register with symflow-laravel. Done.",
     },
 ];
 
@@ -189,8 +189,8 @@ export default async function LaravelPage() {
 
                     <p className="text-base sm:text-lg text-[var(--text-secondary)] max-w-lg leading-relaxed">
                         Build your workflow in SymFlowBuilder, export a symflow-laravel
-                        compatible PHP config file, and drop it into your Laravel project.
-                        Zero manual configuration.
+                        compatible PHP config, and drop it into your Laravel project. Zero
+                        manual configuration.
                     </p>
 
                     <CopyCommand command="composer require vandetho/symflow-laravel" />
@@ -357,9 +357,8 @@ export default async function LaravelPage() {
                             Example <span className="font-medium">exported config</span>
                         </h2>
                         <p className="text-sm text-[var(--text-secondary)] text-center max-w-lg mx-auto mb-4">
-                            This is the actual output from SymFlowBuilder for a simple
-                            order workflow with guards. Copy it directly into your Laravel
-                            project.
+                            Actual SymFlowBuilder output for a simple order workflow with
+                            guards. Drop it straight into your Laravel project.
                         </p>
                         <CodeBlock
                             code={PHP_EXAMPLE}
@@ -411,9 +410,9 @@ export default async function LaravelPage() {
                                 Design visually, run in Laravel
                             </h2>
                             <p className="text-sm text-[var(--text-secondary)] max-w-md leading-relaxed">
-                                Build your workflow in SymFlowBuilder, export it as a
-                                symflow-laravel compatible PHP config, and register it in
-                                your Laravel project. No manual YAML-to-PHP translation.
+                                Build the workflow on a canvas, export a symflow-laravel
+                                compatible PHP config, and register it in your Laravel
+                                project. No manual YAML-to-PHP translation.
                             </p>
                             <div className="flex items-center gap-3 mt-2">
                                 <Link href="/editor">

@@ -39,37 +39,37 @@ const CATEGORIES: { title: string; features: Feature[] }[] = [
                 icon: MousePointerClick,
                 title: "Drag & Drop",
                 description:
-                    "Add states and transitions by dragging from the palette. Connect them visually by drawing edges between nodes. No config files to edit by hand.",
+                    "Drag states and transitions from the palette, then connect them visually. No config files to edit by hand.",
             },
             {
                 icon: GitFork,
                 title: "AND / OR Patterns",
                 description:
-                    "Transition nodes properly model Petri-net semantics. AND-split forks into parallel states, AND-join synchronizes them. OR patterns use separate transitions for exclusive choices.",
+                    "Transition nodes model Petri-net semantics: AND-split forks into parallel states, AND-join synchronizes them, and OR uses separate transitions for exclusive choices.",
             },
             {
                 icon: Zap,
                 title: "Undo / Redo",
                 description:
-                    "Full 50-step history with Cmd+Z / Cmd+Shift+Z. Every meaningful change — node move, edge add, property edit — creates a snapshot you can revert to.",
+                    "Full 50-step history (Cmd+Z / Cmd+Shift+Z). Every meaningful change — node move, edge add, property edit — creates a snapshot you can revert to.",
             },
             {
                 icon: Shield,
                 title: "Guards & Metadata",
                 description:
-                    "Configure guard expressions using Symfony ExpressionLanguage syntax. Add transition listeners, key-value metadata on states and transitions.",
+                    "Configure guard expressions in Symfony ExpressionLanguage syntax. Attach transition listeners and key-value metadata to states and transitions.",
             },
             {
                 icon: Palette,
                 title: "Styling Metadata",
                 description:
-                    "Set bg_color, description, color, and arrow_color matching Symfony's workflow dump styling. Pick colors with a built-in color picker that previews on the canvas.",
+                    "Set bg_color, description, color, and arrow_color to match Symfony's workflow dump styling. Pick colors with the built-in picker and preview live on the canvas.",
             },
             {
                 icon: Weight,
                 title: "Weighted Arcs",
                 description:
-                    "Configure consume and produce weights on transitions for advanced Petri net modeling. Weights display directly on the canvas and export to all formats automatically.",
+                    "Configure consume and produce weights on transitions for advanced Petri net modeling. Weights render on the canvas and round-trip through every export format.",
             },
         ],
     },
@@ -80,25 +80,25 @@ const CATEGORIES: { title: string; features: Feature[] }[] = [
                 icon: FileCode2,
                 title: "Production-Ready YAML",
                 description:
-                    "Export valid Symfony workflow YAML for versions 5.4, 6.4, 7.4, and 8.0. Uses tilde nulls, flow arrays, and scalar initial_marking — ready to paste into your project.",
+                    "Export valid Symfony workflow YAML for 5.4, 6.4, 7.4, and 8.0. Tilde nulls, flow arrays, scalar initial_marking — ready to paste into your project.",
             },
             {
                 icon: Upload,
                 title: "Import Existing Workflows",
                 description:
-                    "Drop in your existing YAML files or paste them directly. SymFlowBuilder parses the YAML, detects the workflow type, and renders the graph with automatic topological layout.",
+                    "Drop in YAML files or paste them directly. SymFlowBuilder parses, detects the workflow type, and renders the graph with automatic topological layout.",
             },
             {
                 icon: Gem,
                 title: "PHP / Laravel Export",
                 description:
-                    "Export a ready-to-use symflow-laravel compatible PHP config file. Design your workflow visually in SymFlowBuilder, then run it in Laravel with zero manual config.",
+                    "Export a symflow-laravel compatible PHP config file. Design visually, drop it into Laravel — zero manual config.",
             },
             {
                 icon: CircleDot,
                 title: "Graphviz DOT Export",
                 description:
-                    "Export your workflow as Graphviz DOT notation for rendering with external tools, embedding in documentation, or generating publication-quality diagrams.",
+                    "Export Graphviz DOT for rendering with external tools, embedding in documentation, or generating publication-quality diagrams.",
             },
         ],
     },
@@ -109,13 +109,13 @@ const CATEGORIES: { title: string; features: Feature[] }[] = [
                 icon: Play,
                 title: "Workflow Simulator",
                 description:
-                    "Toggle simulate mode to step through your workflow visually. Active states glow green, available transitions highlight. Toggle guards on/off to test different paths. See Symfony events (guard, leave, transition, enter, entered, completed) fire in real-time. Use auto-play with configurable speed, step back through history, or reset to the initial marking.",
+                    "Step through your workflow visually. Active states glow, available transitions highlight, and Symfony events (guard, leave, transition, enter, entered, completed) fire in real time. Toggle guards to test different paths, auto-play at configurable speed, step back through history, or reset to the initial marking.",
             },
             {
                 icon: AlertTriangle,
                 title: "Validation",
                 description:
-                    "Detect unreachable states, dead transitions, orphan places, and invalid references before exporting. Catch structural errors in the editor, not in production.",
+                    "Catch unreachable states, dead transitions, orphan places, and invalid references in the editor — not in production.",
             },
         ],
     },
@@ -126,19 +126,19 @@ const CATEGORIES: { title: string; features: Feature[] }[] = [
                 icon: Package,
                 title: "npm Package",
                 description:
-                    "The workflow engine that powers SymFlowBuilder is published as symflow on npm. Install it in any Node.js, serverless, or browser project. Zero framework dependencies.",
+                    "The engine that powers SymFlowBuilder ships as symflow on npm. Run it in any Node.js, serverless, or browser project with zero framework dependencies.",
             },
             {
                 icon: Cpu,
                 title: "Symfony-Compatible Runtime",
                 description:
-                    "State machines and Petri net workflows with the same semantics as Symfony's Workflow component. Guards, events in Symfony order (guard, leave, transition, enter, entered, completed, announce), marking stores, and validation.",
+                    "State machines and Petri nets with Symfony's exact semantics: guards, events in Symfony order (guard, leave, transition, enter, entered, completed, announce), marking stores, and validation.",
             },
             {
                 icon: FileCode2,
                 title: "Import & Export Formats",
                 description:
-                    "Round-trip YAML, JSON, TypeScript, Mermaid, Graphviz DOT, and PHP (Laravel). Import existing Symfony configs — including !php/const tags — and run them directly. Export TypeScript codegen for type-safe workflow definitions.",
+                    "Round-trip YAML, JSON, TypeScript, Mermaid, Graphviz DOT, and PHP (Laravel). Import existing Symfony configs — including !php/const tags — and run them directly.",
             },
         ],
     },
@@ -149,19 +149,19 @@ const CATEGORIES: { title: string; features: Feature[] }[] = [
                 icon: Eye,
                 title: "Shareable Links",
                 description:
-                    "Generate read-only public links to share your workflow designs. Recipients can view the workflow and export its YAML without creating an account.",
+                    "Generate read-only public links. Recipients can view the workflow and export its YAML without an account.",
             },
             {
                 icon: Cloud,
                 title: "Cloud Save",
                 description:
-                    "Authenticated users get auto-save with debounced sync to the cloud. Guest drafts persist to localStorage and migrate automatically on sign-in.",
+                    "Signed-in users get debounced auto-save to the cloud. Guest drafts persist to localStorage and migrate on sign-in.",
             },
             {
                 icon: Radio,
                 title: "Embed with Live Marking",
                 description:
-                    "Drop the canvas into your own app via /embed/<shareId>. Pass ?marking=place_a,place_b and the embedded canvas lights up the active places in real time — perfect for showing runtime state next to a Symfony or Laravel app's domain UI. Toggle minimap, branding, and scenario runner with query params.",
+                    "Drop the canvas into any app via /embed/<shareId>. Pass ?marking=place_a,place_b and active places light up in real time — perfect for showing runtime state next to a Symfony or Laravel domain UI. Toggle minimap, branding, and scenario runner with query params.",
             },
         ],
     },

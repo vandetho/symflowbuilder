@@ -27,49 +27,49 @@ const FEATURES = [
         icon: Cpu,
         title: "Symfony-Compatible Runtime",
         description:
-            "State machines and Petri net workflows with the same semantics as Symfony's Workflow component. Markings, transitions, guards, and events — all in TypeScript.",
+            "State machines and Petri nets with Symfony's exact semantics. Markings, transitions, guards, and events — all in TypeScript.",
     },
     {
         icon: Zap,
         title: "Event System",
         description:
-            "Events fire in Symfony's exact order: guard, leave, transition, enter, entered, completed, announce. Subscribe to any event with typed listeners.",
+            "Events fire in Symfony order: guard, leave, transition, enter, entered, completed, announce. Subscribe with typed listeners.",
     },
     {
         icon: Shield,
         title: "Pluggable Guards",
         description:
-            "Attach guard expressions to transitions and provide your own evaluator. Integrate role checks, feature flags, or any custom authorization logic.",
+            "Attach guard expressions to transitions and plug in your own evaluator. Wire up role checks, feature flags, or any custom authorization logic.",
     },
     {
         icon: GitFork,
         title: "AND / OR Patterns",
         description:
-            "Petri net support with AND-split (parallel fork), AND-join (synchronization), OR-split (exclusive choice), and XOR patterns for state machines.",
+            "Petri-net AND-split (parallel fork), AND-join (synchronization), OR-split (exclusive choice), and XOR patterns for state machines.",
     },
     {
         icon: Layers,
         title: "Subject-Driven API",
         description:
-            "Mirrors Symfony's Workflow service. Pass your entity to can() and apply() — the marking is read from and written back automatically via marking stores.",
+            "Mirrors Symfony's Workflow service. Pass your entity to can() and apply() — marking stores read and write the marking for you.",
     },
     {
         icon: FileCode2,
         title: "YAML / JSON / TypeScript",
         description:
-            "Round-trip import and export for all formats. Import existing Symfony configs including !php/const and !php/enum tags. Generate typed TypeScript modules.",
+            "Round-trip import and export for every format. Read existing Symfony configs (including !php/const and !php/enum) or generate typed TypeScript modules.",
     },
     {
         icon: Upload,
         title: "!php/const & !php/enum",
         description:
-            'Symfony YAML configs using PHP constants and backed enums are resolved automatically. App\\Enum\\Status::Active becomes "Active".',
+            'Symfony YAML using PHP constants and backed enums is resolved automatically. App\\Enum\\Status::Active becomes "Active".',
     },
     {
         icon: Play,
         title: "Validation & Analysis",
         description:
-            "Catch unreachable places, dead transitions, and orphan nodes before runtime. Analyze patterns to understand your workflow's structure.",
+            "Catch unreachable places, dead transitions, and orphan nodes before runtime. Analyze structural patterns at a glance.",
     },
 ];
 
@@ -278,8 +278,8 @@ export default async function EnginePage() {
                             Subject-Driven API
                         </h3>
                         <p className="text-xs text-(--text-secondary)">
-                            Like Symfony — pass your entity, the marking is managed for
-                            you.
+                            Like Symfony — pass your entity, marking stores handle the
+                            rest.
                         </p>
                         <CodeBlock code={SUBJECT_EXAMPLE} title="workflow.ts" />
                     </div>
