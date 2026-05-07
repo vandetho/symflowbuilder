@@ -10,6 +10,8 @@ const FOOTER_LINKS = [
     { href: "/explore", label: "Explore" },
     { href: "/blog", label: "Blog" },
     { href: "/faq", label: "FAQ" },
+    { href: "/privacy", label: "Privacy" },
+    { href: "/terms", label: "Terms" },
 ];
 
 const SPONSORS = [
