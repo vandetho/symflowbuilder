@@ -177,11 +177,13 @@ export function HeroGraph() {
     const mounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
     if (!mounted) {
-        return <div className="w-full h-[540px] rounded-[18px] glass animate-pulse" />;
+        return (
+            <div className="w-full h-[320px] sm:h-[420px] lg:h-[540px] rounded-[18px] glass animate-pulse" />
+        );
     }
 
     return (
-        <div className="w-full h-[540px] rounded-[18px] glass overflow-hidden shadow-[0_16px_64px_rgba(124,111,247,0.08)]">
+        <div className="w-full h-[320px] sm:h-[420px] lg:h-[540px] rounded-[18px] glass overflow-hidden shadow-[0_16px_64px_rgba(124,111,247,0.08)]">
             <ReactFlowProvider>
                 <ReactFlow
                     nodes={DEMO_NODES}
