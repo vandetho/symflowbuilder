@@ -115,7 +115,7 @@ export default async function LandingPage() {
                 {/* ─── Node: Hero (Initial) ─── */}
                 <FlowNode label="initial_marking" isInitial className="pt-20 pb-8">
                     <div
-                        className="absolute top-0 left-1/2 -translate-x-1/2 w-150 h-100 pointer-events-none"
+                        className="absolute top-0 left-1/2 -translate-x-1/2 w-[min(600px,100vw)] h-100 pointer-events-none"
                         style={{
                             background:
                                 "radial-gradient(ellipse at center, rgba(124,111,247,0.12) 0%, transparent 70%)",
@@ -146,9 +146,9 @@ export default async function LandingPage() {
                             production-ready YAML.
                         </p>
 
-                        <div className="flex items-center gap-3 mt-2">
-                            <Link href="/editor">
-                                <Button size="lg" className="gap-2 text-sm">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-3 mt-2 w-full sm:w-auto">
+                            <Link href="/editor" className="w-full sm:w-auto">
+                                <Button size="lg" className="gap-2 text-sm w-full sm:w-auto">
                                     Start Building
                                     <ArrowRight className="w-4 h-4" />
                                 </Button>
@@ -157,11 +157,12 @@ export default async function LandingPage() {
                                 href="https://github.com/vandetho/symflowbuilder"
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="w-full sm:w-auto"
                             >
                                 <Button
                                     variant="outline"
                                     size="lg"
-                                    className="gap-2 text-sm"
+                                    className="gap-2 text-sm w-full sm:w-auto"
                                 >
                                     <GitHubIcon className="w-4 h-4" />
                                     Star on GitHub
@@ -468,9 +469,9 @@ export default async function LandingPage() {
                                     Sign in to unlock cloud save, versioning, and
                                     shareable links.
                                 </p>
-                                <div className="flex items-center gap-3 mt-2">
-                                    <Link href="/editor">
-                                        <Button size="lg" className="gap-2">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-3 mt-2 w-full sm:w-auto">
+                                    <Link href="/editor" className="w-full sm:w-auto">
+                                        <Button size="lg" className="gap-2 w-full sm:w-auto">
                                             Start Building
                                             <ArrowRight className="w-4 h-4" />
                                         </Button>
@@ -479,11 +480,12 @@ export default async function LandingPage() {
                                         href="https://github.com/vandetho/symflowbuilder"
                                         target="_blank"
                                         rel="noopener noreferrer"
+                                        className="w-full sm:w-auto"
                                     >
                                         <Button
                                             variant="outline"
                                             size="lg"
-                                            className="gap-2"
+                                            className="gap-2 w-full sm:w-auto"
                                         >
                                             <GitHubIcon className="w-4 h-4" />
                                             View Source
