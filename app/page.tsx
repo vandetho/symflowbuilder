@@ -148,7 +148,10 @@ export default async function LandingPage() {
 
                         <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-3 mt-2 w-full sm:w-auto">
                             <Link href="/editor" className="w-full sm:w-auto">
-                                <Button size="lg" className="gap-2 text-sm w-full sm:w-auto">
+                                <Button
+                                    size="lg"
+                                    className="gap-2 text-sm w-full sm:w-auto"
+                                >
                                     Start Building
                                     <ArrowRight className="w-4 h-4" />
                                 </Button>
@@ -471,7 +474,10 @@ export default async function LandingPage() {
                                 </p>
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-3 mt-2 w-full sm:w-auto">
                                     <Link href="/editor" className="w-full sm:w-auto">
-                                        <Button size="lg" className="gap-2 w-full sm:w-auto">
+                                        <Button
+                                            size="lg"
+                                            className="gap-2 w-full sm:w-auto"
+                                        >
                                             Start Building
                                             <ArrowRight className="w-4 h-4" />
                                         </Button>

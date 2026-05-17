@@ -177,7 +177,9 @@ export function HeroGraph() {
     const mounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
     if (!mounted) {
-        return <div className="w-full h-[320px] sm:h-[420px] lg:h-[540px] rounded-[18px] glass animate-pulse" />;
+        return (
+            <div className="w-full h-[320px] sm:h-[420px] lg:h-[540px] rounded-[18px] glass animate-pulse" />
+        );
     }
 
     return (
