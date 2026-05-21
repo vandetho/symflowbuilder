@@ -21,6 +21,9 @@ const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://symflowbuilder.com";
 
 export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),
+    alternates: {
+        canonical: "/",
+    },
     title: {
         default: "SymFlowBuilder — Visual Symfony Workflow Builder",
         template: "%s — SymFlowBuilder",

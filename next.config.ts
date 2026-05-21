@@ -26,6 +26,21 @@ const nextConfig: NextConfig = {
             },
         ];
     },
+    async redirects() {
+        return [
+            {
+                source: "/:path*",
+                has: [{ type: "host", value: "www.symflowbuilder.com" }],
+                destination: "https://symflowbuilder.com/:path*",
+                permanent: true,
+            },
+            {
+                source: "/news/import-from-url",
+                destination: "/blog/import-workflows-from-url",
+                permanent: true,
+            },
+        ];
+    },
 };
 
 export default nextConfig;
