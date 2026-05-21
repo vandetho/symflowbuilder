@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.43.0](https://github.com/vandetho/symflowbuilder/compare/v1.42.0...v1.43.0) (2026-05-21)
+
+
+### Features
+
+* introduction blog post + landing page mobile fixes ([#119](https://github.com/vandetho/symflowbuilder/issues/119)) ([3d9920b](https://github.com/vandetho/symflowbuilder/commit/3d9920badac3984d6eb76696135b793f932da32c))
+* **legal:** add privacy policy and terms of use pages ([b19ba41](https://github.com/vandetho/symflowbuilder/commit/b19ba412c9164c6274981a7126dce0cd9739f95c))
+
+
+### Bug Fixes
+
+* **seo:** add canonical URL and resolve GSC indexing issues ([d832cce](https://github.com/vandetho/symflowbuilder/commit/d832cce9bb14a66b6df25a6f6317fc8f1a0ab075))
+
 ## [1.42.0](https://github.com/vandetho/symflowbuilder/compare/v1.41.2...v1.42.0) (2026-05-02)
 
 
