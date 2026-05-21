@@ -33,10 +33,10 @@ jobs:
 
                       echo "==> Ensuring pnpm is available..."
                       export COREPACK_ENABLE_STRICT=0
+                      export PNPM_HOME="$HOME/.local/share/pnpm"
+                      export PATH="$PNPM_HOME:$PATH"
                       if ! command -v pnpm &>/dev/null || ! pnpm --version &>/dev/null; then
                           curl -fsSL https://get.pnpm.io/install.sh | sh -
-                          export PNPM_HOME="$HOME/.local/share/pnpm"
-                          export PATH="$PNPM_HOME:$PATH"
                       fi
 
                       echo "==> Installing dependencies..."
