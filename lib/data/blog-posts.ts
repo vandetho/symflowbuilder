@@ -9,6 +9,389 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
     {
+        slug: "state-machine-vs-workflow-worked-examples",
+        title: "State Machine vs Workflow: The Same Domain, Modeled Both Ways",
+        date: "2026-07-26",
+        excerpt:
+            "Four worked examples — an order lifecycle, a parallel fulfillment flow, an article review, and one entity with three concurrent lifecycles. Includes the two traps that bite everyone: `from: [a, b]` means the opposite thing in each type, and `to: [x, y]` will not compile under state_machine.",
+        tags: ["guide", "symfony", "state-machine", "petri-net"],
+        content: `Every Symfony workflow config starts with one line you have to get right:
+
+\`\`\`yaml
+type: state_machine   # or: workflow
+\`\`\`
+
+Most explanations stop at "state machine = one state, workflow = many states." That is true, and it is not enough to choose with. The type changes how your YAML is *compiled*, what your database column looks like, and — the part that surprises people — what the exact same \`from:\` list means.
+
+This post models the same domain both ways, then walks through two traps and four worked examples.
+
+---
+
+## The one-line difference
+
+A workflow is a Petri net. It has **tokens**. The set of places holding a token is the **marking**.
+
+- **\`state_machine\`** — exactly one token, always. The marking is a single place name.
+- **\`workflow\`** — any number of tokens. The marking is a set of place names.
+
+Everything else follows from that. Symfony's \`StateMachine\` class is literally \`extends Workflow\`; what differs is the marking store, the definition validator, and how the config compiles your transitions.
+
+---
+
+## Example 1: order lifecycle — a state machine
+
+An order is *one* thing at a time. New, then paid, then shipped, then delivered. It cannot be paid and delivered simultaneously.
+
+\`\`\`yaml
+framework:
+    workflows:
+        order:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\\Entity\\Order
+            initial_marking: new
+            places: [new, paid, shipped, delivered, cancelled]
+            transitions:
+                pay:
+                    from: new
+                    to: paid
+                ship:
+                    from: paid
+                    to: shipped
+                deliver:
+                    from: shipped
+                    to: delivered
+                cancel:
+                    from: [new, paid]
+                    to: cancelled
+\`\`\`
+
+The entity holds a plain string:
+
+\`\`\`php
+#[ORM\\Entity]
+class Order
+{
+    #[ORM\\Column(length: 20)]
+    private string $status = 'new';
+
+    public function getStatus(): string { return $this->status; }
+    public function setStatus(string $status): void { $this->status = $status; }
+}
+\`\`\`
+
+And the runtime code reads exactly how you would hope:
+
+\`\`\`php
+public function ship(Order $order, WorkflowInterface $orderStateMachine): void
+{
+    if (!$orderStateMachine->can($order, 'ship')) {
+        throw new ConflictHttpException('Order cannot ship from ' . $order->getStatus());
+    }
+
+    $orderStateMachine->apply($order, 'ship');
+    $this->em->flush();
+}
+\`\`\`
+
+This is the right default. If you can write your states down as a single column with a \`CHECK\` constraint and never feel like you are lying, use a state machine.
+
+---
+
+## Example 2: the same order, with parallel fulfillment
+
+Now the business adds a rule: once an order is paid, **payment capture** and **warehouse picking** run at the same time, and the order only ships when both are done.
+
+Your single \`status\` column cannot express that. You will reach for a second column — \`payment_status\` — and at that moment you have built a Petri net by hand, without the bookkeeping.
+
+Here it is as an actual one:
+
+\`\`\`yaml
+framework:
+    workflows:
+        order_fulfillment:
+            type: workflow
+            marking_store:
+                type: method
+                property: marking
+            supports:
+                - App\\Entity\\Order
+            initial_marking: [new]
+            places:
+                [
+                    new,
+                    capturing_payment,
+                    payment_captured,
+                    picking,
+                    picked,
+                    shipped,
+                    delivered,
+                ]
+            transitions:
+                pay:
+                    from: new
+                    to: [capturing_payment, picking]
+                capture:
+                    from: capturing_payment
+                    to: payment_captured
+                pick:
+                    from: picking
+                    to: picked
+                ship:
+                    from: [payment_captured, picked]
+                    to: shipped
+                deliver:
+                    from: shipped
+                    to: delivered
+\`\`\`
+
+\`pay\` is an **AND-split**: one token in, two tokens out. \`ship\` is an **AND-join**: it stays disabled until *both* \`payment_captured\` and \`picked\` hold a token, then consumes both and produces one.
+
+The entity changes shape — the marking is now a set, so it needs a JSON column:
+
+\`\`\`php
+#[ORM\\Entity]
+class Order
+{
+    /** @var array<string, int> */
+    #[ORM\\Column(type: 'json')]
+    private array $marking = [];
+
+    public function getMarking(): array { return $this->marking; }
+    public function setMarking(array $marking): void { $this->marking = $marking; }
+}
+\`\`\`
+
+You did not have to change the \`marking_store\` config to get this. Symfony builds a \`MethodMarkingStore\` with \`singleState = ('state_machine' === $type)\` — the type line alone decides whether your property receives a string or an array. That is why switching \`type:\` on a live workflow is a **migration**, not a config tweak.
+
+Reading the current state now means reading a list:
+
+\`\`\`php
+$places = array_keys($workflow->getMarking($order)->getPlaces());
+// ['capturing_payment', 'picking']
+
+$waitingOn = array_intersect($places, ['capturing_payment', 'picking']);
+\`\`\`
+
+---
+
+## Trap 1: \`from: [a, b]\` means the opposite thing in each type
+
+This is the single most expensive misunderstanding in the component, because the YAML is byte-for-byte identical and both types accept it.
+
+\`\`\`yaml
+cancel:
+    from: [new, paid]
+    to: cancelled
+\`\`\`
+
+| Type | Meaning | Fires when |
+|---|---|---|
+| \`state_machine\` | **OR** — from \`new\` *or* from \`paid\` | the single active state is either one |
+| \`workflow\` | **AND-join** — consumes a token from \`new\` *and* from \`paid\` | both places hold a token at once |
+
+The reason is in the compiler. For \`state_machine\`, Symfony's FrameworkBundle expands the config into one \`Transition\` object per from×to pair:
+
+\`\`\`php
+// state_machine
+foreach ($transition['from'] as $from) {
+    foreach ($transition['to'] as $to) {
+        $transitions[] = new Transition($name, $from, $to);
+    }
+}
+
+// workflow
+$transitions[] = new Transition($name, $transition['from'], $transition['to']);
+\`\`\`
+
+Two separate single-input transitions that happen to share a name — an OR. Under \`workflow\`, it stays one transition with two inputs, and \`Workflow::buildTransitionBlockerList()\` requires *every* \`from\` place to be marked — an AND.
+
+So if you copy a state machine config, flip \`type\` to \`workflow\`, and your \`cancel\` transition silently stops being available: this is why. Split it into two transitions:
+
+\`\`\`yaml
+cancel_new:
+    from: new
+    to: cancelled
+cancel_paid:
+    from: paid
+    to: cancelled
+\`\`\`
+
+---
+
+## Trap 2: \`to: [x, y]\` will not compile under \`state_machine\`
+
+Going the other direction, an AND-split has no meaning when only one token exists. Symfony does not fail silently — \`StateMachineValidator\` rejects the definition at container compile time:
+
+\`\`\`yaml
+type: state_machine
+transitions:
+    submit:
+        from: draft
+        to: [checking_content, checking_spelling]   # boom
+\`\`\`
+
+\`\`\`
+A transition from a place/state must have an unique name.
+Multiple transitions named "submit" from place/state "draft" were found on StateMachine "article".
+\`\`\`
+
+The message is confusing until you know about the from×to expansion above: \`to: [x, y]\` became two transitions both named \`submit\` leaving \`draft\`, and a state machine needs the next state to be unambiguous.
+
+The same validator enforces three other rules worth knowing:
+
+- one output per transition — *"A transition in StateMachine can only have one output"*
+- one input per transition — after expansion, so multi-\`from\` config is still fine
+- **one initial place** — *"cannot store many places. But the definition has %d initial places"*
+
+If you hit any of these, the definition is telling you it wants to be a \`workflow\`.
+
+---
+
+## Example 3: article review — the canonical workflow
+
+Editorial flows are the textbook Petri net because two humans check two unrelated things and neither should wait on the other.
+
+\`\`\`yaml
+framework:
+    workflows:
+        article:
+            type: workflow
+            marking_store:
+                type: method
+                property: marking
+            supports:
+                - App\\Entity\\Article
+            initial_marking: [draft]
+            places:
+                [
+                    draft,
+                    checking_content,
+                    checking_spelling,
+                    content_approved,
+                    spelling_approved,
+                    published,
+                    rejected,
+                ]
+            transitions:
+                start_review:
+                    from: draft
+                    to: [checking_content, checking_spelling]
+                approve_content:
+                    from: checking_content
+                    to: content_approved
+                    guard: "is_granted('ROLE_EDITOR')"
+                approve_spelling:
+                    from: checking_spelling
+                    to: spelling_approved
+                    guard: "is_granted('ROLE_PROOFREADER')"
+                publish:
+                    from: [content_approved, spelling_approved]
+                    to: published
+\`\`\`
+
+What this buys you over two boolean columns:
+
+- \`$workflow->can($article, 'publish')\` is the *whole* readiness check. No \`if ($a->contentOk && $a->spellingOk)\` drifting out of sync across three controllers.
+- \`getEnabledTransitions()\` drives the UI directly — render a button per enabled transition and the buttons are correct by construction.
+- Guards attach to the individual approval, not to the publish step, so each reviewer's permission lives next to their transition.
+
+A useful sanity check while designing: an entity whose reviewers can act in any order, independently, is a workflow. An entity whose reviewers form a queue — legal, *then* finance — is a state machine with more places.
+
+---
+
+## Example 4: one entity, three concurrent lifecycles
+
+The case people model wrong most often. A support ticket has a triage lifecycle, a billing lifecycle, and an SLA lifecycle. They overlap in time but never interact.
+
+You *can* express this as one Petri net with three permanently-parallel token chains. Do not. Nothing joins, so the net gives you no synchronization value, and every place name has to be prefixed to stay readable.
+
+Attach three separate workflows to the same class instead:
+
+\`\`\`yaml
+framework:
+    workflows:
+        ticket_triage:
+            type: state_machine
+            marking_store: { type: method, property: triageStatus }
+            supports: [App\\Entity\\Ticket]
+            initial_marking: untriaged
+            # ...
+
+        ticket_billing:
+            type: state_machine
+            marking_store: { type: method, property: billingStatus }
+            supports: [App\\Entity\\Ticket]
+            initial_marking: unbilled
+            # ...
+
+        ticket_sla:
+            type: state_machine
+            marking_store: { type: method, property: slaStatus }
+            supports: [App\\Entity\\Ticket]
+            initial_marking: within_sla
+            # ...
+\`\`\`
+
+Each is a clean single-state machine on its own property, and you inject them by name:
+
+\`\`\`php
+public function __construct(
+    private readonly WorkflowInterface $ticketTriageStateMachine,
+    private readonly WorkflowInterface $ticketBillingStateMachine,
+) {}
+\`\`\`
+
+Rule of thumb: **use a \`workflow\` when parallel branches eventually join. Use several \`state_machine\`s when they never do.**
+
+The Laravel walkthrough — [When status = 'pending' Stops Being Enough](/blog/when-status-pending-stops-being-enough-laravel-petri-nets) — has a runnable version of all three shapes if you want to click through them.
+
+---
+
+## Decision table
+
+| Question | \`state_machine\` | \`workflow\` |
+|---|---|---|
+| Can two things be true at once? | No | Yes |
+| Does a step wait on *several* predecessors? | No | Yes (AND-join) |
+| \`from: [a, b]\` means | OR (any one) | AND (all of them) |
+| \`to: [x, y]\` allowed? | No — compile error | Yes (AND-split) |
+| Marking property type | \`string\` | \`array\` (JSON column) |
+| \`initial_marking\` | one place | list of places |
+| Multiple initial places | Rejected by validator | Fine |
+| Cost of getting it wrong | You add a second status column | You maintain a net that never joins |
+
+---
+
+## Migrating a state machine to a workflow
+
+When you do outgrow the single state, the change is mechanical but touches four places:
+
+1. **Column** — \`string\` becomes \`json\`. Backfill: \`UPDATE orders SET marking = json_build_object(status, 1)\`.
+2. **Entity** — the getter/setter now take an \`array\`; keep the old string accessor around as a read-only convenience if templates depend on it.
+3. **YAML** — \`initial_marking: new\` becomes \`initial_marking: [new]\`, and every multi-\`from\` transition splits (Trap 1).
+4. **Call sites** — \`$order->getStatus() === 'paid'\` becomes \`$workflow->getMarking($order)->has('paid')\`. Grep for direct status comparisons before you flip the type; they compile fine and fail at runtime.
+
+Deploy the column migration and backfill first, then the type flip. The two are not atomic and a half-migrated marking is the worst state to debug.
+
+---
+
+## Try both in the builder
+
+The fastest way to build intuition is to watch the tokens move:
+
+1. Open the [editor](/editor) and draw the article flow above.
+2. Set the type to \`workflow\` in the toolbar, then run the [simulator](/blog/introducing-workflow-simulator) — fire \`start_review\` and two places light up at once.
+3. Switch the type to \`state_machine\` and fire it again — one token, and the AND-join sits disabled forever.
+
+That second run is the whole lesson in about five seconds. Export the YAML when it behaves the way your domain actually does.
+
+**Start simple.** A state machine you outgrow in six months cost you one migration. A Petri net you never needed costs you every code review from here on.`,
+    },
+    {
         slug: "when-status-pending-stops-being-enough-laravel-petri-nets",
         title: "When status = 'pending' Stops Being Enough — Laravel + Petri Nets in Three Real Apps",
         date: "2026-05-02",
@@ -2094,7 +2477,9 @@ framework:
 | Is the flow mostly linear? | Yes | Maybe |
 | Simpler to reason about? | Yes | No |
 
-**When in doubt, start with state_machine.** You can always upgrade to workflow later if you need parallel states.`,
+**When in doubt, start with state_machine.** You can always upgrade to workflow later if you need parallel states.
+
+For worked examples of both types on the same domain — plus the two traps that bite everyone (\`from: [a, b]\` means the opposite thing in each type, and \`to: [x, y]\` will not compile under \`state_machine\`) — see [State Machine vs Workflow: The Same Domain, Modeled Both Ways](/blog/state-machine-vs-workflow-worked-examples).`,
     },
     {
         slug: "exporting-production-ready-yaml",
