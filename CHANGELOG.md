@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.44.0](https://github.com/vandetho/symflowbuilder/compare/v1.43.0...v1.44.0) (2026-09-23)
+
+
+### Features
+
+* **blog:** add worked-examples state machine vs workflow post ([#121](https://github.com/vandetho/symflowbuilder/issues/121)) ([b655b01](https://github.com/vandetho/symflowbuilder/commit/b655b0197f92b0f28ca7252131ed41104ad3be7d))
+
+
+### Bug Fixes
+
+* **security:** upgrade Next.js to 16.3.6 and Auth.js onto @auth/core 0.41.3 ([#122](https://github.com/vandetho/symflowbuilder/issues/122)) ([1692a3f](https://github.com/vandetho/symflowbuilder/commit/1692a3f8f792186221fa05b97267761996cbf7e5))
+
 ## [1.43.0](https://github.com/vandetho/symflowbuilder/compare/v1.42.0...v1.43.0) (2026-05-21)
 
 
