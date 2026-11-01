@@ -221,7 +221,11 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => ({
                 "completed",
                 "announce",
             ] as const
-        ).map((type) => engine.on(type, (event) => firedEvents.push(event)));
+        ).map((type) =>
+            engine.on(type, (event) => {
+                firedEvents.push(event);
+            })
+        );
 
         try {
             const toMarking = engine.apply(transitionName);

@@ -16,14 +16,15 @@
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
-        "@prisma/adapter-pg": "^7.7.0",
-        "@prisma/client": "^7.7.0",
-        "pg": "^8.20.0"
+        "@prisma/adapter-pg": "^7.10.1",
+        "@prisma/client": "^7.10.1",
+        "pg": "^8.23.1"
     },
     "devDependencies": {
+        "@types/node": "^20.19.43",
         "dotenv": "^17.4.2",
-        "prisma": "^7.7.0",
-        "tsx": "^4.21.0",
+        "prisma": "^7.10.1",
+        "tsx": "^4.23.15",
         "typescript": "^5.9.3"
     }
 }

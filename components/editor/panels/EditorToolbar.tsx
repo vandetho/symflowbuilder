@@ -640,8 +640,7 @@ export function EditorToolbar() {
                                 onChange={(e) =>
                                     updateMeta({
                                         type: e.target.value as
-                                            | "workflow"
-                                            | "state_machine",
+                                            "workflow" | "state_machine",
                                     })
                                 }
                             >
@@ -693,8 +692,7 @@ export function EditorToolbar() {
                                 onChange={(e) =>
                                     updateMeta({
                                         marking_store: e.target.value as
-                                            | "method"
-                                            | "property",
+                                            "method" | "property",
                                     })
                                 }
                             >
