@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.44.1](https://github.com/vandetho/symflowbuilder/compare/v1.44.0...v1.44.1) (2026-11-01)
+
+
+### Miscellaneous
+
+* release 1.44.1 ([#125](https://github.com/vandetho/symflowbuilder/issues/125)) ([d07df95](https://github.com/vandetho/symflowbuilder/commit/d07df95a6c5b76668d45164c5b10274e05b29c88))
+
 ## [1.44.0](https://github.com/vandetho/symflowbuilder/compare/v1.43.0...v1.44.0) (2026-09-23)
 
 
